@@ -53,7 +53,7 @@ public class GeneratedParserUtilBase {
 	}
 
 	public static final Parser TOKEN_ADVANCER = new Parser() {
-//		@Override
+		@Override
 		public boolean parse(PsiBuilder builder, int level) {
 			if (builder.eof()) return false;
 			builder.advanceLexer();
@@ -62,7 +62,7 @@ public class GeneratedParserUtilBase {
 	};
 
 	public static final Parser TRUE_CONDITION = new Parser() {
-//		@Override
+		@Override
 		public boolean parse(PsiBuilder builder, int level) {
 			return true;
 		}
@@ -472,7 +472,7 @@ public class GeneratedParserUtilBase {
 			return result;
 		}
 
-//		@Override
+		@Override
 		public int compareTo(Variant o) {
 			int diff = offset - o.offset;
 			if (diff == 0) diff = text.compareTo(o.text);
@@ -593,7 +593,7 @@ public class GeneratedParserUtilBase {
 		}
 
 		@NotNull
-//		@Override
+		@Override
 		public ASTNode createCompositeNode() {
 			return new DummyBlock();
 		}
