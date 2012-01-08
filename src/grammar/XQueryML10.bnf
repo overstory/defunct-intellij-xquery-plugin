@@ -20,8 +20,8 @@
   CDATA_START="<![CDATA["
   CDATA_END="]>"
   OP_BIND=":="
-  APOST="\u0027"
-  DBL_QUOTE="\u0022"
+//  APOST="\u0027"
+//  DBL_QUOTE="\u0022"
   EQUAL="="
   NOT_EQUAL="!="
   LESS_EQUAL="<="
@@ -214,8 +214,8 @@ DirElemConstructor ::= '<' QName DirAttributeList ( '/>' | '>' DirElemContent* '
 DirAttributeList ::= ( S ( QName S? '=' S? DirAttributeValue )? )*
           /* ws: explicit */
 DirAttributeValue
-         ::= "\u0022" ( EscapeQuot | QuotAttrValueContent )* "\u0022"
-           | "\u0027" ( EscapeApos | AposAttrValueContent )* "\u0027"
+         ::= Dbl_Quote ( EscapeQuot | QuotAttrValueContent )* Dbl_Quote
+           | Apost ( EscapeApos | AposAttrValueContent )* Apost
 QuotAttrValueContent ::= QuotAttrContentChar | CommonContent
 AposAttrValueContent ::= AposAttrContentChar | CommonContent
           /* ws: explicit */
@@ -408,8 +408,8 @@ DecimalLiteral ::= '.' Digits | Digits '.' OptionalDigits { extends="Literal" }
 DoubleLiteral ::= ( '.' Digits | Digits ( '.' OptionalDigits )? ) ( 'e' | 'E' ) ( '+' | '-' )? Digits { extends="Literal" }
           /* ws: explicit */
 
-StringLiteral ::= "\u0022" ( PredefinedEntityRef | CharRef | EscapeQuot | ( !"\u0022" | !"&" ) )* "\u0022"
-           | "\u0027" ( PredefinedEntityRef | CharRef | EscapeApos | ( !"\u0027" | !'&' )  )* "\u0027" { extends="Literal" }
+StringLiteral ::= Dbl_Quote ( PredefinedEntityRef | CharRef | EscapeQuot | ( !Dbl_Quote | !"&" ) )* Dbl_Quote
+           | Apost ( PredefinedEntityRef | CharRef | EscapeApos | ( !Apost | !'&' )  )* Apost { extends="Literal" }
           /* ws: explicit */
 PredefinedEntityRef ::= '&' AsciiAlpha ';'
           /* ws: explicit */

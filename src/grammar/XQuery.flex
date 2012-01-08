@@ -73,6 +73,8 @@ BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
 
   "\"\"" {yybegin(YYINITIAL); return XqyTypes.XQY_ESCAPEQUOT; }
   "''" {yybegin(YYINITIAL); return XqyTypes.XQY_ESCAPEAPOS; }
+  "\"" {yybegin(YYINITIAL); return XqyTypes.XQY_DBL_QUOTE; }
+  "'" {yybegin(YYINITIAL); return XqyTypes.XQY_APOST; }
 
   {Digits} {yybegin(YYINITIAL); return XqyTypes.XQY_DIGITS; }
   {OptionalDigits} {yybegin(YYINITIAL); return XqyTypes.XQY_OPTIONALDIGITS; }

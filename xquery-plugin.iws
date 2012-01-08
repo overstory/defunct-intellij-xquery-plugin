@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0981d8d8-3e70-42ed-8305-c9c82ad9b328" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyCompositeElement.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyCompositeElementType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyNamedElement.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyParenthesized.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyCompositeElementImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/grammar/XQuery.flex" afterPath="$PROJECT_DIR$/src/grammar/XQuery.flex" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/grammar/XQueryML10.bnf" afterPath="$PROJECT_DIR$/src/grammar/XQueryML10.bnf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyParserDefinition.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyParserDefinition.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyTokenType.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyTokenType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/xquery-plugin.ipr" afterPath="$PROJECT_DIR$/xquery-plugin.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/xquery-plugin.iws" afterPath="$PROJECT_DIR$/xquery-plugin.iws" />
     </list>
     <ignored path="xquery-plugin.iws" />
@@ -89,28 +80,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="XQueryML10.bnf" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="XQueryML10.bnf" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/grammar/XQueryML10.bnf">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="425" column="20" selection-start="15680" selection-end="15680" vertical-scroll-proportion="0.4989154">
+            <state line="25" column="16" selection-start="787" selection-end="787" vertical-scroll-proportion="0.30769232">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="_XqyLexer.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="_XqyLexer.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/parser/_XqyLexer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="750" column="48" selection-start="24182" selection-end="24182" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyTypes.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gen/uk/co/overstory/xquery/psi/XqyTypes.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="218" column="28" selection-start="16311" selection-end="16314" vertical-scroll-proportion="-10.884615">
+            <state line="29" column="37" selection-start="990" selection-end="990" vertical-scroll-proportion="0.33300394">
               <folding />
             </state>
           </provider>
@@ -213,7 +195,7 @@
       <file leaf-file-name="XQuery.flex" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="124" column="23" selection-start="4665" selection-end="4665" vertical-scroll-proportion="0.30769232">
+            <state line="76" column="4" selection-start="2250" selection-end="2250" vertical-scroll-proportion="0.30769232">
               <folding />
             </state>
           </provider>
@@ -255,8 +237,8 @@
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyNamedElement.java" />
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyParenthesized.java" />
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyFile.java" />
-        <option value="$PROJECT_DIR$/src/grammar/XQuery.flex" />
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyParserDefinition.java" />
+        <option value="$PROJECT_DIR$/src/grammar/XQuery.flex" />
         <option value="$PROJECT_DIR$/src/grammar/XQueryML10.bnf" />
       </list>
     </option>
@@ -461,38 +443,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="META-INF" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="intellij-xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="intellij-xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="psi" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -841,23 +791,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="23" selection-start="4665" selection-end="4665" vertical-scroll-proportion="0.30769232">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/grammar/bnf_grammar.bnf">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="12" selection-start="156" selection-end="166" vertical-scroll-proportion="0.30769232">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gen/uk/co/overstory/xquery/psi/XqyTypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="218" column="28" selection-start="16311" selection-end="16314" vertical-scroll-proportion="-10.884615">
           <folding />
         </state>
       </provider>
@@ -869,16 +805,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/parser/_XqyLexer.java">
+    <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="750" column="48" selection-start="24182" selection-end="24182" vertical-scroll-proportion="0.0">
+        <state line="76" column="4" selection-start="2250" selection-end="2250" vertical-scroll-proportion="0.30769232">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/grammar/XQueryML10.bnf">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="425" column="20" selection-start="15680" selection-end="15680" vertical-scroll-proportion="0.4989154">
+        <state line="25" column="16" selection-start="787" selection-end="787" vertical-scroll-proportion="0.30769232">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/parser/_XqyLexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="37" selection-start="990" selection-end="990" vertical-scroll-proportion="0.33300394">
           <folding />
         </state>
       </provider>
