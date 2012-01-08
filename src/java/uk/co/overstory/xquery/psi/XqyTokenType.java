@@ -2,6 +2,7 @@ package uk.co.overstory.xquery.psi;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
+import uk.co.overstory.xquery.XqyLanguage;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,11 @@ public class XqyTokenType extends IElementType
 	public XqyTokenType (@NotNull @NonNls String debugName, @Nullable Language language)
 	{
 		super (debugName, language);
+	}
+
+	public XqyTokenType (@NotNull @NonNls String debugName)
+	{
+		this (debugName, XqyLanguage.INSTANCE);
 	}
 
 	public XqyTokenType (String debugName, Language language, boolean register)

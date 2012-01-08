@@ -28,31 +28,36 @@ COMMENT_CONTENTS=( ( [^(:] | "("+ [^(:] | ":"+ [^:)] )+ | "(" ) "("* & "(" | ( (
 /* BLOCK_COMMENT="(:" ( {COMMENT_CONTENTS} | {BLOCK_COMMENT} )* ":)" */
 BLOCK_COMMENT="(:" ( {COMMENT_CONTENTS}  )* ":)"
 
+AsciiAlpha=[A-Za-z]+
 Alpha=[:letter:]
 Digit=[:digit:]
 Digits={Digit}+
 OptionalDigits={Digit}*
 
+Hex={Digit} | [aAbBcCdDeEfF]
 
+/*
 ID_BODY={Alpha} | {Digit} | "_"
 ID={Alpha} ({ID_BODY}) * | "<" ([^<>])+ ">"
-Hex={Digit} | [aAbBcCdDeEfF]
+*/
 /* NUMBER={DIGIT}+ | "0x" {HEX}+ */
 
-IntegerLiteral={Digits}
+/*
 DecimalLiteral="." Digits | Digits "." OptionalDigits
 DoubleLiteral=( "." Digits | Digits ( "." OptionalDigits )? ) [eE] ( "+" | "-" )? Digits
-
+*/
 
 /*
 ESC="\\" ( [^] | "u" {Hex}{Hex}{Hex}{Hex} )
 CHAR={ESC} | [^\r\n\'\"\\]
 */
 
-Char=#x0009 | #x000A | #x000D | [#x0020-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-ElementContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0025] | [#x0027-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-QuotAttrContentChar=#x0009 | #x000A | #x000D | #x0020 | #x0021 | [#x0023-#x0025] | [#x0027-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-AposAttrContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0025] | [#x0028-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+HighChars=[#xE000-#xFFFD] | [#x10000-#x10FFFF]
+Char=#x0009 | #x000A | #x000D | [#x0020-#xD7FF] | {HighChars}
+NotDash={Char} - '-'
+ElementContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0025] | [#x0027-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | {HighChars}
+QuotAttrContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0021] | [#x0023-#x0025] | [#x0027-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | {HighChars}
+AposAttrContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0025] | [#x0028-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | {HighChars}
 
 STRING_BAD1=\" ({Char} | \') *
 STRING_BAD2=\' {Char} *
@@ -60,17 +65,26 @@ String={STRING_BAD1} \" | {STRING_BAD2} \'
 
 BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
 
+
 %%
 <YYINITIAL> {
   {S} {yybegin(YYINITIAL); return com.intellij.psi.TokenType.WHITE_SPACE; }
   {BLOCK_COMMENT} {yybegin(YYINITIAL); return XQY_BLOCK_COMMENT; }
 
-  {String} {yybegin(YYINITIAL); return XqyTypes.XQY_String; }
-  {IntegerLiteral} {yybegin(YYINITIAL); return XqyTypes.XQY_IntegerLiteral; }
-  {DecimalLiteral} {yybegin(YYINITIAL); return XqyTypes.XQY_DecimalLiteral; }
-  {DoubleLiteral} {yybegin(YYINITIAL); return XqyTypes.XQY_DoubleLiteral; }
+  "\"\"" {yybegin(YYINITIAL); return XqyTypes.XQY_ESCAPEQUOT; }
+  "''" {yybegin(YYINITIAL); return XqyTypes.XQY_ESCAPEAPOS; }
 
+  {Digits} {yybegin(YYINITIAL); return XqyTypes.XQY_DIGITS; }
+  {OptionalDigits} {yybegin(YYINITIAL); return XqyTypes.XQY_OPTIONALDIGITS; }
+  {Hex} {yybegin(YYINITIAL); return XqyTypes.XQY_HEX; }
+
+  {AsciiAlpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ASCIIALPHA; }
+
+/*
+  {Alpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ALPHA; }
   {ID} {yybegin(YYINITIAL); return XqyTypes.XQY_ID; }
+  {String} {yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+*/
 
   "<?" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_START; }
   "?>" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_END; }
@@ -100,6 +114,7 @@ BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
   ">" {yybegin(YYINITIAL); return XqyTypes.XQY_GT; }
   "&" {yybegin(YYINITIAL); return XqyTypes.XQY_AMP; }
   "#" {yybegin(YYINITIAL); return XqyTypes.XQY_HASH; }
+  "@" {yybegin(YYINITIAL); return XqyTypes.XQY_AT_SIGN; }
 
   ";" {yybegin(YYINITIAL); return XqyTypes.XQY_SEMICOLON; }
   ":" {yybegin(YYINITIAL); return XqyTypes.XQY_COLON; }
@@ -120,11 +135,12 @@ BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
   "'" {yybegin(YYINITIAL); return XqyTypes.XQY_APOST; }
   "\"" {yybegin(YYINITIAL); return XqyTypes.XQY_DBL_QUOTE; }
 
-  {ElementContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_ElementContentChar; }
-  {QuotAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_QuotAttrContentChar; }
-  {AposAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_AposAttrContentChar; }
+  {ElementContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_ELEMENTCONTENTCHAR; }
+  {QuotAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_QUOTATTRCONTENTCHAR; }
+  {AposAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_APOSATTRCONTENTCHAR; }
+
+  {NotDash} {yybegin(YYINITIAL); return XqyTypes.XQY_NOTDASH; }
 
   {BAD_TOKENS} {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
   [^] {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
-
 }

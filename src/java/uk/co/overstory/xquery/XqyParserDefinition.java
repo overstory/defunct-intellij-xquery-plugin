@@ -31,7 +31,7 @@ public class XqyParserDefinition implements ParserDefinition
 	public static final TokenSet WS = TokenSet.create (TokenType.WHITE_SPACE);
 	public static final IElementType XQY_BLOCK_COMMENT = new XqyTokenType ("XQY_BLOCK_COMMENT", XqyLanguage.INSTANCE);
 	public static final TokenSet COMMENTS = TokenSet.create(XQY_BLOCK_COMMENT);
-	public static final TokenSet LITERALS = TokenSet.create(XqyTypes.XQY_STRING);
+	public static final TokenSet LITERALS = TokenSet.create(XqyTypes.XQY_LITERAL);
 
 	@NotNull
 	public Lexer createLexer (Project project)
