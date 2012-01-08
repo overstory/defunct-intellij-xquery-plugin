@@ -295,7 +295,7 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA IC-111.167" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="VcsDirectoryMappings">
@@ -303,13 +303,7 @@
   </component>
   <component name="libraryTable">
     <library name="IDEA Jars">
-      <CLASSES>
-        <root url="jar://$APPLICATION_HOME_DIR$/lib/annotations.jar!/" />
-        <root url="jar://$APPLICATION_HOME_DIR$/lib/idea.jar!/" />
-        <root url="jar://$APPLICATION_HOME_DIR$/lib/util.jar!/" />
-        <root url="jar://$APPLICATION_HOME_DIR$/lib/openapi.jar!/" />
-        <root url="jar://$APPLICATION_HOME_DIR$/lib/trove4j.jar!/" />
-      </CLASSES>
+      <CLASSES />
       <JAVADOC />
       <SOURCES />
     </library>

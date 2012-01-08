@@ -1,5 +1,7 @@
 package uk.co.overstory.xquery.psi;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ron
@@ -8,4 +10,6 @@ package uk.co.overstory.xquery.psi;
  */
 public interface XqyParenthesized extends XqyExpr
 {
+	@Nullable
+	public XqyExpr getExpr();
 }

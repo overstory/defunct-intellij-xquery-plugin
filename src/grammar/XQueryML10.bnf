@@ -69,8 +69,9 @@
 
   implements("QName")="uk.co.overstory.xquery.psi.XqyNamedElement"
   extends("QName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
-  implements("Predicate|EnclosedExpr|ParenthesizedExpr|Comment")="uk.co.overstory.xquery.psi.XqyParenthesized"
 /*
+  implements("Predicate|EnclosedExpr|ParenthesizedExpr|Comment")="uk.co.overstory.xquery.psi.XqyParenthesized"
+
   mixin("reference_or_token")="uk.co.overstory.xquery.psi.impl.XqyRefOrTokenImpl"
   mixin("string_literal_expression")="uk.co.overstory.xquery.psi.impl.XqyStringImpl"
 */
