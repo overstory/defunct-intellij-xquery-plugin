@@ -22,6 +22,8 @@
   OP_BIND=":="
 //  APOST="\u0027"
 //  DBL_QUOTE="\u0022"
+//  COMMENT_START="(:"
+//  COMMENT_END=":)"
   EQUAL="="
   NOT_EQUAL="!="
   LESS_EQUAL="<="
@@ -199,8 +201,10 @@ PrimaryExpr ::= Literal
            | OrderedExpr
            | UnorderedExpr
            | Constructor
+
 Literal  ::= NumericLiteral | StringLiteral
-NumericLiteral ::= IntegerLiteral | DecimalLiteral | DoubleLiteral { extends="Literal" }
+NumericLiteral ::= number { extends="Literal" }
+
 VarRef   ::= '$' VarName
 VarName  ::= QName
 ParenthesizedExpr ::= '(' Expr? ')'
@@ -214,9 +218,8 @@ DirElemConstructor ::= '<' QName DirAttributeList ( '/>' | '>' DirElemContent* '
           /* ws: explicit */
 DirAttributeList ::= ( S ( QName S? '=' S? DirAttributeValue )? )*
           /* ws: explicit */
-DirAttributeValue
-         ::= Dbl_Quote ( EscapeQuot | QuotAttrValueContent )* Dbl_Quote
-           | Apost ( EscapeApos | AposAttrValueContent )* Apost
+DirAttributeValue ::= string
+
 QuotAttrValueContent ::= QuotAttrContentChar | CommonContent
 AposAttrValueContent ::= AposAttrContentChar | CommonContent
           /* ws: explicit */
@@ -282,144 +285,25 @@ AttributeName ::= QName
 ElementName ::= QName
 TypeName ::= QName
 URILiteral ::= StringLiteral { extends="StringLiteral" }
-zzQName    ::= FunctionName
-           | 'attribute'
-           | 'namespace'
-           | 'binary'
-           | 'comment'
-           | 'document-node'
-           | 'element'
-           | 'empty-sequence'
-           | 'if'
-           | 'item'
-           | 'node'
-           | 'processing-instruction'
-           | 'schema-attribute'
-           | 'schema-element'
-           | 'text'
-           | 'typeswitch'
-FunctionName ::= 'ancestor'
-           | 'ancestor-or-self'
-           | 'and'
-           | 'ascending'
-           | 'case'
-           | 'cast'
-           | 'castable'
-           | 'catch'
-           | 'child'
-           | 'collation'
-           | 'declare'
-           | 'default'
-           | 'descendant'
-           | 'descendant-or-self'
-           | 'descending'
-           | 'div'
-           | 'document'
-           | 'else'
-           | 'empty'
-           | 'eq'
-           | 'every'
-           | 'except'
-           | 'following'
-           | 'following-sibling'
-           | 'for'
-           | 'ge'
-           | 'gt'
-           | 'idiv'
-           | 'import'
-           | 'instance'
-           | 'intersect'
-           | 'is'
-           | 'le'
-           | 'let'
-           | 'lt'
-           | 'mod'
-           | 'module'
-           | 'ne'
-           | 'or'
-           | 'order'
-           | 'ordered'
-           | 'parent'
-           | 'preceding'
-           | 'preceding-sibling'
-           | 'property'
-           | 'return'
-           | 'satisfies'
-           | 'self'
-           | 'some'
-           | 'stable'
-           | 'to'
-           | 'treat'
-           | 'try'
-           | 'union'
-           | 'unordered'
-           | 'validate'
-           | 'where'
-           | 'xquery'
-           | QName
-//           | QName^Token
-NCName   ::= 'and'
-           | 'ascending'
-           | 'case'
-           | 'cast'
-           | 'castable'
-           | 'collation'
-           | 'default'
-           | 'descending'
-           | 'div'
-           | 'else'
-           | 'empty'
-           | 'eq'
-           | 'except'
-           | 'for'
-           | 'ge'
-           | 'gt'
-           | 'idiv'
-           | 'instance'
-           | 'intersect'
-           | 'is'
-           | 'le'
-           | 'let'
-           | 'lt'
-           | 'mod'
-           | 'ne'
-           | 'or'
-           | 'order'
-           | 'return'
-           | 'satisfies'
-           | 'stable'
-           | 'to'
-           | 'treat'
-           | 'union'
-           | 'where'
-//           | NCName^Token
+
+Keyword ::= FunctionName | FunctionQname | OpNCName
+
 Whitespace ::= ( S | Comment )*
-//         ::= ( S^WS | Comment )*
-          /* ws: definition */
-Comment  ::= '(:' ( CommentContents | Comment )* ':)'
-          /* ws: explicit */
+
 
 //<?TOKENS?>
 
 DirCommentContents ::= ( ( NotDash ) | '-' ( NotDash ) )*
           /* ws: explicit */
-IntegerLiteral ::= Digits { extends="Literal" }
-DecimalLiteral ::= '.' Digits | Digits '.' OptionalDigits { extends="Literal" }
-          /* ws: explicit */
-DoubleLiteral ::= ( '.' Digits | Digits ( '.' OptionalDigits )? ) ( 'e' | 'E' ) ( '+' | '-' )? Digits { extends="Literal" }
-          /* ws: explicit */
 
-StringLiteral ::= Dbl_Quote ( PredefinedEntityRef | CharRef | EscapeQuot | ( !Dbl_Quote | !"&" ) )* Dbl_Quote
-           | Apost ( PredefinedEntityRef | CharRef | EscapeApos | ( !Apost | !'&' )  )* Apost { extends="Literal" }
-          /* ws: explicit */
+StringLiteral ::= string
+
 PredefinedEntityRef ::= '&' AsciiAlpha ';'
           /* ws: explicit */
-NameChar ::= Letter | Digit | '.' | '-' | '_' | ':'
 CharRef  ::= '&#' Digits ';' | '&#x' (Digits | Hex)+ ';'
 
-NCName   ::= NCNameStartChar NCNameChar*
-NCNameChar ::= Letter | Digit | '.' | '-' | '_'
-NCNameStartChar ::= Letter | '_'
+NCName ::= id
+
 QName    ::= PrefixedName | UnprefixedName
 PrefixedName ::= Prefix ':' LocalPart
 UnprefixedName ::= LocalPart
@@ -432,14 +316,3 @@ CDataSection ::= '<![CDATA[' ( !']' | ']' !']' | ']' ']'+ !']' )* ']'+ ']>'
 Wildcard ::= NCName ':' '*' | '*' ( ':' NCName )?
 EOF      ::= 0x0000
 
-/*
-NonNCNameChar ::= '$' | ( Char - NCNameChar )
-NonNCNameChar
-          \\ IntegerLiteral DecimalLiteral DoubleLiteral QName^Token NCName^Token 'ancestor' 'ancestor-or-self' 'and' 'as' 'ascending' 'at' 'attribute' 'namespace' 'base-uri' 'binary' 'boundary-space' 'by' 'case' 'cast' 'castable' 'catch' 'child' 'collation' 'comment' 'construction' 'copy-namespaces' 'declare' 'default' 'descendant' 'descendant-or-self' 'descending' 'div' 'document' 'document-node' 'element' 'else' 'empty' 'empty-sequence' 'encoding' 'eq' 'every' 'except' 'external' 'following' 'following-sibling' 'for' 'function' 'private' 'ge' 'greatest' 'gt' 'full' 'idiv' 'if' 'import' 'in' 'inherit' 'instance' 'intersect' 'is' 'item' 'lax' 'le' 'least' 'let' 'lt' 'mod' 'module' 'namespace' 'ne' 'node' 'no-inherit' 'no-preserve' 'of' 'option' 'or' 'order' 'ordered' 'ordering' 'parent' 'preceding' 'preceding-sibling' 'preserve' 'processing-instruction' 'property' 'return' 'satisfies' 'schema' 'stylesheet' 'schema-attribute' 'schema-element' 'self' 'some' 'stable' 'strict' 'strip' 'text' 'then' 'to' 'treat' 'try' 'typeswitch' 'union' 'unordered' 'validate' 'variable' 'version' 'where' 'xquery'
-'+'       << '+'^OccurrenceIndicator
-'*'       << '*'^OccurrenceIndicator Wildcard
-QName^Token
-          << 'ancestor' 'ancestor-or-self' 'and' 'ascending' 'attribute' 'binary' 'catch' 'try' 'namespace' 'case' 'cast' 'castable' 'child' 'collation' 'comment' 'declare' 'default' 'descendant' 'descendant-or-self' 'descending' 'div' 'document' 'document-node' 'element' 'else' 'empty' 'empty-sequence' 'eq' 'every' 'except' 'following' 'following-sibling' 'for' 'ge' 'gt' 'idiv' 'if' 'import' 'instance' 'intersect' 'is' 'item' 'le' 'let' 'lt' 'mod' 'module' 'ne' 'node' 'or' 'order' 'ordered' 'parent' 'preceding' 'preceding-sibling' 'processing-instruction' 'property' 'return' 'satisfies' 'schema-attribute' 'schema-element' 'self' 'some' 'stable' 'text' 'to' 'treat' 'typeswitch' 'union' 'unordered' 'validate' 'where' 'xquery'
-NCName^Token
-          << 'and' 'ascending' 'case' 'cast' 'castable' 'collation' 'default' 'descending' 'div' 'else' 'empty' 'eq' 'except' 'for' 'ge' 'gt' 'idiv' 'instance' 'intersect' 'is' 'le' 'let' 'lt' 'mod' 'ne' 'or' 'order' 'return' 'satisfies' 'stable' 'to' 'treat' 'union' 'where'
-*/

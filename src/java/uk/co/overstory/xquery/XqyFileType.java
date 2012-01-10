@@ -45,6 +45,14 @@ public class XqyFileType extends LanguageFileType
 	@Override
 	public Icon getIcon ()
 	{
+		if (XqyIcons.FILE == null) throw new RuntimeException ("NULL icon");
 		return XqyIcons.FILE;
 	}
+
+	@Override
+	public boolean isJVMDebuggingSupported() {
+		// turn off for now
+		return false;
+	}
+
 }

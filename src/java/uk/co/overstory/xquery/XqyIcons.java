@@ -13,5 +13,5 @@ import javax.swing.Icon;
 @SuppressWarnings("ConstantDeclaredInInterface")
 public interface XqyIcons
 {
-	Icon FILE = IconLoader.getIcon ("/resources/file.png");		// ToDo: this is a borrowed icon, make a real one
+	Icon FILE = IconLoader.getIcon ("/icons/file.png");		// ToDo: this is a borrowed icon, make a real one
 }

@@ -16,6 +16,7 @@ import uk.co.overstory.parser.GrammarParser;
 import uk.co.overstory.xquery.parser.XqyLexer;
 import uk.co.overstory.xquery.psi.XqyTokenType;
 import uk.co.overstory.xquery.psi.XqyTypes;
+import uk.co.overstory.xquery.psi.impl.XqyFileImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public class XqyParserDefinition implements ParserDefinition
 {
 	public static final IFileElementType XQY_FILE_ELEMENT_TYPE = new IFileElementType("XQY_FILE", XqyLanguage.INSTANCE);
-	public static final TokenSet WS = TokenSet.create (TokenType.WHITE_SPACE);
+	public static final TokenSet WS = TokenSet.create (TokenType.WHITE_SPACE, XqyTypes.XQY_S, XqyTypes.XQY_WHITESPACE);
 	public static final IElementType XQY_BLOCK_COMMENT = new XqyTokenType ("XQY_BLOCK_COMMENT", XqyLanguage.INSTANCE);
 	public static final TokenSet COMMENTS = TokenSet.create(XQY_BLOCK_COMMENT);
 	public static final TokenSet LITERALS = TokenSet.create(XqyTypes.XQY_LITERAL);
@@ -75,11 +76,11 @@ public class XqyParserDefinition implements ParserDefinition
 
 	public PsiFile createFile (FileViewProvider fileViewProvider)
 	{
-		return null;  // FIXME: auto-generated
+		return new XqyFileImpl (fileViewProvider);
 	}
 
 	public SpaceRequirements spaceExistanceTypeBetweenTokens (ASTNode astNode, ASTNode astNode1)
 	{
-		return SpaceRequirements.MUST;
+		return SpaceRequirements.MAY;
 	}
 }

@@ -31,7 +31,8 @@ public class XqyLexer extends LookAheadLexer
 {
 
 	public XqyLexer() {
-		super(new MergingLexerAdapter (new FlexAdapter (new _XqyLexer()), XqyParserDefinition.COMMENTS));
+//		super(new MergingLexerAdapter (new FlexAdapter (new _XqyLexer()), XqyParserDefinition.COMMENTS));
+		super(new FlexAdapter (new _XqyLexer()));
 	}
 
 	@Override

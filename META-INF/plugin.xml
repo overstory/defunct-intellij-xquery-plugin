@@ -16,17 +16,20 @@
 
 	<actions>
 		<!-- Add your actions here -->
+		<action id="TestAction" class="uk.co.overstory.xquery.actions.TestAction" text="XQuery Test" description="Test action for the XQuery plugin">
+			<add-to-group group-id="RunMenu" anchor="last"/>
+		</action>
 	</actions>
 
 	<depends optional="true" config-file="plugin-java.xml">com.intellij.modules.java</depends>
 
 	<extensions defaultExtensionNs="com.intellij">
 		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
-		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
 		<lang.parserDefinition language="XQY" implementationClass="uk.co.overstory.xquery.XqyParserDefinition"/>
 		<lang.syntaxHighlighterFactory key="XQY" implementationClass="uk.co.overstory.xquery.editor.XqySyntaxHighlighterFactory"/>
-<!--
-		<annotator language="XQY" implementationClass="org.intellij.grammar.editor.BnfAnnotator"/>
--->
+		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
+		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
+		<lang.braceMatcher language="XQY" implementationClass="uk.co.overstory.xquery.XqyBraceMatcher"/>
+		<lang.commenter language="XQY" implementationClass="uk.co.overstory.xquery.XqyCommenter"/>
 	</extensions>
 </idea-plugin>

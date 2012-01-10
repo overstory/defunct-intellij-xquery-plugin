@@ -8,6 +8,8 @@ import static uk.co.overstory.xquery.XqyParserDefinition.XQY_BLOCK_COMMENT;
 %%
 
 %{
+  StringBuffer string = new StringBuffer();
+
   public _XqyLexer() {
     this((java.io.Reader)null);
   }
@@ -22,11 +24,8 @@ import static uk.co.overstory.xquery.XqyParserDefinition.XQY_BLOCK_COMMENT;
 %eof{ return;
 %eof}
 
-S=( #x0020 | #x0009 | #x000D | #x000A )+
+S=[\ \t\f\n\r]+
 
-COMMENT_CONTENTS=( ( [^(:] | "("+ [^(:] | ":"+ [^:)] )+ | "(" ) "("* & "(" | ( ( [^(:] | "("+ [^(:] | ":"+ [^:)] )+ | ":" ) ":"* & ":"
-/* BLOCK_COMMENT="(:" ( {COMMENT_CONTENTS} | {BLOCK_COMMENT} )* ":)" */
-BLOCK_COMMENT="(:" ( {COMMENT_CONTENTS}  )* ":)"
 
 AsciiAlpha=[A-Za-z]+
 Alpha=[:letter:]
@@ -36,11 +35,16 @@ OptionalDigits={Digit}*
 
 Hex={Digit} | [aAbBcCdDeEfF]
 
+DecimalLiteral= ( ('.' {Digits}) | ( {Digits} '.' {OptionalDigits} ) )
+DoubleLiteral= ( ( "." {Digits} ) | ( {Digits} ( "." {OptionalDigits} )? ) [eE] [+\-]? {Digits} )
+
+
 /*
-ID_BODY={Alpha} | {Digit} | "_"
-ID={Alpha} ({ID_BODY}) * | "<" ([^<>])+ ">"
+CommentContents= ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | '(' ) '('* & '(' | ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | ':' ) ':'* & ':'
 */
-/* NUMBER={DIGIT}+ | "0x" {HEX}+ */
+CommentContents= [^*] ~":)"
+
+/* NUMBER={DIGIT}+ | "\u" {HEX}+ */
 
 /*
 DecimalLiteral="." Digits | Digits "." OptionalDigits
@@ -52,40 +56,75 @@ ESC="\\" ( [^] | "u" {Hex}{Hex}{Hex}{Hex} )
 CHAR={ESC} | [^\r\n\'\"\\]
 */
 
-HighChars=[#xE000-#xFFFD] | [#x10000-#x10FFFF]
-Char=#x0009 | #x000A | #x000D | [#x0020-#xD7FF] | {HighChars}
+/*
+HighChars=[\uE000-\uFFFD] | [\u10000-\u10FFFF]
+Char=\u0009 | \u000A | \u000D | [\u0020-\uD7FF] | {HighChars}
 NotDash={Char} - '-'
-ElementContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0025] | [#x0027-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | {HighChars}
-QuotAttrContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0021] | [#x0023-#x0025] | [#x0027-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | {HighChars}
-AposAttrContentChar=#x0009 | #x000A | #x000D | [#x0020-#x0025] | [#x0028-#x003b] | [#x003d-#x007a] | #x007c | [#x007e-#xD7FF] | {HighChars}
+ElementContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0025] | [\u0027-\u003b] | [\u003d-\u007a] | \u007c | [\u007e-\uD7FF] | {HighChars}
+QuotAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0021] | [\u0023-\u0025] | [\u0027-\u003b] | [\u003d-\u007a] | \u007c | [\u007e-\uD7FF] | {HighChars}
+AposAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0025] | [\u0028-\u003b] | [\u003d-\u007a] | \u007c | [\u007e-\uD7FF] | {HighChars}
+*/
 
-STRING_BAD1=\" ({Char} | \') *
-STRING_BAD2=\' {Char} *
-String={STRING_BAD1} \" | {STRING_BAD2} \'
+FunctionQname=( 'attribute' | 'namespace' | 'binary' | 'comment' | 'document-node' | 'element' | 'empty-sequence' | 'if' | 'item' | 'node' | 'processing-instruction' | 'schema-attribute' | 'schema-element' | 'text' | 'typeswitch' )
+FunctionName=( 'ancestor' | 'ancestor-or-self' | 'and' | 'ascending' | 'case' | 'cast' | 'castable' | 'catch' | 'child' | 'collation' | 'declare' | 'default' | 'descendant' | 'descendant-or-self' | 'descending' | 'div' | 'document' | 'else' | 'empty' | 'eq' | 'every' | 'except' | 'following' | 'following-sibling' | 'for' | 'ge' | 'gt' | 'idiv' | 'import' | 'instance' | 'intersect' | 'is' | 'le' | 'let' | 'lt' | 'mod' | 'module' | 'ne' | 'or' | 'order' | 'ordered' | 'parent' | 'preceding' | 'preceding-sibling' | 'property' | 'return' | 'satisfies' | 'self' | 'some' | 'stable' | 'to' | 'treat' | 'try' | 'union' | 'unordered' | 'validate' | 'where' | 'xquery' )
+OpNCName=( 'and' | 'ascending' | 'case' | 'cast' | 'castable' | 'collation' | 'default' | 'descending' | 'div' | 'else' | 'empty' | 'eq' | 'except' | 'for' | 'ge' | 'gt' | 'idiv' | 'instance' | 'intersect' | 'is' | 'le' | 'let' | 'lt' | 'mod' | 'ne' | 'or' | 'order' | 'return' | 'satisfies' | 'stable' | 'to' | 'treat' | 'union' | 'where' )
+Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 
-BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
 
+
+%state STRING_QUOTE
+%state STRING_APOST
+%state COMMENT
 
 %%
+
+<STRING_QUOTE> {
+  \"                             { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+  \"\"                           { string.append('"') ; }
+  [^\n\r\"\\]+                   { string.append( yytext() ); }
+  \\n                            { string.append('\n'); }
+  \\r                            { string.append('\r'); }
+  \\                             { string.append('\\'); }
+}
+
+<STRING_APOST> {
+  \'                             { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+  \'\'                           { string.append("'") ; }
+  [^\n\r\'\\]+                   { string.append( yytext() ); }
+  \\n                            { string.append('\n'); }
+  \\r                            { string.append('\r'); }
+  \\                             { string.append('\\'); }
+}
+
+<COMMENT> {
+  {CommentContents} { string.append(":)"); yybegin(YYINITIAL); return XqyTypes.XQY_COMMENT; }
+}
+
 <YYINITIAL> {
-  {S} {yybegin(YYINITIAL); return com.intellij.psi.TokenType.WHITE_SPACE; }
-  {BLOCK_COMMENT} {yybegin(YYINITIAL); return XQY_BLOCK_COMMENT; }
+  {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
-  "\"\"" {yybegin(YYINITIAL); return XqyTypes.XQY_ESCAPEQUOT; }
-  "''" {yybegin(YYINITIAL); return XqyTypes.XQY_ESCAPEAPOS; }
-  "\"" {yybegin(YYINITIAL); return XqyTypes.XQY_DBL_QUOTE; }
-  "'" {yybegin(YYINITIAL); return XqyTypes.XQY_APOST; }
+  {FunctionQname} { return XqyTypes.XQY_FUNCTIONQNAME; }   /* FunctionQname */
+  {FunctionName} { return XqyTypes.XQY_FUNCTIONNAME; }   /* FunctionName / QName^Token */
+  {OpNCName} { return XqyTypes.XQY_OPNCNAME; }   /* NCName^Token */
 
-  {Digits} {yybegin(YYINITIAL); return XqyTypes.XQY_DIGITS; }
-  {OptionalDigits} {yybegin(YYINITIAL); return XqyTypes.XQY_OPTIONALDIGITS; }
-  {Hex} {yybegin(YYINITIAL); return XqyTypes.XQY_HEX; }
+  ( {DoubleLiteral} | {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
-  {AsciiAlpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ASCIIALPHA; }
+  ([A-Za-z\_] [A-Za-z0-9\.\-\_]*)  { return XqyTypes.XQY_ID; }   /* non-keyword NCName */
+
+  \"  { string.setLength(0); yybegin(STRING_QUOTE); }
+  \'  { string.setLength(0); yybegin(STRING_APOST); }
+  "(:" { string.setLength(0); yybegin(COMMENT); }
+
+
+
 
 /*
+  {Digits} {yybegin(YYINITIAL); return XqyTypes.XQY_DIGITS; }
+  {OptionalDigits} {yybegin(YYINITIAL); return XqyTypes.XQY_OPTIONALDIGITS; }
+
+  {Hex} {yybegin(YYINITIAL); return XqyTypes.XQY_HEX; }
+  {AsciiAlpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ASCIIALPHA; }
   {Alpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ALPHA; }
-  {ID} {yybegin(YYINITIAL); return XqyTypes.XQY_ID; }
-  {String} {yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
 */
 
   "<?" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_START; }
@@ -124,7 +163,6 @@ BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
   "." {yybegin(YYINITIAL); return XqyTypes.XQY_DOT; }
   ".." {yybegin(YYINITIAL); return XqyTypes.XQY_DOTDOT; }
   "$" {yybegin(YYINITIAL); return XqyTypes.XQY_DOLLAR; }
-  "_" {yybegin(YYINITIAL); return XqyTypes.XQY_UNDERSCORE; }
   "=" {yybegin(YYINITIAL); return XqyTypes.XQY_EQUAL; }
   "!=" {yybegin(YYINITIAL); return XqyTypes.XQY_NOT_EQUAL; }
   "<=" {yybegin(YYINITIAL); return XqyTypes.XQY_LESS_EQUAL; }
@@ -132,17 +170,23 @@ BAD_TOKENS={STRING_BAD1} | {STRING_BAD2}
   "?" {yybegin(YYINITIAL); return XqyTypes.XQY_QMARK; }
   "|" {yybegin(YYINITIAL); return XqyTypes.XQY_VERT_BAR; }
   "+" {yybegin(YYINITIAL); return XqyTypes.XQY_PLUS_SIGN; }
-  "-" {yybegin(YYINITIAL); return XqyTypes.XQY_PLUS_SIGN; }
   "*" {yybegin(YYINITIAL); return XqyTypes.XQY_STAR; }
-  "'" {yybegin(YYINITIAL); return XqyTypes.XQY_APOST; }
-  "\"" {yybegin(YYINITIAL); return XqyTypes.XQY_DBL_QUOTE; }
 
+  "-" {yybegin(YYINITIAL); return XqyTypes.XQY_MINUS_SIGN; }
+
+/*
+  "_" {yybegin(YYINITIAL); return XqyTypes.XQY_UNDERSCORE; }
   {ElementContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_ELEMENTCONTENTCHAR; }
   {QuotAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_QUOTATTRCONTENTCHAR; }
   {AposAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_APOSATTRCONTENTCHAR; }
-
   {NotDash} {yybegin(YYINITIAL); return XqyTypes.XQY_NOTDASH; }
+*/
 
+
+/*
   {BAD_TOKENS} {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
   [^] {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
+*/
 }
+
+.|\n {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
