@@ -34,5 +34,6 @@
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
+		<lang.findUsagesProvider language="XQY" implementationClass="uk.co.overstory.xquery.XqyFindUsagesProvider"/>
 	</extensions>
 </idea-plugin>

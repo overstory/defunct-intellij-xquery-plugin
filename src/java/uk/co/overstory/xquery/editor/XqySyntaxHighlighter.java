@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import uk.co.overstory.xquery.XqyParserDefinition;
 import uk.co.overstory.xquery.parser.XqyLexer;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +19,7 @@ import static uk.co.overstory.xquery.psi.XqyTypes.*;
  * Date: 1/8/12
  * Time: 7:05 PM
  */
+@SuppressWarnings("ClassWithTooManyFields")
 public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 {
 	private static final TextAttributesKey[] EMPTY = new TextAttributesKey[0];
@@ -31,7 +31,7 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 	public static final TextAttributesKey PARENTHS = createTextAttributesKey("XQY_PARENTHS", SyntaxHighlighterColors.PARENTHS.getDefaultAttributes());
 	public static final TextAttributesKey BRACES = createTextAttributesKey("XQY_BRACES", SyntaxHighlighterColors.BRACES.getDefaultAttributes());
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("XQY_BRACKETS", SyntaxHighlighterColors.BRACKETS.getDefaultAttributes());
-	public static final TextAttributesKey ANGLES = createTextAttributesKey("XQY_ANGLES", SyntaxHighlighterColors.BRACES.getDefaultAttributes());
+	public static final TextAttributesKey ANGLES = createTextAttributesKey ("XQY_ANGLES", SyntaxHighlighterColors.BRACES.getDefaultAttributes ());
 	public static final TextAttributesKey COMMA = createTextAttributesKey ("XQY_COMMA", SyntaxHighlighterColors.COMMA.getDefaultAttributes ());
 	public static final TextAttributesKey DOT = createTextAttributesKey ("XQY_DOT", SyntaxHighlighterColors.DOT.getDefaultAttributes ());
 	public static final TextAttributesKey SEMICOLON = createTextAttributesKey ("XQY_SEMICOLON", SyntaxHighlighterColors.JAVA_SEMICOLON.getDefaultAttributes ());
@@ -52,10 +52,10 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		if (type == TokenType.BAD_CHARACTER) {
 			return pack (ILLEGAL);
 		}
-		if (type == XQY_COMMENT) {
+		if ((type == XQY_COMMENT) || (type == XQY_PRAGMA) || (type == XQY_CDATASECTION)) {
 			return pack (COMMENT);
 		}
-		if (type == XQY_STRING) {
+		if ((type == XQY_STRING) || (type == XQY_STRINGLITERAL)) {
 			return pack (STRING);
 		}
 		if ((type == XQY_KEYWORD) || (type == XQY_FUNCTIONQNAME) || (type == XQY_FUNCTIONNAME) || (type == XQY_OPNCNAME)) {

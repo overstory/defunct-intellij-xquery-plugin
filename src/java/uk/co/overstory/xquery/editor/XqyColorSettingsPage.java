@@ -44,13 +44,42 @@ public class XqyColorSettingsPage implements ColorSettingsPage
 	}
 
 	private static final String XQUERY_DEMO_TEXT =
-		"xquery version \"1.0-ml\";\n" +
+		"xquery version '1.0-ml';\n" +
 			"\n" +
-			"(: This is a test :)\n" +
+			"(: This is a comment :)\n" +
+			"\n" +
+			"(# this is a pragma #)\n" +
+			"\n" +
+			"declare namespace snurg=\"http://snurg.com\";\n" +
 			"\n" +
 			"declare variable $hello as xs:string := ('Hello world');\n" +
 			"declare variable $good-bye := <hello>goodbye</hello>;\n" +
-			"declare variable $fare_well := 1.0e+5;\n" +
+			"declare variable $toodles := <ta-ta/>;\n" +
+			"declare variable $fare_well := 'toodles';\n" +
+			"\n" +
+			"declare variable $an-int := 42;\n" +
+			"declare variable $a-decimal := 142.37;\n" +
+			"declare variable $a-double := 1.0e+5;\n" +
+			"declare variable $silly-string as xs:string := 'This string hasn''t a clue';\n" +
+			"\n" +
+			"declare variable $some-cdata := <![CDATA[ foo bar baz comment ]>;\n" +
+			"declare variable $pi := <?foo bar?>;\n" +
+			"declare variable $xml-with-comment :=\n" +
+			"     <foo>\n" +
+			"        <!-- xml comment -->\n" +
+			"        Some content\n" +
+			"        <an-element>blah</an-element>\n" +
+			"        <an-empty-element attr=\"foo\"/>\n" +
+			"        <element-with-curlies>this is {{so}} cool<element-with-curlies>\n" +
+			"     </foo>\n" +
+			"\n" +
+			"declare variable $snurg:foo := 'foobar';\n" +
+			"\n" +
+			"declare function myfunc ($arg1 as xs:integer, $arg2 as element(foo)*)\n" +
+			"    as empty-sequence()\n" +
+			"{\n" +
+			"    fn:current-dateTime()\n" +
+			"};\n" +
 			"\n" +
 			"($hello, $good-bye, $fare_well)[1]";
 

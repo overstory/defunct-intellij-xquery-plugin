@@ -65,9 +65,9 @@ QuotAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0021] | [\u0023-\u0025]
 AposAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0025] | [\u0028-\u003b] | [\u003d-\u007a] | \u007c | [\u007e-\uD7FF] | {HighChars}
 */
 
-FunctionQname=( 'attribute' | 'namespace' | 'binary' | 'comment' | 'document-node' | 'element' | 'empty-sequence' | 'if' | 'item' | 'node' | 'processing-instruction' | 'schema-attribute' | 'schema-element' | 'text' | 'typeswitch' )
-FunctionName=( 'ancestor' | 'ancestor-or-self' | 'and' | 'ascending' | 'case' | 'cast' | 'castable' | 'catch' | 'child' | 'collation' | 'declare' | 'default' | 'descendant' | 'descendant-or-self' | 'descending' | 'div' | 'document' | 'else' | 'empty' | 'eq' | 'every' | 'except' | 'following' | 'following-sibling' | 'for' | 'ge' | 'gt' | 'idiv' | 'import' | 'instance' | 'intersect' | 'is' | 'le' | 'let' | 'lt' | 'mod' | 'module' | 'ne' | 'or' | 'order' | 'ordered' | 'parent' | 'preceding' | 'preceding-sibling' | 'property' | 'return' | 'satisfies' | 'self' | 'some' | 'stable' | 'to' | 'treat' | 'try' | 'union' | 'unordered' | 'validate' | 'where' | 'xquery' )
-OpNCName=( 'and' | 'ascending' | 'case' | 'cast' | 'castable' | 'collation' | 'default' | 'descending' | 'div' | 'else' | 'empty' | 'eq' | 'except' | 'for' | 'ge' | 'gt' | 'idiv' | 'instance' | 'intersect' | 'is' | 'le' | 'let' | 'lt' | 'mod' | 'ne' | 'or' | 'order' | 'return' | 'satisfies' | 'stable' | 'to' | 'treat' | 'union' | 'where' )
+FunctionQname=( "attribute" | "namespace" | "binary" | "comment" | "document-node" | "element" | "empty-sequence" | "if" | "item" | "node" | "processing-instruction" | "schema-attribute" | "schema-element" | "text" | "typeswitch" )
+FunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" | "cast" | "castable" | "catch" | "child" | "collation" | "declare" | "default" | "descendant" | "descendant-or-self" | "descending" | "div" | "document" | "else" | "empty" | "eq" | "every" | "except" | "following" | "following-sibling" | "for" | "ge" | "gt" | "idiv" | "import" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "module" | "ne" | "or" | "order" | "ordered" | "parent" | "preceding" | "preceding-sibling" | "property" | "return" | "satisfies" | "self" | "some" | "stable" | "to" | "treat" | "try" | "union" | "unordered" | "validate" | "where" | "xquery" )
+OpNCName=( "and" | "ascending" | "case" | "cast" | "castable" | "collation" | "default" | "descending" | "div" | "else" | "empty" | "eq" | "except" | "for" | "ge" | "gt" | "idiv" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "ne" | "or" | "order" | "return" | "satisfies" | "stable" | "to" | "treat" | "union" | "where" | "version" | "variable" | "function" | "as" )
 Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 
 
@@ -78,7 +78,7 @@ Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 
 %%
 
-/* TODO: Need state for XML comments? */
+/* TODO: Need state for XML comments?  CDATA?  Pragmas? */
 
 <STRING_QUOTE> {
   \"                             { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
@@ -111,23 +111,13 @@ Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 
   ( {DoubleLiteral} | {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
-  ([A-Za-z\_] [A-Za-z0-9\.\-\_]*)  { return XqyTypes.XQY_ID; }   /* non-keyword NCName */
+  ([A-Za-z\_] [A-Za-z0-9\.\-\_]*)  { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
 
   \"  { string.setLength(0); yybegin(STRING_QUOTE); }
   \'  { string.setLength(0); yybegin(STRING_APOST); }
   "(:" { string.setLength(0); yybegin(COMMENT); }
 
 
-
-
-/*
-  {Digits} {yybegin(YYINITIAL); return XqyTypes.XQY_DIGITS; }
-  {OptionalDigits} {yybegin(YYINITIAL); return XqyTypes.XQY_OPTIONALDIGITS; }
-
-  {Hex} {yybegin(YYINITIAL); return XqyTypes.XQY_HEX; }
-  {AsciiAlpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ASCIIALPHA; }
-  {Alpha} {yybegin(YYINITIAL); return XqyTypes.XQY_ALPHA; }
-*/
 
   "<?" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_START; }
   "?>" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_END; }
@@ -176,17 +166,8 @@ Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 
   "-" {yybegin(YYINITIAL); return XqyTypes.XQY_MINUS_SIGN; }
 
-/*
-  "_" {yybegin(YYINITIAL); return XqyTypes.XQY_UNDERSCORE; }
-  {ElementContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_ELEMENTCONTENTCHAR; }
-  {QuotAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_QUOTATTRCONTENTCHAR; }
-  {AposAttrContentChar} {yybegin(YYINITIAL); return XqyTypes.XQY_APOSATTRCONTENTCHAR; }
-  {NotDash} {yybegin(YYINITIAL); return XqyTypes.XQY_NOTDASH; }
-*/
-
 
 /*
-  {BAD_TOKENS} {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
   [^] {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
 */
 }
