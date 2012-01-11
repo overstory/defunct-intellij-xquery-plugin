@@ -308,7 +308,9 @@
       <SOURCES />
     </library>
     <library name="JFlex">
-      <CLASSES />
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/src/idea-jflex/lib/JFlex.jar!/" />
+      </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>

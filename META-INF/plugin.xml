@@ -4,7 +4,7 @@
 	<description>Attempt to create an XQuery plugin for IntelliJ</description>
 	<version>1.0</version>
 	<vendor email="xquery@overstory.co.uk" url="http://overstory.co.uk">OverStory Ltd</vendor>
-	<idea-version  since-build="111.14" until-build=""/>
+	<idea-version since-build="111.14" until-build=""/>
 
 	<application-components>
 		<!-- Add your application components here -->
@@ -31,5 +31,8 @@
 		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
 		<lang.braceMatcher language="XQY" implementationClass="uk.co.overstory.xquery.XqyBraceMatcher"/>
 		<lang.commenter language="XQY" implementationClass="uk.co.overstory.xquery.XqyCommenter"/>
+		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
+		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
+		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
 </idea-plugin>

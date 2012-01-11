@@ -20,10 +20,6 @@
   CDATA_START="<![CDATA["
   CDATA_END="]>"
   OP_BIND=":="
-//  APOST="\u0027"
-//  DBL_QUOTE="\u0022"
-//  COMMENT_START="(:"
-//  COMMENT_END=":)"
   EQUAL="="
   NOT_EQUAL="!="
   LESS_EQUAL="<="
@@ -69,8 +65,8 @@
   CHAR_REF_START="&#"
   CHAR_HEX_REF_START="&#x"
 
-  implements("QName")="uk.co.overstory.xquery.psi.XqyNamedElement"
-  extends("QName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
+  implements("QName|NCName")="uk.co.overstory.xquery.psi.XqyNamedElement"
+  extends("QName|NCName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
 /*
   implements("Predicate|EnclosedExpr|ParenthesizedExpr|Comment")="uk.co.overstory.xquery.psi.XqyParenthesized"
 
@@ -304,7 +300,7 @@ CharRef  ::= '&#' Digits ';' | '&#x' (Digits | Hex)+ ';'
 
 NCName ::= id
 
-QName    ::= PrefixedName | UnprefixedName
+QName    ::= PrefixedName | UnprefixedName { extends="NCName" }
 PrefixedName ::= Prefix ':' LocalPart
 UnprefixedName ::= LocalPart
 Prefix   ::= NCName

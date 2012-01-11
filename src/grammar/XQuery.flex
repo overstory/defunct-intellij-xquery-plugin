@@ -78,6 +78,8 @@ Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 
 %%
 
+/* TODO: Need state for XML comments? */
+
 <STRING_QUOTE> {
   \"                             { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
   \"\"                           { string.append('"') ; }
