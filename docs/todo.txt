@@ -1,0 +1,57 @@
+
+	XQuery IntelliJ plugin to do list
+
+Finish defining the AST model according to the XQuery EBNF
+	Get the hierarchy and relationships right
+
+Implement code navigation functions
+	Go to declaration
+	Find usages / highlight usages
+
+Code generation
+	Grammar-aware auto-complete
+	Module / function / variable / xml / namespace auto-generate when editing
+	Code>Generate menu: functions, variables, etc
+	Auto-generate module imports
+
+Warnings
+	Unused variables / functions
+	Duplicate definitions
+	Type / cardinality mis-matches, implicit function mapping, etc
+	XPaths that can never match anything
+
+Intentions
+	Create new modules from references (import / namespace)
+	Create variables / functions from references
+	Popups to correct various dodgy constructs
+	Popups to make variables / functions private
+
+Refactoring
+	Rename function / variable / namespace
+	Move variable / function
+	Extract function / variable / module
+	Introduce variable
+	Inline functions and variables
+	Safe delete
+
+Documentation
+	Display signature of a function call, including parameter types.
+	Detect XQDoc comments, display at point of usage
+	Allow click-through to online docs at ML dev site, or xqueryhacker.com
+
+Execution
+	Setup an XCC connection
+	Submit code for execution
+	Capture results in an edit buffer
+	Position cursor to offending line in case of an error
+
+Profiling
+	Submit code for execution under the profiler
+	Capture profile report and results in separate buffers
+	Retain history, draw graphs of performance changes over time
+
+Debugging
+	Setup a Debugger connection
+	Set breakpoints in XQuery source
+	Submit code for execution
+	Catch / single-step code on ML

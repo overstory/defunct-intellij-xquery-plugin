@@ -3,7 +3,6 @@ package uk.co.overstory.xquery.parser;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import uk.co.overstory.xquery.psi.XqyTypes;
-import static uk.co.overstory.xquery.XqyParserDefinition.XQY_BLOCK_COMMENT;
 
 %%
 
