@@ -19,7 +19,7 @@ public class XqyFileImpl  extends PsiFileBase implements PsiFile
 {
 	public XqyFileImpl (FileViewProvider fileViewProvider)
 	{
-		super(fileViewProvider, XqyLanguage.INSTANCE);
+		super (fileViewProvider, XqyLanguage.INSTANCE);
 	}
 
 	@NotNull

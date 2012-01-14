@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
+import uk.co.overstory.xquery.psi.XqyNamespacedecl;
 import uk.co.overstory.xquery.psi.XqyVardecl;
 import uk.co.overstory.xquery.psi.XqyFunctiondecl;
 
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class XqyFindUsagesProvider implements FindUsagesProvider
 {
 	@Override
-	public WordsScanner getWordsScanner ()
+	public WordsScanner getWordsScanner()
 	{
 		return null;
 	}
@@ -29,7 +30,7 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
-		return psiElement instanceof XqyVardecl || psiElement instanceof XqyFunctiondecl;
+		return (psiElement instanceof XqyVardecl) || (psiElement instanceof XqyFunctiondecl) || (psiElement instanceof XqyNamespacedecl);
 	}
 
 	@Override

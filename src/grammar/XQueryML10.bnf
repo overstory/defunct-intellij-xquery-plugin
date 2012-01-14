@@ -67,24 +67,28 @@
 
   implements("QName|NCName")="uk.co.overstory.xquery.psi.XqyNamedElement"
   extends("QName|NCName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
+  mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyRefVarName"
 /*
+  mixin("StringLiteral")="uk.co.overstory.xquery.psi.impl.XqyStringImpl"
   implements("Predicate|EnclosedExpr|ParenthesizedExpr|Comment")="uk.co.overstory.xquery.psi.XqyParenthesized"
 
-  mixin("reference_or_token")="uk.co.overstory.xquery.psi.impl.XqyRefOrTokenImpl"
-  mixin("string_literal_expression")="uk.co.overstory.xquery.psi.impl.XqyStringImpl"
 */
 }
 
 
 XQuery   ::= Module EOF
 Module   ::= VersionDecl? ( LibraryModule | MainModuleSequence )
-VersionDecl ::= 'xquery' 'version' StringLiteral ( 'encoding' StringLiteral )? Separator
+VersionDecl ::= 'xquery' 'version' XqueryVersionString ( 'encoding' XqueryEncodingString )? Separator
+XqueryEncodingString ::= StringLiteral
+XqueryVersionString ::= StringLiteral
 
 MainModuleSequence ::= MainModule ( ';' VersionDecl? MainModule)* ';'?
 
 MainModule ::= Prolog QueryBody
 LibraryModule ::= ModuleDecl Prolog
-ModuleDecl ::= 'module' 'namespace' NCName '=' URILiteral Separator
+
+ModuleDecl ::= 'module' 'namespace' NamespaceName '=' NamespaceValue Separator
+
 Prolog   ::= ( ( DefaultNamespaceDecl | Setter | NamespaceDecl | Import ) Separator )* ( ( VarDecl | FunctionDecl | OptionDecl ) Separator )*
 Setter   ::= BoundarySpaceDecl
            | DefaultCollationDecl
@@ -95,13 +99,23 @@ Setter   ::= BoundarySpaceDecl
            | CopyNamespacesDecl
 Import   ::= SchemaImport | ModuleImport | ImportStylesheetDecl
 Separator ::= ';'
-NamespaceDecl ::= 'declare' 'namespace' NCName '=' URILiteral
-BoundarySpaceDecl ::= 'declare' 'boundary-space' ( 'preserve' | 'strip' )
-DefaultNamespaceDecl ::= 'declare' 'default' ( 'element' | 'function' ) 'namespace' URILiteral
 
-ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' StringLiteral
+NamespaceDecl ::= 'declare' 'namespace' NamespaceName '=' NamespaceValue
+NamespaceName ::= NCName
+NamespaceValue ::= URILiteral
 
-OptionDecl ::= 'declare' 'option' QName StringLiteral
+PathHint ::= StringLiteral
+
+BoundarySpaceDecl ::= 'declare' 'boundary-space' BoundarySpaceAction
+BoundarySpaceAction ::= ( 'preserve' | 'strip' )
+
+DefaultNamespaceDecl ::= 'declare' 'default' DefaultNamespaceKind 'namespace' NamespaceValue
+DefaultNamespaceKind ::= ( 'element' | 'function' )
+
+ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' PathHint
+
+OptionDecl ::= 'declare' 'option' OptionName StringLiteral
+OptionName ::= QName
 OrderingModeDecl ::= 'declare' 'ordering' ( 'ordered' | 'unordered' )
 EmptyOrderDecl ::= 'declare' 'default' 'order' 'empty' ( 'greatest' | 'least' )
 CopyNamespacesDecl ::= 'declare' 'copy-namespaces' PreserveMode ',' InheritMode
@@ -109,14 +123,19 @@ PreserveMode ::= 'preserve' | 'no-preserve'
 InheritMode ::= 'inherit' | 'no-inherit'
 DefaultCollationDecl ::= 'declare' 'default' 'collation' URILiteral
 BaseURIDecl ::= 'declare' 'base-uri' URILiteral
-SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' URILiteral ( ',' URILiteral )* )?
-SchemaPrefix ::= 'namespace' NCName '=' | 'default' 'element' 'namespace'
-ModuleImport ::= 'import' 'module' ( 'namespace' NCName '=' )? URILiteral ( 'at' URILiteral ( ',' URILiteral )* )?
-VarDecl  ::= 'declare' 'private'? 'variable' '$' QName TypeDeclaration? ( ':=' ExprSingle | 'external' )
+SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',' PathHint )* )?
+SchemaPrefix ::= 'namespace' NamespaceName '=' | 'default' 'element' 'namespace'
+ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )?
+
+VarDecl  ::= 'declare' 'private'? 'variable' '$' VarName TypeDeclaration? ( ':=' ExprSingle | 'external' )
+
 ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' )
 FunctionDecl ::= 'declare' 'private'? 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' )
+
 ParamList ::= Param ( ',' Param )*
-Param    ::= '$' QName TypeDeclaration?
+Param    ::= '$' ParamName TypeDeclaration?
+ParamName ::= QName
+
 EnclosedExpr ::= '{' Expr '}'
 QueryBody ::= Expr
 Expr     ::= ExprSingle ( ',' ExprSingle )*
@@ -199,9 +218,10 @@ PrimaryExpr ::= Literal
            | Constructor
 
 Literal  ::= NumericLiteral | StringLiteral
-NumericLiteral ::= number { extends="Literal" }
+NumericLiteral ::= number
 
-VarRef   ::= '$' VarName
+VarRef  ::= '$' RefVarName
+RefVarName ::= QName
 VarName  ::= QName
 ParenthesizedExpr ::= '(' Expr? ')'
 ContextItemExpr ::= '.'
@@ -236,15 +256,15 @@ ComputedConstructor
            | CompNamespaceConstructor
 
 CompBinaryConstructor ::= 'binary' EnclosedExprExtended
-CompNamespaceConstructor ::= 'namespace' ( QName | '{' Expr '}' ) EnclosedExprExtended
+CompNamespaceConstructor ::= 'namespace' ( NamespaceName | '{' Expr '}' ) EnclosedExprExtended
 
 CompDocConstructor ::= 'document' '{' Expr '}'
-CompElemConstructor ::= 'element' ( QName | '{' Expr '}' ) '{' ContentExpr? '}'
+CompElemConstructor ::= 'element' ( ElementName | '{' Expr '}' ) '{' ContentExpr? '}'
 ContentExpr ::= Expr
-CompAttrConstructor ::= 'attribute' ( QName | '{' Expr '}' ) '{' Expr? '}'
+CompAttrConstructor ::= 'attribute' ( AttributeName | '{' Expr '}' ) '{' Expr? '}'
 CompTextConstructor ::= 'text' EnclosedExprExtended
 CompCommentConstructor ::= 'comment' '{' Expr '}'
-CompPIConstructor ::= 'processing-instruction' ( NCName | '{' Expr '}' ) '{' Expr? '}'
+CompPIConstructor ::= 'processing-instruction' ( PIName | '{' Expr '}' ) '{' Expr? '}'
 SingleType ::= AtomicType OccurrenceIndicator?
 //SingleType ::= AtomicType ('?'|'*'^OccurrenceIndicator)?
 TypeDeclaration ::= 'as' SequenceType
@@ -280,9 +300,12 @@ ElementDeclaration ::= ElementName
 AttributeName ::= QName
 ElementName ::= QName
 TypeName ::= QName
+PIName ::= NCName
 URILiteral ::= StringLiteral { extends="StringLiteral" }
 
 Keyword ::= FunctionName | FunctionQname | OpNCName
+
+FunctionName ::= QName
 
 Whitespace ::= ( S | Comment )*
 
@@ -300,7 +323,7 @@ CharRef  ::= '&#' Digits ';' | '&#x' (Digits | Hex)+ ';'
 
 NCName ::= id
 
-QName    ::= PrefixedName | UnprefixedName { extends="NCName" }
+QName    ::= PrefixedName | UnprefixedName
 PrefixedName ::= Prefix ':' LocalPart
 UnprefixedName ::= LocalPart
 Prefix   ::= NCName

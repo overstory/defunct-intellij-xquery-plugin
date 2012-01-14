@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public class XqyParserDefinition implements ParserDefinition
 {
 	public static final IFileElementType XQY_FILE_ELEMENT_TYPE = new IFileElementType("XQY_FILE", XqyLanguage.INSTANCE);
-	public static final TokenSet WS = TokenSet.create (TokenType.WHITE_SPACE, XqyTypes.XQY_S, XqyTypes.XQY_WHITESPACE);
+	public static final TokenSet WS = TokenSet.create (TokenType.WHITE_SPACE, XqyTypes.XQY_S);
 	public static final IElementType XQY_BLOCK_COMMENT = new XqyTokenType ("XQY_BLOCK_COMMENT", XqyLanguage.INSTANCE);
 	public static final TokenSet COMMENTS = TokenSet.create(XQY_BLOCK_COMMENT);
 	public static final TokenSet LITERALS = TokenSet.create(XqyTypes.XQY_LITERAL);

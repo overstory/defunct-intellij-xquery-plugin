@@ -64,10 +64,11 @@ QuotAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0021] | [\u0023-\u0025]
 AposAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0025] | [\u0028-\u003b] | [\u003d-\u007a] | \u007c | [\u007e-\uD7FF] | {HighChars}
 */
 
-FunctionQname=( "attribute" | "namespace" | "binary" | "comment" | "document-node" | "element" | "empty-sequence" | "if" | "item" | "node" | "processing-instruction" | "schema-attribute" | "schema-element" | "text" | "typeswitch" )
-FunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" | "cast" | "castable" | "catch" | "child" | "collation" | "declare" | "default" | "descendant" | "descendant-or-self" | "descending" | "div" | "document" | "else" | "empty" | "eq" | "every" | "except" | "following" | "following-sibling" | "for" | "ge" | "gt" | "idiv" | "import" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "module" | "ne" | "or" | "order" | "ordered" | "parent" | "preceding" | "preceding-sibling" | "property" | "return" | "satisfies" | "self" | "some" | "stable" | "to" | "treat" | "try" | "union" | "unordered" | "validate" | "where" | "xquery" )
+/* FIXME: This probably belongs in the completion contributor class extension */
+XFunctionQname=( "attribute" | "namespace" | "binary" | "comment" | "document-node" | "element" | "empty-sequence" | "if" | "item" | "node" | "processing-instruction" | "schema-attribute" | "schema-element" | "text" | "typeswitch" )
+XFunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" | "cast" | "castable" | "catch" | "child" | "collation" | "declare" | "default" | "descendant" | "descendant-or-self" | "descending" | "div" | "document" | "else" | "empty" | "eq" | "every" | "except" | "following" | "following-sibling" | "for" | "ge" | "gt" | "idiv" | "import" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "module" | "ne" | "or" | "order" | "ordered" | "parent" | "preceding" | "preceding-sibling" | "property" | "return" | "satisfies" | "self" | "some" | "stable" | "to" | "treat" | "try" | "union" | "unordered" | "validate" | "where" | "xquery" )
 OpNCName=( "and" | "ascending" | "case" | "cast" | "castable" | "collation" | "default" | "descending" | "div" | "else" | "empty" | "eq" | "except" | "for" | "ge" | "gt" | "idiv" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "ne" | "or" | "order" | "return" | "satisfies" | "stable" | "to" | "treat" | "union" | "where" | "version" | "variable" | "function" | "as" )
-Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
+Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 
 
 
@@ -104,9 +105,7 @@ Keyword=( {FunctionQnames} | {FunctionName} | {OpNCName} )
 <YYINITIAL> {
   {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
-  {FunctionQname} { return XqyTypes.XQY_FUNCTIONQNAME; }   /* FunctionQname */
-  {FunctionName} { return XqyTypes.XQY_FUNCTIONNAME; }   /* FunctionName / QName^Token */
-  {OpNCName} { return XqyTypes.XQY_OPNCNAME; }   /* NCName^Token */
+  {Keyword} { return XqyTypes.XQY_KEYWORD; }
 
   ( {DoubleLiteral} | {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
