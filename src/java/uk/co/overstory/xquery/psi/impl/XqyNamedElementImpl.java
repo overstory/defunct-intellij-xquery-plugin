@@ -3,8 +3,13 @@ package uk.co.overstory.xquery.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import uk.co.overstory.xquery.psi.XqyFunctiondecl;
 import uk.co.overstory.xquery.psi.XqyNamedElement;
+import uk.co.overstory.xquery.psi.XqyPrefixedname;
+import uk.co.overstory.xquery.psi.XqyQname;
 import uk.co.overstory.xquery.psi.XqyTypes;
+import uk.co.overstory.xquery.psi.XqyUnprefixedname;
+import uk.co.overstory.xquery.psi.XqyVardecl;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +27,7 @@ public class XqyNamedElementImpl extends XqyCompositeElementImpl implements XqyN
 	public XqyNamedElementImpl (ASTNode node)
 	{
 		super (node);
+System.out.println ("XqyVardeclImpl constructor");
 	}
 
 	@Override
@@ -39,22 +45,42 @@ public class XqyNamedElementImpl extends XqyCompositeElementImpl implements XqyN
 	}
 
 	@Override
-	public PsiElement getNameIdentifier() {
+	public PsiElement getNameIdentifier()
+	{
 		return getId();
 	}
 
 	// -------------------------------------------------------------
 
 	@NotNull
-	public PsiElement getId() {
-		ASTNode child = getNode().findChildByType(XqyTypes.XQY_QNAME);
-		return child == null ? null : child.getPsi();
+	private PsiElement getId()
+	{
+		if (this instanceof XqyVardecl)  {
+			return qNameValue (((XqyVardecl) this).getVarname().getQname());
+		}
+
+		if (this instanceof XqyFunctiondecl)  {
+			return qNameValue (((XqyFunctiondecl) this).getFunctionname().getQname());
+		}
+
+		return null;
 	}
 
+	private PsiElement qNameValue (XqyQname qNameNode)
+	{
+		XqyPrefixedname prefixedname = qNameNode.getPrefixedname();
+		XqyUnprefixedname unprefixedname = qNameNode.getUnprefixedname();
+
+		if (prefixedname != null) {
+			// TODO: Handle namespace prefix
+			return unprefixedname.getLocalpart().getNcname().getId();
+		}
+
+		return unprefixedname.getLocalpart().getNcname().getId();
+	}
 
 	@Override
 	public String toString() {
 		return super.toString() + ":" + getName();
 	}
-
 }

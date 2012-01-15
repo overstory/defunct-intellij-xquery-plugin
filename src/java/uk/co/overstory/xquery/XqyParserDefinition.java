@@ -12,7 +12,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import uk.co.overstory.parser.GrammarParser;
+import uk.co.overstory.xquery.parser.XQueryParser;
 import uk.co.overstory.xquery.parser.XqyLexer;
 import uk.co.overstory.xquery.psi.XqyTokenType;
 import uk.co.overstory.xquery.psi.XqyTypes;
@@ -42,7 +42,7 @@ public class XqyParserDefinition implements ParserDefinition
 
 	public PsiParser createParser (Project project)
 	{
-		return new GrammarParser();
+		return new XQueryParser ();
 	}
 
 	public IFileElementType getFileNodeType()
