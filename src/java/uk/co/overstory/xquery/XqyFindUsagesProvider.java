@@ -7,9 +7,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
+import uk.co.overstory.xquery.psi.XqyFunctionname;
 import uk.co.overstory.xquery.psi.XqyNamespacedecl;
 import uk.co.overstory.xquery.psi.XqyVardecl;
 import uk.co.overstory.xquery.psi.XqyFunctiondecl;
+import uk.co.overstory.xquery.psi.XqyVarname;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +32,7 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
-		return (psiElement instanceof XqyVardecl) || (psiElement instanceof XqyFunctiondecl) || (psiElement instanceof XqyNamespacedecl);
+		return ((psiElement instanceof XqyVarname) || (psiElement instanceof XqyFunctionname));
 	}
 
 	@Override
@@ -43,20 +45,31 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public String getType (@NotNull PsiElement element)
 	{
-		return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE);
+		if (element instanceof XqyFunctionname) return "Function";
+
+		return "Variable";
+
+//		return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE);
 	}
 
 	@NotNull
 	@Override
 	public String getDescriptiveName (@NotNull PsiElement element)
 	{
-		return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE);
+		if (element instanceof XqyFunctionname) return element.getText() + "()";
+
+		return "$" + element.getText();
+
+//		return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE);
 	}
 
 	@NotNull
 	@Override
 	public String getNodeText (@NotNull PsiElement element, boolean useFullName)
 	{
-		return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);
+System.out.println ("XqyFindUsagesProvider.getNodeText: " + element.getText());
+		return element.getText();
+
+//		return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);
 	}
 }

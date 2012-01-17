@@ -15,6 +15,7 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 	public XqyCompositeElementImpl (ASTNode node)
 	{
 		super (node);
+//System.out.println ("XqyCompositeElementImpl: constructor, node=" + node);
 	}
 
 	@Override

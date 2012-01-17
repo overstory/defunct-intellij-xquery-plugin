@@ -12,8 +12,10 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.util.Processor;
 import uk.co.overstory.xquery.psi.XqyFunctiondecl;
+import uk.co.overstory.xquery.psi.XqyFunctionname;
 import uk.co.overstory.xquery.psi.XqyNamedElement;
 import uk.co.overstory.xquery.psi.XqyVardecl;
+import uk.co.overstory.xquery.psi.XqyVarname;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +37,7 @@ public class XqyReferenceImpl<T extends PsiElement> extends PsiReferenceBase<T>
 	@Override
 	public PsiElement resolve()
 	{
+System.out.println ("XqyReferenceImpl<T>.resolve()");
 		return ResolveCache.getInstance (myElement.getProject()).resolveWithCaching (this, MY_RESOLVER, true, false);
 	}
 
@@ -79,6 +82,7 @@ public class XqyReferenceImpl<T extends PsiElement> extends PsiReferenceBase<T>
 	@Override
 	public Object[] getVariants()
 	{
+System.out.println ("XqyReferenceImpl<T>.getVariants()");
 		final ArrayList<LookupElement> list = new ArrayList<LookupElement>();
 
 		processResolveVariants (new Processor<PsiElement>()
@@ -102,7 +106,7 @@ public class XqyReferenceImpl<T extends PsiElement> extends PsiReferenceBase<T>
 
 	private boolean isBoldable (PsiElement e)
 	{
-		if ((e instanceof XqyVardecl) || (e instanceof XqyFunctiondecl)) return true;
+		if ((e instanceof XqyVarname) || (e instanceof XqyFunctionname)) return true;
 
 		return false;
 	}

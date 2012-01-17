@@ -20,11 +20,12 @@ public class XqyFileImpl  extends PsiFileBase implements PsiFile
 	public XqyFileImpl (FileViewProvider fileViewProvider)
 	{
 		super (fileViewProvider, XqyLanguage.INSTANCE);
+System.out.println ("XqyFileImpl constructor, provider=" + getName ());
 	}
 
 	@NotNull
 	@Override
-	public FileType getFileType ()
+	public FileType getFileType()
 	{
 		return XqyFileType.INSTANCE;
 	}

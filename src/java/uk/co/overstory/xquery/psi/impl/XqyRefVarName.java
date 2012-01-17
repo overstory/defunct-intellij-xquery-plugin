@@ -22,6 +22,7 @@ public class XqyRefVarName extends XqyQnameImpl implements XqyRefvarname
 	public XqyRefVarName (ASTNode node)
 	{
 		super (node);
+		System.out.println ("XqyRefVarName constructor called node=" + node.getText());
 	}
 
 	@NotNull
@@ -39,7 +40,7 @@ public class XqyRefVarName extends XqyQnameImpl implements XqyRefvarname
 			@Override
 			public PsiElement handleElementRename (String newElementName) throws IncorrectOperationException
 			{
-				myElement.getQname ().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
+				myElement.getQname().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
 
 				return myElement;
 			}

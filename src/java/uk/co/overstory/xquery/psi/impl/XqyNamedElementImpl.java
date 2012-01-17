@@ -2,6 +2,7 @@ package uk.co.overstory.xquery.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import uk.co.overstory.xquery.psi.XqyFunctiondecl;
 import uk.co.overstory.xquery.psi.XqyNamedElement;
@@ -27,12 +28,15 @@ public class XqyNamedElementImpl extends XqyCompositeElementImpl implements XqyN
 	public XqyNamedElementImpl (ASTNode node)
 	{
 		super (node);
-System.out.println ("XqyVardeclImpl constructor");
+System.out.println ("XqyNamedElementImpl constructor: " + node.getText());
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException {
-		getId().replace(XqyElementFactory.createLeafFromText(getProject(), s));
+	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	{
+System.out.println ("XqyNamedElementImpl.setName name=" + name);
+		getId().replace (XqyElementFactory.createLeafFromText (getProject(), name));
+
 		return this;
 	}
 
@@ -50,30 +54,24 @@ System.out.println ("XqyVardeclImpl constructor");
 		return getId();
 	}
 
+	@Override
+	@NotNull
+	public XqyQname getQname() {
+		return PsiTreeUtil.getChildOfType (this, XqyQname.class);
+	}
+
+
 	// -------------------------------------------------------------
 
 	@NotNull
 	private PsiElement getId()
 	{
-		if (this instanceof XqyVardecl)  {
-			return qNameValue (((XqyVardecl) this).getVarname().getQname());
-		}
-
-		if (this instanceof XqyFunctiondecl)  {
-			return qNameValue (((XqyFunctiondecl) this).getFunctionname().getQname());
-		}
-
-		return null;
-	}
-
-	private PsiElement qNameValue (XqyQname qNameNode)
-	{
-		XqyPrefixedname prefixedname = qNameNode.getPrefixedname();
-		XqyUnprefixedname unprefixedname = qNameNode.getUnprefixedname();
+		XqyPrefixedname prefixedname = getQname().getPrefixedname();
+		XqyUnprefixedname unprefixedname = getQname().getUnprefixedname();
 
 		if (prefixedname != null) {
 			// TODO: Handle namespace prefix
-			return unprefixedname.getLocalpart().getNcname().getId();
+			return prefixedname.getLocalpart().getNcname().getId();
 		}
 
 		return unprefixedname.getLocalpart().getNcname().getId();

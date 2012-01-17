@@ -2,6 +2,8 @@ package uk.co.overstory.xquery.psi;
 
 import com.intellij.psi.PsiNameIdentifierOwner;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ron
@@ -10,4 +12,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  */
 public interface XqyNamedElement extends XqyCompositeElement, PsiNameIdentifierOwner
 {
+	@NotNull
+	public XqyQname getQname();
 }

@@ -17,10 +17,14 @@ public class XqyElementFactory
 {
 	private XqyElementFactory ()
 	{
+System.out.println ("XqyElementFactory: constructor");
 	}
 
-	public static PsiElement createLeafFromText (Project project, String text) {
+	public static PsiElement createLeafFromText (Project project, String text)
+	{
+System.out.println ("createLeafFromText: text=" + text);
 		PsiFile fileFromText = PsiFileFactory.getInstance (project).createFileFromText ("a.xqy", XqyLanguage.INSTANCE, text);
+
 		return PsiTreeUtil.getDeepestFirst (fileFromText);
 	}
 }
