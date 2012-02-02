@@ -30,9 +30,13 @@ public class XqyColorSettingsPage implements ColorSettingsPage
 		ATTRS = new AttributesDescriptor[] {
 			new AttributesDescriptor("illegal character", ILLEGAL),
 			new AttributesDescriptor("comment", COMMENT),
+			new AttributesDescriptor("var decalaration", VAR_DECL),
+			new AttributesDescriptor("function decalaration", FUNCTION_DECL),
 			new AttributesDescriptor("string", STRING),
 			new AttributesDescriptor("number", NUMBER),
 			new AttributesDescriptor("keyword", KEYWORD),
+			new AttributesDescriptor("assignment operator", OP_BIND),
+			new AttributesDescriptor("dolar sign", DOLLAR_SIGN),
 			new AttributesDescriptor("parenthesis", PARENTHS),
 			new AttributesDescriptor("braces", BRACES),
 			new AttributesDescriptor("brackets", BRACKETS),
@@ -40,6 +44,7 @@ public class XqyColorSettingsPage implements ColorSettingsPage
 			new AttributesDescriptor("comma", COMMA),
 			new AttributesDescriptor("dot", DOT),
 			new AttributesDescriptor("semicolon", SEMICOLON),
+			new AttributesDescriptor("cdata", CDATA),
 		};
 	}
 

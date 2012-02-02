@@ -10,7 +10,7 @@
     </content>
     <orderEntry type="library" name="IDEA Jars" level="project" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="IDEA IU-111.167" jdkType="IDEA JDK" />
     <orderEntry type="library" name="JFlex" level="project" />
   </component>
 </module>

@@ -2,6 +2,8 @@ package uk.co.overstory.xquery.psi;
 
 import com.intellij.psi.PsiFile;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ron
@@ -10,4 +12,6 @@ import com.intellij.psi.PsiFile;
  */
 public interface XqyFile extends PsiFile
 {
+	List<XqyVardecl> getVariables();
+	List<XqyFunctiondecl> getFunctions();
 }

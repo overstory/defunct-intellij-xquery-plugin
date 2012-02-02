@@ -25,16 +25,21 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 	private static final TextAttributesKey[] EMPTY = new TextAttributesKey[0];
 	public static final TextAttributesKey ILLEGAL = createTextAttributesKey ("XQY_ILLEGAL", SyntaxHighlighterColors.INVALID_STRING_ESCAPE.getDefaultAttributes ());
 	public static final TextAttributesKey COMMENT = createTextAttributesKey("XQY_COMMENT", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
+	public static final TextAttributesKey CDATA = createTextAttributesKey("XQY_CDATASECTION", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
 	public static final TextAttributesKey STRING = createTextAttributesKey("XQY_STRING", SyntaxHighlighterColors.STRING.getDefaultAttributes());
 	public static final TextAttributesKey NUMBER = createTextAttributesKey("XQY_NUMBER", SyntaxHighlighterColors.NUMBER.getDefaultAttributes());
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey ("XQY_KEYWORD", SyntaxHighlighterColors.KEYWORD.getDefaultAttributes ());
-	public static final TextAttributesKey PARENTHS = createTextAttributesKey("XQY_PARENTHS", SyntaxHighlighterColors.PARENTHS.getDefaultAttributes());
+	public static final TextAttributesKey PARENTHS = createTextAttributesKey("XQY_PARENTHS", SyntaxHighlighterColors.DOT.getDefaultAttributes());
+	public static final TextAttributesKey DOLLAR_SIGN = createTextAttributesKey("XQY_DOLLAR", SyntaxHighlighterColors.DOT.getDefaultAttributes());
+	public static final TextAttributesKey OP_BIND = createTextAttributesKey("XQY_OP_BIND", SyntaxHighlighterColors.PARENTHS.getDefaultAttributes());
 	public static final TextAttributesKey BRACES = createTextAttributesKey("XQY_BRACES", SyntaxHighlighterColors.BRACES.getDefaultAttributes());
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("XQY_BRACKETS", SyntaxHighlighterColors.BRACKETS.getDefaultAttributes());
 	public static final TextAttributesKey ANGLES = createTextAttributesKey ("XQY_ANGLES", SyntaxHighlighterColors.BRACES.getDefaultAttributes ());
 	public static final TextAttributesKey COMMA = createTextAttributesKey ("XQY_COMMA", SyntaxHighlighterColors.COMMA.getDefaultAttributes ());
 	public static final TextAttributesKey DOT = createTextAttributesKey ("XQY_DOT", SyntaxHighlighterColors.DOT.getDefaultAttributes ());
 	public static final TextAttributesKey SEMICOLON = createTextAttributesKey ("XQY_SEMICOLON", SyntaxHighlighterColors.JAVA_SEMICOLON.getDefaultAttributes ());
+	public static final TextAttributesKey VAR_DECL = createTextAttributesKey ("XQY_VARDECL", TextAttributesKey.createTextAttributesKey("XQY_VARDECL").getDefaultAttributes ());
+	public static final TextAttributesKey FUNCTION_DECL = createTextAttributesKey ("XQY_FUNCTIONDECL", TextAttributesKey.createTextAttributesKey("XQY_FUNCTIONDECL").getDefaultAttributes ());
 
 	@NotNull
 	@Override
@@ -52,7 +57,7 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		if (type == TokenType.BAD_CHARACTER) {
 			return pack (ILLEGAL);
 		}
-		if ((type == XQY_COMMENT) || (type == XQY_PRAGMA) || (type == XQY_CDATASECTION)) {
+		if ((type == XQY_COMMENT) || (type == XQY_XML_COMMENT_START) || (type == XQY_XML_COMMENT_END) || (type == XQY_PRAGMA) || (type == XQY_CDATASECTION)) {
 			return pack (COMMENT);
 		}
 		if ((type == XQY_STRING) || (type == XQY_STRINGLITERAL)) {
@@ -63,6 +68,18 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		}
 		if (type == XQY_COMMA) {
 			return pack (COMMA);
+		}
+		if (type == XQY_VARNAME) {
+			return pack (VAR_DECL);
+		}
+		if (type == XQY_FUNCTIONNAME) {
+			return pack (FUNCTION_DECL);
+		}
+		if (type == XQY_OP_BIND) {
+			return pack (OP_BIND);
+		}
+		if (type == XQY_DOLLAR) {
+			return pack (DOLLAR_SIGN);
 		}
 		if (type == XQY_DOT) {
 			return pack (DOT);
@@ -82,7 +99,7 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		if (type == XQY_LEFT_BRACKET || type == XQY_RIGHT_BRACKET) {
 			return pack(BRACKETS);
 		}
-		if (type == XQY_LT || type == XQY_GT) {
+		if ((type == XQY_LT) || (type == XQY_GT) || (type == XQY_END_TAG_START) || (type == XQY_EMPTY_TAG_END)) {
 			return pack(ANGLES);
 		}
 		if (type == XQY_NUMBER || type == XQY_DIGITS || type == XQY_NUMERICLITERAL) {

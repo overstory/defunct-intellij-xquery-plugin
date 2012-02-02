@@ -2,16 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0981d8d8-3e70-42ed-8305-c9c82ad9b328" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/resources/icons/filexq.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyFindUsagesProvider.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/META-INF/java-plugin.xml" afterPath="$PROJECT_DIR$/src/resources/META-INF/java-plugin.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/META-INF/plugin.xml" afterPath="$PROJECT_DIR$/src/resources/META-INF/plugin.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/ResolveUtil.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyReference.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/resolve/XqyResolveProcessor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/grammar/XQuery.flex" afterPath="$PROJECT_DIR$/src/grammar/XQuery.flex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyIcons.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyIcons.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyColorSettingsPage.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyColorSettingsPage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqySyntaxHighlighter.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqySyntaxHighlighter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/test/TestLexer.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/test/TestLexer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyFile.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyFile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyFileImpl.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyFileImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyReferenceImpl.java" afterPath="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyReferenceImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/xquery-plugin.iml" afterPath="$PROJECT_DIR$/xquery-plugin.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/xquery-plugin.ipr" afterPath="$PROJECT_DIR$/xquery-plugin.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/xquery-plugin.iws" afterPath="$PROJECT_DIR$/xquery-plugin.iws" />
     </list>
     <ignored path="xquery-plugin.iws" />
@@ -85,22 +86,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="plugin.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/resources/META-INF/plugin.xml">
+      <file leaf-file-name="XqyReference.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyReference.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="100" selection-start="2013" selection-end="2013" vertical-scroll-proportion="0.0">
+            <state line="18" column="0" selection-start="316" selection-end="316" vertical-scroll-proportion="0.0">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyDocumentationProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyDocumentationProvider.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="28" selection-start="626" selection-end="626" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -108,49 +98,36 @@
       <file leaf-file-name="XqyBraceMatcher.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyBraceMatcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="90" selection-start="1244" selection-end="1244" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyRefactoringSupportProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/refactor/XqyRefactoringSupportProvider.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="16" selection-start="249" selection-end="249" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyQuoteHandler.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyQuoteHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="13" selection-start="292" selection-end="292" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyParserDefinition.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyParserDefinition.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="78" column="34" selection-start="2115" selection-end="2115" vertical-scroll-proportion="0.0">
+            <state line="17" column="13" selection-start="418" selection-end="418" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="XqyFileImpl.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyFileImpl.java">
+      <file leaf-file-name="XqyColorSettingsPage.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyColorSettingsPage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="27" selection-start="747" selection-end="747" vertical-scroll-proportion="0.0">
+            <state line="37" column="69" selection-start="1252" selection-end="1252" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="XqySyntaxHighlighter.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqySyntaxHighlighter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="65" column="56" selection-start="4030" selection-end="4030" vertical-scroll-proportion="1.3420118">
+              <folding>
+                <element signature="e#653#696#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="XQuery.flex" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.30769232">
               <folding />
             </state>
           </provider>
@@ -159,121 +136,26 @@
       <file leaf-file-name="XQueryML10.bnf" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/grammar/XQueryML10.bnf">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="87" column="113" selection-start="2377" selection-end="2389" vertical-scroll-proportion="0.30769232">
+            <state line="126" column="60" selection-start="3904" selection-end="3904" vertical-scroll-proportion="0.30769232">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GeneratedParserUtilBase.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/intellij/grammar/parser/GeneratedParserUtilBase.java">
+      <file leaf-file-name="SyntaxHighlighterColors.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/lang-api/src/com/intellij/openapi/editor/SyntaxHighlighterColors.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="10" selection-start="1581" selection-end="1581" vertical-scroll-proportion="0.0">
+            <state line="36" column="86" selection-start="2193" selection-end="2193" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="XqySyntaxHighlighter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqySyntaxHighlighter.java">
+      <file leaf-file-name="TextAttributesKey.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/platform-api/src/com/intellij/openapi/editor/colors/TextAttributesKey.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="0" selection-start="333" selection-end="333" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#653#696#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyColorSettingsPage.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyColorSettingsPage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="13" selection-start="671" selection-end="671" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyIcons.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyIcons.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="105" selection-start="354" selection-end="354" vertical-scroll-proportion="0.0">
+            <state line="110" column="43" selection-start="4242" selection-end="4242" vertical-scroll-proportion="0.0">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XQueryML10-orig.bnf" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/grammar/XQueryML10-orig.bnf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="890" column="1083" selection-start="25963" selection-end="25971" vertical-scroll-proportion="0.30769232">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bnf_grammar.bnf" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/grammar/bnf_grammar.bnf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XQuery.flex" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="170" column="0" selection-start="7378" selection-end="7378" vertical-scroll-proportion="3.225088">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestAction.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/actions/TestAction.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="13" selection-start="246" selection-end="246" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestLexer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/test/TestLexer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="29" selection-start="1470" selection-end="1470" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#213#259#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="filexq.png" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/resources/icons/filexq.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="file.png" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/resources/icons/file.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XqyFindUsagesProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyFindUsagesProvider.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="28" selection-start="753" selection-end="753" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -293,20 +175,20 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyParserDefinition.java" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyFileImpl.java" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyCommenter.java" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyQuoteHandler.java" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/refactor/XqyRefactoringSupportProvider.java" />
         <option value="$PROJECT_DIR$/src/grammar/XQueryML10.bnf" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyBraceMatcher.java" />
-        <option value="$PROJECT_DIR$/META-INF/plugin.xml" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyDocumentationProvider.java" />
-        <option value="$PROJECT_DIR$/src/grammar/XQuery.flex" />
-        <option value="$PROJECT_DIR$/src/resources/META-INF/plugin.xml" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyNamedElement.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyNamedElementImpl.java" />
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyFindUsagesProvider.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyCompositeElementImpl.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyRefVarName.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyFile.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyFileImpl.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/ResolveUtil.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/resolve/XqyResolveProcessor.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyReference.java" />
+        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/impl/XqyReferenceImpl.java" />
+        <option value="$PROJECT_DIR$/src/grammar/XQuery.flex" />
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyColorSettingsPage.java" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyIcons.java" />
-        <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/test/TestLexer.java" />
         <option value="$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqySyntaxHighlighter.java" />
       </list>
     </option>
@@ -318,10 +200,12 @@
     <option name="FILTER_DEBUG" value="true" />
     <option name="CUSTOM_FILTER" />
   </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
+    <option name="x" value="1" />
     <option name="y" value="22" />
-    <option name="width" value="1875" />
-    <option name="height" value="1058" />
+    <option name="width" value="1637" />
+    <option name="height" value="1028" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -330,6 +214,8 @@
     <OptionsSetting value="true" id="Update" />
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
+    <OptionsSetting value="true" id="Undo Check Out" />
+    <OptionsSetting value="true" id="Get Latest Version" />
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
@@ -356,6 +242,76 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="xquery-plugin" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; IDEA IU-111.167 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xquery-plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; IDEA IU-111.167 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="openapi.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xquery-plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; IDEA IU-111.167 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="openapi.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="colors" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="xquery-plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="&lt; IDEA IU-111.167 &gt;" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="openapi.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="editor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -407,8 +363,22 @@
               <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="icons" />
+              <option name="myItemId" value="xquery-plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="intellij-xquery-plugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -430,29 +400,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="intellij-xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="refactor" />
+              <option name="myItemId" value="resolve" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -497,28 +445,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="psi" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="intellij-xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="parser" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -601,28 +527,6 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="parser" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="intellij-xquery-plugin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -663,16 +567,17 @@
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="recentsLimit" value="5" />
-    <property name="options.lastSelected" value="preferences.pluginManager" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="project.structure.side.proportion" value="0.20000002" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="dynamic.classpath" value="false" />
@@ -680,6 +585,9 @@
     <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="uk.co.overstory.xquery.psi.impl" />
+    </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="uk.co.overstory.xquery.psi.impl" />
       <recent name="uk.co.overstory.xquery.editor" />
@@ -695,14 +603,15 @@
   <component name="RunManager" selected="Plugin.XQuery Plugin">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="xquery-plugin" />
-      <option name="VM_PARAMETERS" value="" />
+      <option name="VM_PARAMETERS" value="-Xms128m -Xmx512m -XX:MaxPermSize=250m -XX:ReservedCodeCacheSize=64m" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <log_file path="$USER_HOME$/Library/Application Support/IntelliJIDEA50/pluginsandox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
+      <log_file path="$USER_HOME$/Library/Caches/IntelliJIdea11/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
         <option name="Maven.BeforeRunTask" enabled="false" />
+        <option name="SBT.BeforeRunTask" enabled="false" runInCurrentModule="false" />
       </method>
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
@@ -740,7 +649,7 @@
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="coverage" enabled="false" merge="false" runner="idea" />
       <option name="MAIN_CLASS_NAME" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
@@ -762,7 +671,7 @@
       </method>
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="coverage" enabled="false" merge="false" runner="idea" />
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -790,7 +699,7 @@
       </method>
     </configuration>
     <configuration default="false" name="Gen Lexer" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="coverage" enabled="false" merge="false" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="JFlex.Main" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="-charat --skel idea-jflex/idea-flex.skeleton -d java/uk/co/overstory/xquery/parser grammar/XQuery.flex" />
@@ -809,7 +718,7 @@
       </method>
     </configuration>
     <configuration default="false" name="Test Lexer" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="coverage" enabled="false" merge="false" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="uk.co.overstory.xquery.test.TestLexer" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -829,7 +738,7 @@
       <module name="xquery-plugin" />
       <option name="VM_PARAMETERS" value="-Xms128m -Xmx512m -XX:MaxPermSize=250m -XX:ReservedCodeCacheSize=64m" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <log_file path="$USER_HOME$/Library/Application Support/IntelliJIDEA50/pluginsandox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
+      <log_file path="$USER_HOME$/Library/Caches/IntelliJIdea11/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="" />
         <option name="TRANSPORT" value="0" />
@@ -840,10 +749,20 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <list size="3">
+    <configuration default="false" name="Unnamed" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="xquery-plugin" />
+      <option name="VM_PARAMETERS" value="-Xms128m -Xmx512m -XX:MaxPermSize=250m -XX:ReservedCodeCacheSize=64m" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <log_file path="$USER_HOME$/Library/Caches/IntelliJIdea11/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Application.Gen Lexer" />
       <item index="1" class="java.lang.String" itemvalue="Application.Test Lexer" />
       <item index="2" class="java.lang.String" itemvalue="Plugin.XQuery Plugin" />
+      <item index="3" class="java.lang.String" itemvalue="Plugin.Unnamed" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -878,26 +797,31 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1875" height="1058" extended-state="0" />
-    <editor active="false" />
+    <frame x="1" y="22" width="1637" height="1028" extended-state="0" />
+    <editor active="true" />
     <layout>
+      <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3279743" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39978564" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="JarSpy" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.0" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.375134" sideWeight="0.0" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3281412" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32690248" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21620142" sideWeight="0.6718588" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3281412" sideWeight="0.0" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.219635" sideWeight="0.67202574" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3279743" sideWeight="0.0" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32779318" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -970,122 +894,101 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/platform-api/src/com/intellij/lexer/LookAheadLexer.java">
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyNamedElement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="9" selection-start="1137" selection-end="1137" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="12" column="17" selection-start="229" selection-end="229" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/intellij/grammar/parser/GeneratedParserUtilBase.java">
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyFindUsagesProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="10" selection-start="1581" selection-end="1581" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="47" column="74" selection-start="1308" selection-end="1308" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/grammar/XQueryML10-orig.bnf">
+    <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/lang-impl/src/com/intellij/usageView/UsageViewNodeTextLocation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="890" column="1083" selection-start="25963" selection-end="25971" vertical-scroll-proportion="0.30769232">
-          <folding />
-        </state>
+        <state line="62" column="0" selection-start="2425" selection-end="2425" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/grammar/bnf_grammar.bnf">
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyCompositeElement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="10" column="46" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/core-api/src/com/intellij/psi/PsiElement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="17" selection-start="1515" selection-end="1515" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/core-api/src/com/intellij/lang/ASTNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="15" selection-start="1345" selection-end="1345" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyTokenType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="13" selection-start="383" selection-end="383" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/resources/META-INF/plugin.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="100" selection-start="2013" selection-end="2013" vertical-scroll-proportion="0.0">
+        <state line="20" column="17" selection-start="784" selection-end="784" vertical-scroll-proportion="0.39056832" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/psi/XqyReference.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="0" selection-start="316" selection-end="316" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyBraceMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="13" selection-start="418" selection-end="418" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.30769232">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/platform-api/src/com/intellij/openapi/editor/colors/TextAttributesKey.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="110" column="43" selection-start="4242" selection-end="4242" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../jetbrains/intellij-community/platform/lang-api/src/com/intellij/openapi/editor/SyntaxHighlighterColors.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="86" selection-start="2193" selection-end="2193" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/grammar/XQueryML10.bnf">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="113" selection-start="2377" selection-end="2389" vertical-scroll-proportion="0.30769232">
+        <state line="126" column="60" selection-start="3904" selection-end="3904" vertical-scroll-proportion="0.30769232">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyIcons.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="105" selection-start="354" selection-end="354" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/test/TestLexer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="29" selection-start="1470" selection-end="1470" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#213#259#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/icons/filexq.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyFileType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="13" selection-start="255" selection-end="255" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/icons/file.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyCommenter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="101" selection-start="704" selection-end="704" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/XqyFindUsagesProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="28" selection-start="753" selection-end="753" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqyColorSettingsPage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="13" selection-start="671" selection-end="671" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="37" column="69" selection-start="1252" selection-end="1252" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/java/uk/co/overstory/xquery/editor/XqySyntaxHighlighter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="333" selection-end="333" vertical-scroll-proportion="0.0">
+        <state line="65" column="56" selection-start="4030" selection-end="4030" vertical-scroll-proportion="1.3420118">
           <folding>
             <element signature="e#653#696#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/grammar/XQuery.flex">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="170" column="0" selection-start="7378" selection-end="7378" vertical-scroll-proportion="3.225088">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1130,7 +1033,7 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>IDEA IC-111.167</last-edited>
+          <last-edited>1.6</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1147,7 +1050,6 @@
             <option name="proportions">
               <list>
                 <option value="0.20000002" />
-                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>
