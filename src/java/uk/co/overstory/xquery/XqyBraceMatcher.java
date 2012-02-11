@@ -23,6 +23,7 @@ public class XqyBraceMatcher implements PairedBraceMatcher
 		new BracePair(XqyTypes.XQY_LEFT_PAREN, XqyTypes.XQY_RIGHT_PAREN, false),
 		new BracePair(XqyTypes.XQY_LT, XqyTypes.XQY_GT, false),
 		new BracePair(XqyTypes.XQY_LT, XqyTypes.XQY_EMPTY_TAG_END, false),
+		new BracePair(XqyTypes.XQY_COMMENT_START, XqyTypes.XQY_COMMENT_END, false),
 		new BracePair(XqyTypes.XQY_END_TAG_START, XqyTypes.XQY_GT, false),
 		new BracePair(XqyTypes.XQY_CDATA_START, XqyTypes.XQY_CDATA_END, false),
 		new BracePair(XqyTypes.XQY_PI_START, XqyTypes.XQY_PI_END, false),

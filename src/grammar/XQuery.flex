@@ -40,8 +40,14 @@ DoubleLiteral= ( ( "." {Digits} ) | ( {Digits} ( "." {OptionalDigits} )? ) [eE] 
 
 /*
 CommentContents= ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | '(' ) '('* & '(' | ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | ':' ) ':'* & ':'
+CommentContents= ~":)"
 */
-CommentContents= [^*] ~":)"
+/* FIXME: Need to properly parse nested comments */
+CommentContents=  ( [^(:] | ([:]+ [^)]) )*
+XmlCommentContents=  ( [^-] | '-' [^-] )*
+CdataContents=  ( [^\]] | ']' [^\]] | ']' ']' [^\]] )*
+PragmaContents=  ( [^#)] | '#'+ [^)] )*
+PiContents=  ( [^?>] | '?'+ [^>] )*
 
 /* NUMBER={DIGIT}+ | "\u" {HEX}+ */
 
@@ -75,6 +81,10 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 %state STRING_QUOTE
 %state STRING_APOST
 %state COMMENT
+%state XML_COMMENT
+%state CDATA
+%state PRAGMA
+%state PI
 
 %%
 
@@ -99,11 +109,41 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 }
 
 <COMMENT> {
-  {CommentContents} { string.append(":)"); yybegin(YYINITIAL); return XqyTypes.XQY_COMMENT; }
+  {CommentContents} { return XqyTypes.XQY_COMMENT_CONTENTS;}
+  ":)" { yybegin(YYINITIAL); return XqyTypes.XQY_COMMENT_END; }
+}
+
+<XML_COMMENT> {
+  {XmlCommentContents} { return XqyTypes.XQY_XML_COMMENT_CONTENTS;}
+  "-->" { yybegin(YYINITIAL); return XqyTypes.XQY_XML_COMMENT_END; }
+}
+
+<PI> {
+  {PiContents} { return XqyTypes.XQY_PI_CONTENTS;}
+  "?>" { yybegin(YYINITIAL); return XqyTypes.XQY_PI_END; }
+}
+
+<CDATA> {
+  {CdataContents} { return XqyTypes.XQY_CDATA_CONTENTS;}
+  "]]>" { yybegin(YYINITIAL); return XqyTypes.XQY_CDATA_END; }
+}
+
+<PRAGMA> {
+  {PragmaContents} { return XqyTypes.XQY_PRAGMA_CONTENTS;}
+  "#)" { yybegin(YYINITIAL); return XqyTypes.XQY_PRAGMA_END; }
 }
 
 <YYINITIAL> {
+
   {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
+
+  \"  { string.setLength(0); yybegin(STRING_QUOTE); }
+  \'  { string.setLength(0); yybegin(STRING_APOST); }
+  "(:" { yybegin(COMMENT); return XqyTypes.XQY_COMMENT_START; }
+  "<!--" { yybegin(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
+  "<?" { yybegin(PI); return XqyTypes.XQY_PI_START; }
+  "(#" { yybegin(PRAGMA); return XqyTypes.XQY_PRAGMA_START; }
+  "<![CDATA[" { yybegin(CDATA); return XqyTypes.XQY_CDATA_START; }
 
   {Keyword} { return XqyTypes.XQY_KEYWORD; }
 
@@ -111,20 +151,6 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 
   ([A-Za-z\_] [A-Za-z0-9\.\-\_]*)  { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
 
-  \"  { string.setLength(0); yybegin(STRING_QUOTE); }
-  \'  { string.setLength(0); yybegin(STRING_APOST); }
-  "(:" { string.setLength(0); yybegin(COMMENT); }
-
-
-
-  "<?" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_START; }
-  "?>" {yybegin(YYINITIAL); return XqyTypes.XQY_PI_END; }
-  "(#" {yybegin(YYINITIAL); return XqyTypes.XQY_PRAGMA_START; }
-  "#)" {yybegin(YYINITIAL); return XqyTypes.XQY_PRAGMA_END; }
-  "<!--" {yybegin(YYINITIAL); return XqyTypes.XQY_XML_COMMENT_START; }
-  "-->" {yybegin(YYINITIAL); return XqyTypes.XQY_XML_COMMENT_END; }
-  "<![CDATA[" {yybegin(YYINITIAL); return XqyTypes.XQY_CDATA_START; }
-  "]>" {yybegin(YYINITIAL); return XqyTypes.XQY_CDATA_END; }
 
   "//" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH_SLASH; }
   "/" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH; }
@@ -144,7 +170,6 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
   "<" {yybegin(YYINITIAL); return XqyTypes.XQY_LT; }
   ">" {yybegin(YYINITIAL); return XqyTypes.XQY_GT; }
   "&" {yybegin(YYINITIAL); return XqyTypes.XQY_AMP; }
-  "#" {yybegin(YYINITIAL); return XqyTypes.XQY_HASH; }
   "@" {yybegin(YYINITIAL); return XqyTypes.XQY_AT_SIGN; }
 
   ";" {yybegin(YYINITIAL); return XqyTypes.XQY_SEMICOLON; }

@@ -15,19 +15,22 @@ public class TestLexer
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
 			"\n" +
+			"(: This is a comment:with a semicolon :)\n" +
 			"(: This is a comment :)\n" +
 			"\n" +
 			"(# this is a pragma #)\n" +
+			"" +
+			"declare variable $data := <![CDATA[ foo bar baz ]]>;\n" +
 			"\n" +
 			"declare variable $hello as xs:string := ('Hello world');\n" +
 			"declare variable $good-bye := <hello>goodbye</hello>;\n" +
 			"declare variable $toodles := <ta-ta/>;\n" +
 			"declare variable $fare_well := 1.0e+5;\n" +
-			"declare variable $data := <![CDATA[ foo bar baz ]>;\n" +
 			"declare variable $pi := <?foo bar?>;\n" +
 			"declare variable $xml-with-comment :=\n" +
 			"     <foo>\n" +
 			"        <!-- xml comment -->\n" +
+			"        <? target blah blah ?>\n" +
 			"        Some content\n" +
 			"     </foo>\n" +
 			"\n" +

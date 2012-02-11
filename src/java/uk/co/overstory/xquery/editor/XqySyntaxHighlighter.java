@@ -25,7 +25,10 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 	private static final TextAttributesKey[] EMPTY = new TextAttributesKey[0];
 	public static final TextAttributesKey ILLEGAL = createTextAttributesKey ("XQY_ILLEGAL", SyntaxHighlighterColors.INVALID_STRING_ESCAPE.getDefaultAttributes ());
 	public static final TextAttributesKey COMMENT = createTextAttributesKey("XQY_COMMENT", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
+	public static final TextAttributesKey XML_COMMENT = createTextAttributesKey("XQY_XML_COMMENT", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
+	public static final TextAttributesKey XML_PI = createTextAttributesKey("XQY_PI", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
 	public static final TextAttributesKey CDATA = createTextAttributesKey("XQY_CDATASECTION", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
+	public static final TextAttributesKey PRAGMA = createTextAttributesKey("XQY_PRAGMA", SyntaxHighlighterColors.JAVA_BLOCK_COMMENT.getDefaultAttributes());
 	public static final TextAttributesKey STRING = createTextAttributesKey("XQY_STRING", SyntaxHighlighterColors.STRING.getDefaultAttributes());
 	public static final TextAttributesKey NUMBER = createTextAttributesKey("XQY_NUMBER", SyntaxHighlighterColors.NUMBER.getDefaultAttributes());
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey ("XQY_KEYWORD", SyntaxHighlighterColors.KEYWORD.getDefaultAttributes ());
@@ -57,8 +60,20 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		if (type == TokenType.BAD_CHARACTER) {
 			return pack (ILLEGAL);
 		}
-		if ((type == XQY_COMMENT) || (type == XQY_XML_COMMENT_START) || (type == XQY_XML_COMMENT_END) || (type == XQY_PRAGMA) || (type == XQY_CDATASECTION)) {
+		if ((type == XQY_COMMENT) || (type == XQY_COMMENT_START) || (type == XQY_COMMENT_END) || (type == XQY_COMMENT_CONTENTS)) {
 			return pack (COMMENT);
+		}
+		if ((type == XQY_XML_COMMENT_START) || (type == XQY_XML_COMMENT_END) || (type == XQY_XML_COMMENT_CONTENTS)) {
+			return pack (XML_COMMENT);
+		}
+		if ((type == XQY_PI_START) || (type == XQY_PI_END) || (type == XQY_PI_CONTENTS)) {
+			return pack (XML_PI);
+		}
+		if ((type == XQY_CDATASECTION) || (type == XQY_CDATA_START) || (type == XQY_CDATA_END) || (type == XQY_CDATA_CONTENTS)) {
+			return pack (CDATA);
+		}
+		if ((type == XQY_PRAGMA) || (type == XQY_PRAGMA_START) || (type == XQY_PRAGMA_END) || (type == XQY_PRAGMA_CONTENTS)) {
+			return pack (PRAGMA);
 		}
 		if ((type == XQY_STRING) || (type == XQY_STRINGLITERAL)) {
 			return pack (STRING);
