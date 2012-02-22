@@ -58,7 +58,7 @@
 
   implements("VarName|FunctionName")="uk.co.overstory.xquery.psi.XqyNamedElement"
   extends("VarName|FunctionName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
-  mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyRefVarName"
+  mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameReference"
 /*
   mixin("StringLiteral")="uk.co.overstory.xquery.psi.impl.XqyStringImpl"
   implements("Predicate|EnclosedExpr|ParenthesizedExpr|Comment")="uk.co.overstory.xquery.psi.XqyParenthesized"
@@ -227,8 +227,10 @@ DirAttributeList ::= ( S ( QName S? '=' S? DirAttributeValue )? )*
           /* ws: explicit */
 DirAttributeValue ::= string
 
+/*
 QuotAttrValueContent ::= QuotAttrContentChar | CommonContent
 AposAttrValueContent ::= AposAttrContentChar | CommonContent
+*/
           /* ws: explicit */
 DirElemContent ::= DirectConstructor | CDataSection | CommonContent | ElementContentChar
 CommonContent ::= PredefinedEntityRef | CharRef | '{{' | '}}' | EnclosedExpr
@@ -315,8 +317,10 @@ PrefixedName ::= Prefix ':' LocalPart
 UnprefixedName ::= LocalPart
 Prefix   ::= NCName
 LocalPart ::= NCName
+/*
 PITarget ::= NCName
 DirPIContents ::= ( !'?' | '?'+ ( !'?' | !'>' ) )* '?'* & '?'
+*/
 Wildcard ::= NCName ':' '*' | '*' ( ':' NCName )?
 
 Comment ::= COMMENT_START COMMENT_CONTENTS COMMENT_END
@@ -327,7 +331,7 @@ CDataSection ::= CDATA_START  CDATA_CONTENTS CDATA_END
 FIXME: Pragma parsing intentionally simplified for now, need to recognize and highlight qname appropriately
 Pragma ::= PRAGMA_START S? QName ( S PRAGMA_CONTENTS )? PRAGMA_END
 */
-Pragma ::= PRAGMA_START PRAGMA_CONTENTS PRAGMA_END
+Pragma ::= PRAGMA_START S QName S PRAGMA_CONTENTS PRAGMA_END
 
 DirCommentConstructor ::= XML_COMMENT_START XML_COMMENT_CONTENTS XML_COMMENT_END
 
@@ -335,5 +339,5 @@ DirCommentConstructor ::= XML_COMMENT_START XML_COMMENT_CONTENTS XML_COMMENT_END
 FIXME: PI Parsing intentionally simplified for now
 DirPIConstructor ::= PI_START PITarget ( S DirPIContents )? PI_END
 */
-DirPIConstructor ::= PI_START PI_CONTENTS PI_END
+DirPIConstructor ::= PI_START NCName ( S PI_CONTENTS )? PI_END
           /* ws: explicit */

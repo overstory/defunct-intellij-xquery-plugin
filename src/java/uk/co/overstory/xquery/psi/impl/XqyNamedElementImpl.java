@@ -4,13 +4,10 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import uk.co.overstory.xquery.psi.XqyFunctiondecl;
 import uk.co.overstory.xquery.psi.XqyNamedElement;
-import uk.co.overstory.xquery.psi.XqyPrefixedname;
-import uk.co.overstory.xquery.psi.XqyQname;
-import uk.co.overstory.xquery.psi.XqyTypes;
-import uk.co.overstory.xquery.psi.XqyUnprefixedname;
-import uk.co.overstory.xquery.psi.XqyVardecl;
+import uk.co.overstory.xquery.psi.XqyPrefixedName;
+import uk.co.overstory.xquery.psi.XqyQName;
+import uk.co.overstory.xquery.psi.XqyUnprefixedName;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -56,8 +53,8 @@ System.out.println ("XqyNamedElementImpl.setName name=" + name);
 
 	@Override
 	@NotNull
-	public XqyQname getQname() {
-		return PsiTreeUtil.getChildOfType (this, XqyQname.class);
+	public XqyQName getQName() {
+		return PsiTreeUtil.getChildOfType (this, XqyQName.class);
 	}
 
 
@@ -66,15 +63,15 @@ System.out.println ("XqyNamedElementImpl.setName name=" + name);
 	@NotNull
 	private PsiElement getId()
 	{
-		XqyPrefixedname prefixedname = getQname().getPrefixedname();
-		XqyUnprefixedname unprefixedname = getQname().getUnprefixedname();
+		XqyPrefixedName prefixedname = getQName().getPrefixedName ();
+		XqyUnprefixedName unprefixedname = getQName().getUnprefixedName();
 
 		if (prefixedname != null) {
 			// TODO: Handle namespace prefix
-			return prefixedname.getLocalpart().getNcname().getId();
+			return prefixedname.getLocalPart().getNCName().getId();
 		}
 
-		return unprefixedname.getLocalpart().getNcname().getId();
+		return unprefixedname.getLocalPart().getNCName().getId();
 	}
 
 	@Override

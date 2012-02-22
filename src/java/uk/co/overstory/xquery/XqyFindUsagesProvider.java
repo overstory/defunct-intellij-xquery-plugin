@@ -2,16 +2,9 @@ package uk.co.overstory.xquery;
 
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
-import com.intellij.psi.ElementDescriptionUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.usageView.UsageViewLongNameLocation;
-import com.intellij.usageView.UsageViewNodeTextLocation;
-import com.intellij.usageView.UsageViewTypeLocation;
-import uk.co.overstory.xquery.psi.XqyFunctionname;
-import uk.co.overstory.xquery.psi.XqyNamespacedecl;
-import uk.co.overstory.xquery.psi.XqyVardecl;
-import uk.co.overstory.xquery.psi.XqyFunctiondecl;
-import uk.co.overstory.xquery.psi.XqyVarname;
+import uk.co.overstory.xquery.psi.XqyFunctionName;
+import uk.co.overstory.xquery.psi.XqyVarName;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +25,7 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
-		return ((psiElement instanceof XqyVarname) || (psiElement instanceof XqyFunctionname));
+		return ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyFunctionName));
 	}
 
 	@Override
@@ -45,7 +38,7 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public String getType (@NotNull PsiElement element)
 	{
-		if (element instanceof XqyFunctionname) return "Function";
+		if (element instanceof XqyFunctionName) return "Function";
 
 		return "Variable";
 
@@ -56,7 +49,7 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public String getDescriptiveName (@NotNull PsiElement element)
 	{
-		if (element instanceof XqyFunctionname) return element.getText() + "()";
+		if (element instanceof XqyFunctionName) return element.getText() + "()";
 
 		return "$" + element.getText();
 

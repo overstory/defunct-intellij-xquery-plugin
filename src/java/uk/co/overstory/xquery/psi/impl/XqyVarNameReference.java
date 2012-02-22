@@ -5,8 +5,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
-import uk.co.overstory.xquery.psi.XqyQname;
-import uk.co.overstory.xquery.psi.XqyRefvarname;
+import uk.co.overstory.xquery.psi.XqyQName;
+import uk.co.overstory.xquery.psi.XqyRefVarName;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,17 +17,16 @@ import org.jetbrains.annotations.NotNull;
  * Date: 1/14/12
  * Time: 5:04 PM
  */
-public class XqyRefVarName extends XqyQnameImpl implements XqyRefvarname
+public class XqyVarNameReference extends XqyQNameImpl implements XqyRefVarName
 {
-	public XqyRefVarName (ASTNode node)
+	public XqyVarNameReference (ASTNode node)
 	{
 		super (node);
-		System.out.println ("XqyRefVarName constructor called node=" + node.getText());
+System.out.println ("XqyVarNameReference constructor called node=" + node.getText());
 	}
 
 	@NotNull
-	@Override
-	public XqyQname getQname()
+	public XqyQName getQName()
 	{
 		return this;
 	}
@@ -35,12 +34,12 @@ public class XqyRefVarName extends XqyQnameImpl implements XqyRefvarname
 	@Override
 	public PsiReference getReference()
 	{
-		return new XqyReferenceImpl<XqyRefVarName> (this, TextRange.from (0, getTextLength()))
+		return new XqyReferenceImpl<XqyVarNameReference> (this, TextRange.from (0, getTextLength()))
 		{
 			@Override
 			public PsiElement handleElementRename (String newElementName) throws IncorrectOperationException
 			{
-				myElement.getQname().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
+				myElement.getQName ().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
 
 				return myElement;
 			}

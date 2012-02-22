@@ -13,5 +13,5 @@ import org.jetbrains.annotations.NotNull;
 public interface XqyNamedElement extends XqyCompositeElement, PsiNameIdentifierOwner
 {
 	@NotNull
-	public XqyQname getQname();
+	public XqyQName getQName();
 }

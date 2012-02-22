@@ -263,7 +263,7 @@ System.out.println ("processResolveVariants: " + myElement.toString() + "=" + my
 
 		if (!(file instanceof XqyFile)) return;
 
-		if (myElement instanceof XqyRefVarName) {
+		if (myElement instanceof XqyVarNameReference) {
 			ContainerUtil.process (((XqyFile) file).getVariables(), processor);
 		}
 

@@ -76,6 +76,7 @@ XFunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" |
 OpNCName=( "and" | "ascending" | "case" | "cast" | "castable" | "collation" | "default" | "descending" | "div" | "else" | "empty" | "eq" | "except" | "for" | "ge" | "gt" | "idiv" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "ne" | "or" | "order" | "return" | "satisfies" | "stable" | "to" | "treat" | "union" | "where" | "version" | "variable" | "function" | "as" )
 Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 
+id=([A-Za-z\_] [A-Za-z0-9\.\-\_]*)
 
 
 %state STRING_QUOTE
@@ -84,7 +85,9 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 %state XML_COMMENT
 %state CDATA
 %state PRAGMA
+%state PRAGMA_QNAME
 %state PI
+%state PI_TARGET
 
 %%
 
@@ -122,6 +125,9 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
   {PiContents} { return XqyTypes.XQY_PI_CONTENTS;}
   "?>" { yybegin(YYINITIAL); return XqyTypes.XQY_PI_END; }
 }
+<PI_TARGET> {
+  {id} { yybegin(PI); return XqyTypes.XQY_ID; }
+}
 
 <CDATA> {
   {CdataContents} { return XqyTypes.XQY_CDATA_CONTENTS;}
@@ -132,6 +138,13 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
   {PragmaContents} { return XqyTypes.XQY_PRAGMA_CONTENTS;}
   "#)" { yybegin(YYINITIAL); return XqyTypes.XQY_PRAGMA_END; }
 }
+<PRAGMA_QNAME> {
+/* FIXME
+  ({id} ":" {id}) { yybegin(PRAGMA); return XqyTypes.XQY_ID; }
+*/
+  {id} { yybegin(PRAGMA); return XqyTypes.XQY_ID; }
+  {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
+}
 
 <YYINITIAL> {
 
@@ -141,15 +154,15 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
   \'  { string.setLength(0); yybegin(STRING_APOST); }
   "(:" { yybegin(COMMENT); return XqyTypes.XQY_COMMENT_START; }
   "<!--" { yybegin(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
-  "<?" { yybegin(PI); return XqyTypes.XQY_PI_START; }
-  "(#" { yybegin(PRAGMA); return XqyTypes.XQY_PRAGMA_START; }
+  "<?" { yybegin(PI_TARGET); return XqyTypes.XQY_PI_START; }
+  "(#" { yybegin(PRAGMA_QNAME); return XqyTypes.XQY_PRAGMA_START; }
   "<![CDATA[" { yybegin(CDATA); return XqyTypes.XQY_CDATA_START; }
 
   {Keyword} { return XqyTypes.XQY_KEYWORD; }
 
   ( {DoubleLiteral} | {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
-  ([A-Za-z\_] [A-Za-z0-9\.\-\_]*)  { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
+  {id} { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
 
 
   "//" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH_SLASH; }

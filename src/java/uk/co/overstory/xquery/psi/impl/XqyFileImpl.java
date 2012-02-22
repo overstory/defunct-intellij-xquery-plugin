@@ -11,8 +11,8 @@ import com.intellij.util.Processor;
 import uk.co.overstory.xquery.XqyFileType;
 import uk.co.overstory.xquery.XqyLanguage;
 import uk.co.overstory.xquery.psi.XqyFile;
-import uk.co.overstory.xquery.psi.XqyFunctiondecl;
-import uk.co.overstory.xquery.psi.XqyVardecl;
+import uk.co.overstory.xquery.psi.XqyFunctionDecl;
+import uk.co.overstory.xquery.psi.XqyVarDecl;
 
 import org.intellij.grammar.parser.GeneratedParserUtilBase;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +28,8 @@ import java.util.List;
  */
 public class XqyFileImpl  extends PsiFileBase implements XqyFile
 {
-	private CachedValue<List<XqyVardecl>> myVariablesValue;
-	private CachedValue<List<XqyFunctiondecl>> myFunctionsValue;
+	private CachedValue<List<XqyVarDecl>> myVariablesValue;
+	private CachedValue<List<XqyFunctionDecl>> myFunctionsValue;
 
 	public XqyFileImpl (FileViewProvider fileViewProvider)
 	{
@@ -51,13 +51,13 @@ System.out.println ("XqyFileImpl constructor, provider=" + getName ());
 	}
 
 	@Override
-	public List<XqyVardecl> getVariables()
+	public List<XqyVarDecl> getVariables()
 	{
 		if (myVariablesValue == null) {
-			myVariablesValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyVardecl>>()
+			myVariablesValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyVarDecl>>()
 			{
 				@Override
-				public Result<List<XqyVardecl>> compute()
+				public Result<List<XqyVarDecl>> compute()
 				{
 					return Result.create (calcVariables(), XqyFileImpl.this);
 				}
@@ -67,13 +67,13 @@ System.out.println ("XqyFileImpl constructor, provider=" + getName ());
 	}
 
 	@Override
-	public List<XqyFunctiondecl> getFunctions()
+	public List<XqyFunctionDecl> getFunctions()
 	{
 		if (myFunctionsValue == null) {
-			myFunctionsValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyFunctiondecl>>()
+			myFunctionsValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyFunctionDecl>>()
 			{
 				@Override
-				public Result<List<XqyFunctiondecl>> compute()
+				public Result<List<XqyFunctionDecl>> compute()
 				{
 					return Result.create (calcFunctions (), XqyFileImpl.this);
 				}
@@ -84,10 +84,10 @@ System.out.println ("XqyFileImpl constructor, provider=" + getName ());
 
 	// -----------------------------------------------------------
 
-	private List<XqyVardecl> calcVariables()
+	private List<XqyVarDecl> calcVariables()
 	{
 System.out.println ("calcVariables");
-		final List<XqyVardecl> result = new ArrayList<XqyVardecl> ();
+		final List<XqyVarDecl> result = new ArrayList<XqyVarDecl> ();
 
 		processChildrenDummyAware (this, new Processor<PsiElement> ()
 		{
@@ -95,9 +95,9 @@ System.out.println ("calcVariables");
 			public boolean process (PsiElement psiElement)
 			{
 System.out.println ("  looking at: " + psiElement.getText ());
-				if (psiElement instanceof XqyVardecl) {
+				if (psiElement instanceof XqyVarDecl) {
 System.out.println ("  adding: " + psiElement.getText ());
-					result.add ((XqyVardecl) psiElement);
+					result.add ((XqyVarDecl) psiElement);
 				}
 				return true;
 			}
@@ -105,10 +105,10 @@ System.out.println ("  adding: " + psiElement.getText ());
 		return result;
 	}
 
-	private List<XqyFunctiondecl> calcFunctions()
+	private List<XqyFunctionDecl> calcFunctions()
 	{
 System.out.println ("calcFunctions");
-		final List<XqyFunctiondecl> result = new ArrayList<XqyFunctiondecl>();
+		final List<XqyFunctionDecl> result = new ArrayList<XqyFunctionDecl>();
 
 		processChildrenDummyAware (this, new Processor<PsiElement>()
 		{
@@ -116,9 +116,9 @@ System.out.println ("calcFunctions");
 			public boolean process (PsiElement psiElement)
 			{
 System.out.println ("  looking at: " + psiElement.toString ());
-				if (psiElement instanceof XqyFunctiondecl) {
+				if (psiElement instanceof XqyFunctionDecl) {
 System.out.println ("  adding: " + psiElement.toString ());
-					result.add ((XqyFunctiondecl) psiElement);
+					result.add ((XqyFunctionDecl) psiElement);
 				}
 				return true;
 			}

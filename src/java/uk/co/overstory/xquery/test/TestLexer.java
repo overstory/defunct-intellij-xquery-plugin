@@ -15,11 +15,13 @@ public class TestLexer
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
 			"\n" +
+			"(# myqname this is a pragma #)\n" +
+			"" +
+			"<?target This is a processing instruction ?>\n" +
+			"" +
 			"(: This is a comment:with a semicolon :)\n" +
 			"(: This is a comment :)\n" +
 			"\n" +
-			"(# this is a pragma #)\n" +
-			"" +
 			"declare variable $data := <![CDATA[ foo bar baz ]]>;\n" +
 			"\n" +
 			"declare variable $hello as xs:string := ('Hello world');\n" +
