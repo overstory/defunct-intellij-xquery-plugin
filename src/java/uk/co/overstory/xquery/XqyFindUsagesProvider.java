@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class XqyFindUsagesProvider implements FindUsagesProvider
 {
-	private static final TokenSet identifierTokens = TokenSet.create (XqyTypes.XQY_VARNAME, XqyTypes.XQY_VARREF, XqyTypes.XQY_FUNCTIONNAME);
+	private static final TokenSet identifierTokens = TokenSet.create (XqyTypes.XQY_VARNAME, XqyTypes.XQY_FUNCTIONNAME);
 	private static final TokenSet commentTokens = TokenSet.create (XqyTypes.XQY_COMMENT, XqyTypes.XQY_CDATASECTION, XqyTypes.XQY_XML_COMMENT_CONTENTS);
 	private static final TokenSet literalTokens = TokenSet.create (XqyTypes.XQY_NUMERICLITERAL, XqyTypes.XQY_STRINGLITERAL);
 
-	public XqyFindUsagesProvider ()
+	public XqyFindUsagesProvider()
 	{
 System.out.println ("XqyFindUsagesProvider.constructor");
 	}
@@ -41,7 +41,7 @@ System.out.println ("XqyFindUsagesProvider.getWordsScanner");
 	@Override
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
-System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.getText ());
+System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.getText());
 		return ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyParamName) || (psiElement instanceof XqyFunctionName));
 	}
 

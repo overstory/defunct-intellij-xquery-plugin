@@ -42,7 +42,7 @@ System.out.println ("XqyNamedElementImpl.setName name=" + name);
 		if (myCachedName == null) {
 			myCachedName = getId().getText();
 		}
-System.out.println ("XqyNamedElementImpl.getName myCachedName=" + myCachedName);
+//System.out.println ("XqyNamedElementImpl.getName myCachedName=" + myCachedName);
 		return myCachedName;
 	}
 

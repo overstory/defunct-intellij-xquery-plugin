@@ -57,8 +57,11 @@
   CHAR_HEX_REF_START="&#x"
 
   implements("VarName|ParamName|FunctionName")="uk.co.overstory.xquery.psi.XqyNamedElement"
-  extends("VarName|ParamName|FunctionName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
+  extends("VarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameElementImpl"
+  extends("ParamName")="uk.co.overstory.xquery.psi.impl.XqyParamNameElementImpl"
+  extends("FunctionName")="uk.co.overstory.xquery.psi.impl.XqyFunctionNameElementImpl"
   mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameReference"
+  mixin("RefFunctionName")="uk.co.overstory.xquery.psi.impl.XqyFunctionNameReference"
 /*
   mixin("StringLiteral")="uk.co.overstory.xquery.psi.impl.XqyStringImpl"
   implements("Predicate|EnclosedExpr|ParenthesizedExpr|Comment")="uk.co.overstory.xquery.psi.XqyParenthesized"
@@ -218,7 +221,7 @@ ParenthesizedExpr ::= '(' Expr? ')'
 ContextItemExpr ::= '.'
 OrderedExpr ::= 'ordered' '{' Expr '}'
 UnorderedExpr ::= 'unordered' '{' Expr '}'
-FunctionCall ::= FunctionName '(' ( ExprSingle ( ',' ExprSingle )* )? ')'
+FunctionCall ::= RefFunctionName '(' ( ExprSingle ( ',' ExprSingle )* )? ')'
 Constructor ::= DirectConstructor | ComputedConstructor
 DirectConstructor ::= DirElemConstructor | DirCommentConstructor | DirPIConstructor
 DirElemConstructor ::= '<' QName DirAttributeList ( '/>' | '>' DirElemContent* '</' QName S? '>' )
@@ -296,6 +299,7 @@ URILiteral ::= StringLiteral { extends="StringLiteral" }
 Keyword ::= FunctionName | FunctionQname | OpNCName
 
 FunctionName ::= QName
+RefFunctionName ::= QName
 
 Whitespace ::= ( S | Comment )*
 

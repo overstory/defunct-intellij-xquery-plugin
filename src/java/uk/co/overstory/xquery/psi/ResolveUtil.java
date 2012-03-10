@@ -18,13 +18,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class ResolveUtil
 {
-	public static boolean treeWalkUp (PsiElement place, PsiScopeProcessor processor)
+	public static boolean treeWalkUp (PsiElement place, PsiScopeProcessor processor, ResolveState resolveState)
 	{
 		PsiElement lastParent = null;
 		PsiElement run = place;
 
 		while (run != null) {
-			if (!run.processDeclarations (processor, ResolveState.initial(), lastParent, place)) {
+			if (!run.processDeclarations (processor, resolveState, lastParent, place)) {
 				return false;
 			}
 
@@ -43,7 +43,8 @@ public abstract class ResolveUtil
 
 		while (run != null) {
 //System.out.println ("   processing child: " + run.toString() + ", " + place.toString ());
-			if (/* (PsiTreeUtil.findCommonParent (place, run) != run) && */ !run.processDeclarations (processor, substitutor, null, place)) {
+			// FIXME: Need to properly prune out-of-scope subtrees
+			if ((PsiTreeUtil.findCommonParent (place, run) != run) && !run.processDeclarations (processor, substitutor, null, place)) {
 				return false;
 			}
 
