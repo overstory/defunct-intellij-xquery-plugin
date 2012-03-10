@@ -1,6 +1,5 @@
 package uk.co.overstory.xquery.psi.impl;
 
-import com.intellij.extapi.psi.ASTDelegatePsiElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -8,6 +7,8 @@ import com.intellij.psi.PsiPolyVariantReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import uk.co.overstory.xquery.psi.ResolveUtil;
+import uk.co.overstory.xquery.psi.XqyPrefixedName;
+import uk.co.overstory.xquery.psi.XqyQName;
 import uk.co.overstory.xquery.psi.XqyReference;
 import uk.co.overstory.xquery.psi.resolve.XqyResolveProcessor;
 
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * Date: 1/14/12
  * Time: 4:15 PM
  */
-public class XqyReferenceImpl<T extends PsiElement> extends PsiPolyVariantReferenceBase<T> implements XqyReference
+public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPolyVariantReferenceBase<T> implements XqyReference
 {
 	public XqyReferenceImpl (@NotNull T element, TextRange range)
 	{
@@ -29,17 +30,19 @@ public class XqyReferenceImpl<T extends PsiElement> extends PsiPolyVariantRefere
 
 	private static final MyResolver RESOLVER = new MyResolver();
 
-	public PsiElement resolve() {
-		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
-		ResolveResult[] results = resolveCache.resolveWithCaching (this, RESOLVER, false, false);
+	public PsiElement resolve()
+	{
+System.out.println ("XqyReferenceImpl: resolve(): " + myElement.toString() + "/" + myElement.getText());
+		ResolveResult[] results = multiResolve (false);
 
 		return results.length == 1 ? results[0].getElement() : null;
 	}
 
 	@NotNull
 	@Override
-	public Object[] getVariants ()
+	public Object[] getVariants()
 	{
+System.out.println ("XqyReferenceImpl.getVariants");
 		return new Object[0];  // FIXME: auto-generated
 	}
 
@@ -50,28 +53,40 @@ public class XqyReferenceImpl<T extends PsiElement> extends PsiPolyVariantRefere
 	}
 
 	@Override
-	public String getLocalname ()
+	public String getLocalname()
 	{
+		XqyVarNameReference ref = (XqyVarNameReference)getElement();
+		XqyQName qname = ref.getQName();
+
+		XqyPrefixedName prefixed = qname.getPrefixedName();
+
+		return (prefixed == null) ? qname.getUnprefixedName().getLocalPart().getText() : prefixed.getLocalPart().getText();
+	}
+
+	@Override
+	public String getNamespaceName()
+	{
+
 		return null;  // FIXME: auto-generated
 	}
 
 	@Override
-	public String getNamespaceName ()
+	public boolean hasNamespace()
 	{
-		return null;  // FIXME: auto-generated
-	}
+		XqyVarNameReference ref = (XqyVarNameReference)myElement;
 
-	@Override
-	public boolean hasNamespace ()
-	{
-		return false;  // FIXME: auto-generated
+		return (ref.getPrefixedName() != null) && (ref.getPrefixedName().getPrefix ().getText () != null);
 	}
 
 	@NotNull
 	@Override
 	public ResolveResult[] multiResolve (boolean incompleteCode)
 	{
-		return new ResolveResult[0];  // FIXME: auto-generated
+System.out.println ("XqyReferenceImpl.multiResolve(" + incompleteCode + ")");
+
+		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
+
+		return resolveCache.resolveWithCaching (this, RESOLVER, true, incompleteCode);
 	}
 
 	// ---------------------------------------------------------
@@ -82,29 +97,32 @@ public class XqyReferenceImpl<T extends PsiElement> extends PsiPolyVariantRefere
 
 		public ResolveResult[] resolve (XqyReference reference, boolean incompleteCode)
 		{
-//			final String localname = reference.getLocalname();
-//
-//			if (localname == null) {
-//				return null;
-//			}
-//
-//			XqyResolveProcessor processor = new XqyResolveProcessor (localname, reference, incompleteCode);
-//
-//			ResolveUtil.treeWalkUp (reference, processor);
-//
-//			if (reference.hasNamespace()) {
-//				final String nsName = reference.getNamespaceName();
-//
-//				XqyResolveProcessor nsProcessor = new XqyResolveProcessor (nsName, reference, incompleteCode);
-//
-//				resolveNamespace (reference, nsProcessor);
-//			}
-//
-//			ResolveResult[] candidates = processor.getCandidates();
-//
-//			if (candidates.length > 0) {
-//				return candidates;
-//			}
+			final String localname = reference.getLocalname();
+System.out.println ("MyResolver.resolve(): " + reference.getElement() + "/" + reference.getElement().getText() + "/" + localname);
+
+			if (localname == null) {
+				return null;
+			}
+
+			PsiElement ref = reference.getElement();
+
+			XqyResolveProcessor processor = new XqyResolveProcessor (localname, ref, incompleteCode);
+
+			ResolveUtil.treeWalkUp (ref, processor);
+
+			if (reference.hasNamespace()) {
+				final String nsName = reference.getNamespaceName();
+
+				XqyResolveProcessor nsProcessor = new XqyResolveProcessor (nsName, ref, incompleteCode);
+
+				resolveNamespace (reference, nsProcessor);
+			}
+
+			ResolveResult[] candidates = processor.getCandidates();
+
+			if (candidates.length > 0) {
+				return candidates;
+			}
 
 			return EMPTY_RESULT;
 		}

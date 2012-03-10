@@ -36,7 +36,7 @@ public class XqyLexer extends LookAheadLexer
 	}
 
 	@Override
-	protected void lookAhead(Lexer baseLexer) {
-		super.lookAhead(baseLexer);
+	protected void lookAhead (Lexer baseLexer) {
+		super.lookAhead (baseLexer);
 	}
 }

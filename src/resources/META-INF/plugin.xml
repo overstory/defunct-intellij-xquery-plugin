@@ -3,8 +3,24 @@
 	<name>XQuery Langage Plugin</name>
 	<description>Attempt to create an XQuery plugin for IntelliJ</description>
 	<version>1.0</version>
-	<vendor email="xquery@overstory.co.uk" url="http://overstory.co.uk">OverStory Ltd</vendor>
-	<idea-version since-build="111.14" until-build=""/>
+	<vendor email="ron@overstory.co.uk" url="http://overstory.co.uk">OverStory Ltd</vendor>
+	<idea-version since-build="111.222" until-build=""/>
+
+	<depends optional="true" config-file="plugin-java.xml">com.intellij.modules.java</depends>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+		<lang.parserDefinition language="XQY" implementationClass="uk.co.overstory.xquery.XqyParserDefinition"/>
+		<lang.findUsagesProvider language="XQY" implementationClass="uk.co.overstory.xquery.XqyFindUsagesProvider"/>
+		<lang.syntaxHighlighterFactory key="XQY" implementationClass="uk.co.overstory.xquery.editor.XqySyntaxHighlighterFactory"/>
+		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
+		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
+		<lang.braceMatcher language="XQY" implementationClass="uk.co.overstory.xquery.XqyBraceMatcher"/>
+		<lang.commenter language="XQY" implementationClass="uk.co.overstory.xquery.XqyCommenter"/>
+		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
+		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
+		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
+	</extensions>
 
 	<application-components>
 		<!-- Add your application components here -->
@@ -21,19 +37,4 @@
 		</action>
 	</actions>
 
-	<depends optional="true" config-file="plugin-java.xml">com.intellij.modules.java</depends>
-
-	<extensions defaultExtensionNs="com.intellij">
-		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
-		<lang.parserDefinition language="XQY" implementationClass="uk.co.overstory.xquery.XqyParserDefinition"/>
-		<lang.syntaxHighlighterFactory key="XQY" implementationClass="uk.co.overstory.xquery.editor.XqySyntaxHighlighterFactory"/>
-		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
-		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
-		<lang.braceMatcher language="XQY" implementationClass="uk.co.overstory.xquery.XqyBraceMatcher"/>
-		<lang.commenter language="XQY" implementationClass="uk.co.overstory.xquery.XqyCommenter"/>
-		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
-		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
-		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
-		<lang.findUsagesProvider language="XQY" implementationClass="uk.co.overstory.xquery.XqyFindUsagesProvider"/>
-	</extensions>
 </idea-plugin>

@@ -56,8 +56,8 @@
   CHAR_REF_START="&#"
   CHAR_HEX_REF_START="&#x"
 
-  implements("VarName|FunctionName")="uk.co.overstory.xquery.psi.XqyNamedElement"
-  extends("VarName|FunctionName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
+  implements("VarName|ParamName|FunctionName")="uk.co.overstory.xquery.psi.XqyNamedElement"
+  extends("VarName|ParamName|FunctionName")="uk.co.overstory.xquery.psi.impl.XqyNamedElementImpl"
   mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameReference"
 /*
   mixin("StringLiteral")="uk.co.overstory.xquery.psi.impl.XqyStringImpl"

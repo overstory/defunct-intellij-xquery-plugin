@@ -34,7 +34,7 @@ public class XqyFileImpl  extends PsiFileBase implements XqyFile
 	public XqyFileImpl (FileViewProvider fileViewProvider)
 	{
 		super (fileViewProvider, XqyLanguage.INSTANCE);
-System.out.println ("XqyFileImpl constructor, provider=" + getName ());
+//System.out.println ("XqyFileImpl constructor, provider=" + getName ());
 	}
 
 	@NotNull

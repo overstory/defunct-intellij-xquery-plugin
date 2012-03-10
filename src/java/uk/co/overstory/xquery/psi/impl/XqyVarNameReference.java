@@ -34,12 +34,15 @@ System.out.println ("XqyVarNameReference constructor called node=" + node.getTex
 	@Override
 	public PsiReference getReference()
 	{
+System.out.println ("XqyVarNameReference.getReference: " + super.toString() + "/" + super.getText());
+
 		return new XqyReferenceImpl<XqyVarNameReference> (this, TextRange.from (0, getTextLength()))
 		{
 			@Override
 			public PsiElement handleElementRename (String newElementName) throws IncorrectOperationException
 			{
-				myElement.getQName ().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
+System.out.println ("XqyVarNameReference.handleElementRename: " + super.myElement.getText() + " to " + newElementName);
+				myElement.getQName().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
 
 				return myElement;
 			}
