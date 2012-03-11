@@ -13,5 +13,9 @@ import javax.swing.Icon;
 @SuppressWarnings("ConstantDeclaredInInterface")
 public interface XqyIcons
 {
-	Icon FILE = IconLoader.getIcon ("/icons/filexq.png");		// ToDo: make a better icon image
+	// ToDo: make better icon images
+	Icon FILE = IconLoader.getIcon ("/icons/file.png");
+	Icon VARIABLE = IconLoader.getIcon ("/icons/variable.png");
+	Icon FUNCTION = IconLoader.getIcon ("/icons/function.png");
+	Icon PARAM = IconLoader.getIcon ("/icons/param.png");
 }

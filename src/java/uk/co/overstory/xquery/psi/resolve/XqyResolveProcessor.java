@@ -12,6 +12,7 @@ import uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Set;
  */
 public class XqyResolveProcessor implements PsiScopeProcessor
 {
-	private final Set<PsiElement> myProcessedElements = new java.util.HashSet<PsiElement> ();
+	private final Set<PsiNamedElement> myProcessedElements = new java.util.HashSet<PsiNamedElement>();
 	private final HashSet<ResolveResult> candidates = new HashSet<ResolveResult>();
 	private final String name;
 	private final PsiElement place;
@@ -41,22 +42,23 @@ public class XqyResolveProcessor implements PsiScopeProcessor
 //System.out.println ("XqyResolveProcessor.execute: " + element.toString() + "/" + element.getText());
 		if (element instanceof PsiNamedElement && !myProcessedElements.contains (element))
 		{
+			if ((state == null) && (sameNameSeen ((PsiNamedElement) element))) {
+				return true;
+			}
+
 			PsiNamedElement namedElement = (PsiNamedElement) element;
 			boolean isAccessible = isAccessible (namedElement);
 
 			candidates.add (new XqyResolveResultImpl (namedElement, isAccessible));
 			myProcessedElements.add (namedElement);
 
-//			 return !ListDeclarations.isLocal(element);
-			//todo specify as it's possible!
-
-			// ToDo: Determine whether to continue of not: what are the criteria
 			return false;
 		}
 
 		return true;
 
 	}
+
 
 	@Override
 	public <T> T getHint (Key<T> hintKey)
@@ -74,10 +76,29 @@ public class XqyResolveProcessor implements PsiScopeProcessor
 		return candidates.toArray (new ResolveResult[candidates.size()]);
 	}
 
+	// ----------------------------------------------------------
 
-	private boolean isAccessible(PsiNamedElement namedElement) {
+	private boolean isAccessible (PsiNamedElement namedElement) {
 		//todo implement me
 		return true;
 	}
+
+	private boolean sameNameSeen (PsiNamedElement element)
+	{
+		for (PsiNamedElement e : myProcessedElements) {
+			if (sameName (element, e)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// This may need to be smartened up later to be namespace aware.  Should be a method on XqyNamedElement
+	private boolean sameName (PsiNamedElement e1, PsiNamedElement e2)
+	{
+		return e1.getText().equals (e2.getText());
+	}
+
 
 }

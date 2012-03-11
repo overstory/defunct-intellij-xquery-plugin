@@ -60,6 +60,7 @@
   extends("VarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameElementImpl"
   extends("ParamName")="uk.co.overstory.xquery.psi.impl.XqyParamNameElementImpl"
   extends("FunctionName")="uk.co.overstory.xquery.psi.impl.XqyFunctionNameElementImpl"
+
   mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameReference"
   mixin("RefFunctionName")="uk.co.overstory.xquery.psi.impl.XqyFunctionNameReference"
 /*

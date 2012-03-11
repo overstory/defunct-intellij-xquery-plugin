@@ -4,10 +4,13 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import uk.co.overstory.xquery.XqyIcons;
 import uk.co.overstory.xquery.psi.XqyFunctionName;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.Icon;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,5 +45,11 @@ public class XqyFunctionNameElementImpl extends XqyNamedElementImpl
 		}
 
 		return true;
+	}
+
+	@Override
+	public Icon getIcon (int flags)
+	{
+		return XqyIcons.FUNCTION;
 	}
 }

@@ -35,6 +35,8 @@ public abstract class ResolveUtil
 		return true;
 	}
 
+	// FIXME: Need to prevent traversal of self and following sibling that are not in scope
+
 	public static boolean processChildren (PsiElement element, PsiScopeProcessor processor,
 		ResolveState substitutor, @Nullable PsiElement lastParent, PsiElement place)
 	{
