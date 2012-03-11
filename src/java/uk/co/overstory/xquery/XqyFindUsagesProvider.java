@@ -28,20 +28,20 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 
 	public XqyFindUsagesProvider()
 	{
-System.out.println ("XqyFindUsagesProvider.constructor");
+//System.out.println ("XqyFindUsagesProvider.constructor");
 	}
 
 	@Override
 	public WordsScanner getWordsScanner()
 	{
-System.out.println ("XqyFindUsagesProvider.getWordsScanner");
+//System.out.println ("XqyFindUsagesProvider.getWordsScanner");
 		return new DefaultWordsScanner (new XqyLexer(), identifierTokens, commentTokens, literalTokens);
 	}
 
 	@Override
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
-System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.toString() + "/" + psiElement.getText());
+//System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.toString() + "/" + psiElement.getText());
 		return ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyParamName) || (psiElement instanceof XqyFunctionName));
 	}
 
@@ -56,7 +56,7 @@ System.out.println ("XqyFindUsagesProvider.getHelpId: " + element.getText());
 	@Override
 	public String getType (@NotNull PsiElement element)
 	{
-System.out.println ("XqyFindUsagesProvider.getType: " + element.getText());
+//System.out.println ("XqyFindUsagesProvider.getType: " + element.getText());
 		if (element instanceof XqyFunctionName) return "Function";
 
 		return "Variable";
@@ -68,7 +68,7 @@ System.out.println ("XqyFindUsagesProvider.getType: " + element.getText());
 	@Override
 	public String getDescriptiveName (@NotNull PsiElement element)
 	{
-System.out.println ("XqyFindUsagesProvider.getDescriptiveName: " + element.getText());
+//System.out.println ("XqyFindUsagesProvider.getDescriptiveName: " + element.getText());
 		if (element instanceof XqyFunctionName) return element.getText() + "()";
 
 		return "$" + element.getText();
@@ -80,7 +80,7 @@ System.out.println ("XqyFindUsagesProvider.getDescriptiveName: " + element.getTe
 	@Override
 	public String getNodeText (@NotNull PsiElement element, boolean useFullName)
 	{
-System.out.println ("XqyFindUsagesProvider.getNodeText: " + element.getText());
+//System.out.println ("XqyFindUsagesProvider.getNodeText: " + element.getText());
 		return element.getText();
 
 //		return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);

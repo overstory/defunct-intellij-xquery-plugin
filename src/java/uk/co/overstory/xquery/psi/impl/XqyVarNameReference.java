@@ -31,6 +31,7 @@ public class XqyVarNameReference extends XqyQNameImpl implements XqyRefVarName
 		return this;
 	}
 
+	// FIXME: This is the same as for XqyVarNameReference, consolidate
 	@Override
 	public PsiReference getReference()
 	{
@@ -41,8 +42,8 @@ public class XqyVarNameReference extends XqyQNameImpl implements XqyRefVarName
 			@Override
 			public PsiElement handleElementRename (String newElementName) throws IncorrectOperationException
 			{
-System.out.println ("XqyVarNameReference.handleElementRename: " + super.myElement.getText() + " to " + newElementName);
-				myElement.getQName().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
+//System.out.println ("XqyVarNameReference.handleElementRename: " + super.myElement.getText() + " to " + newElementName);
+				myElement.getQName().replace (XqyElementFactory.createQNameFromText (getElement ().getProject (), newElementName));
 
 				return myElement;
 			}

@@ -145,7 +145,7 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 
 			ResolveUtil.treeWalkUp (ref, processor, resolveState);
 
-			// FIXME: THis isn't right yet
+			// FIXME: This isn't right yet
 			if (reference.hasNamespace()) {
 				final String nsName = reference.getNamespaceName();
 

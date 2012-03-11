@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import uk.co.overstory.xquery.XqyLanguage;
+import uk.co.overstory.xquery.psi.XqyQName;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,11 +20,11 @@ public class XqyElementFactory
 	{
 	}
 
-	public static PsiElement createLeafFromText (Project project, String text)
+	public static PsiElement createQNameFromText (Project project, String text)
 	{
-System.out.println ("createLeafFromText: text=" + text);
-		PsiFile fileFromText = PsiFileFactory.getInstance (project).createFileFromText ("a.xqy", XqyLanguage.INSTANCE, text);
+//System.out.println ("createQNameFromText: text=" + text);
+		PsiFile fileFromText = PsiFileFactory.getInstance (project).createFileFromText ("flibbityfloo.xqy", XqyLanguage.INSTANCE, text);
 
-		return PsiTreeUtil.getDeepestFirst (fileFromText);
+		return PsiTreeUtil.findChildOfType (fileFromText, XqyQName.class);
 	}
 }

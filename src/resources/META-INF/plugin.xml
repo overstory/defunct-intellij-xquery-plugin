@@ -21,6 +21,16 @@
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
+	<!--
+    <completion.contributor implementationClass="org.jetbrains.plugins.clojure.completion.ClojureCompletionContributor"/>
+    <renameInputValidator implementation="org.jetbrains.plugins.clojure.refactoring.rename.ClojureRenameInputValidator"/>
+    <fileTemplateGroup implementation="org.jetbrains.plugins.clojure.actions.ClojureTemplatesFactory"/>
+    <annotator language="Clojure" implementationClass="org.jetbrains.plugins.clojure.annotator.ClojureAnnotator"/>
+    <lang.namesValidator language="Clojure"
+                         implementationClass="org.jetbrains.plugins.clojure.refactoring.rename.ClojureNameValidator"/>
+	-->
+
+
 
 	<application-components>
 		<!-- Add your application components here -->

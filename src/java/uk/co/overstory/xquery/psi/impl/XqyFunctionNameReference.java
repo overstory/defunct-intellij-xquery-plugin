@@ -41,8 +41,8 @@ public class XqyFunctionNameReference extends XqyQNameImpl implements XqyRefFunc
 			@Override
 			public PsiElement handleElementRename (String newElementName) throws IncorrectOperationException
 			{
-System.out.println ("XqyFunctionNameReference.handleElementRename: " + super.myElement.getText() + " to " + newElementName);
-				myElement.getQName().replace (XqyElementFactory.createLeafFromText (getElement().getProject(), newElementName));
+//System.out.println ("XqyFunctionNameReference.handleElementRename: " + super.myElement.getText() + " to " + newElementName);
+				myElement.getQName().replace (XqyElementFactory.createQNameFromText (getElement ().getProject (), newElementName));
 
 				return myElement;
 			}

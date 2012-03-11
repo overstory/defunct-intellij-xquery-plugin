@@ -5,9 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import uk.co.overstory.xquery.psi.XqyNamedElement;
-import uk.co.overstory.xquery.psi.XqyPrefixedName;
 import uk.co.overstory.xquery.psi.XqyQName;
-import uk.co.overstory.xquery.psi.XqyUnprefixedName;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class XqyNamedElementImpl extends XqyCompositeElementImpl implements XqyNamedElement
 {
-	private volatile String myCachedName;
-
 	public XqyNamedElementImpl (ASTNode node)
 	{
 		super (node);
@@ -31,25 +27,19 @@ public class XqyNamedElementImpl extends XqyCompositeElementImpl implements XqyN
 	@Override
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{
-System.out.println ("XqyNamedElementImpl.setName name=" + name);
-		getId().replace (XqyElementFactory.createLeafFromText (getProject(), name));
-
-		return this;
+//System.out.println ("XqyNamedElementImpl.setName name=" + name + ", type=" + toString());
+		return getQName().replace (XqyElementFactory.createQNameFromText (getProject(), name));
 	}
 
 	@Override
 	public String getName() {
-		if (myCachedName == null) {
-			myCachedName = getId().getText();
-		}
-//System.out.println ("XqyNamedElementImpl.getName myCachedName=" + myCachedName);
-		return myCachedName;
+		return getQName().getText();
 	}
 
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return getId();
+		return getQName();
 	}
 
 	@Override
@@ -58,25 +48,21 @@ System.out.println ("XqyNamedElementImpl.setName name=" + name);
 		return PsiTreeUtil.getChildOfType (this, XqyQName.class);
 	}
 
-
 	// -------------------------------------------------------------
 
-	@NotNull
-	private PsiElement getId()
-	{
-		XqyPrefixedName prefixedname = getQName().getPrefixedName ();
-		XqyUnprefixedName unprefixedname = getQName().getUnprefixedName();
-
-		if (prefixedname != null) {
-			// TODO: Handle namespace prefix
-			return prefixedname.getLocalPart().getNCName().getId();
-		}
-
-		return unprefixedname.getLocalPart().getNCName().getId();
-	}
+//	@NotNull
+//	private PsiElement getId()
+//	{
+//		XqyQName qname = getQName();
+//		XqyPrefixedName prefixed = qname.getPrefixedName();
+//		XqyUnprefixedName unprefixed = qname.getUnprefixedName();
+//		XqyLocalPart localPart = (prefixed == null) ? unprefixed.getLocalPart() : prefixed.getLocalPart();
+//
+//		return localPart.getNCName().getId();
+//	}
 
 	@Override
 	public String toString() {
-		return super.toString() + ":" + getName();
+		return super.toString() + "/" + getName();
 	}
 }
