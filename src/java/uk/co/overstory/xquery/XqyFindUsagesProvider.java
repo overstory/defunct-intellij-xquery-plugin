@@ -41,7 +41,7 @@ System.out.println ("XqyFindUsagesProvider.getWordsScanner");
 	@Override
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
-System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.getText());
+System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.toString() + "/" + psiElement.getText());
 		return ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyParamName) || (psiElement instanceof XqyFunctionName));
 	}
 

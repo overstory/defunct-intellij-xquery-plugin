@@ -41,7 +41,7 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 
 	public PsiElement resolve()
 	{
-System.out.println ("XqyReferenceImpl: resolve(): " + myElement.toString() + "/" + myElement.getText());
+//System.out.println ("XqyReferenceImpl: resolve(): " + myElement.toString() + "/" + myElement.getText());
 		ResolveResult[] results = multiResolve (false);
 
 		return results.length == 1 ? results[0].getElement() : null;
@@ -51,7 +51,7 @@ System.out.println ("XqyReferenceImpl: resolve(): " + myElement.toString() + "/"
 	@Override
 	public Object[] getVariants()
 	{
-System.out.println ("XqyReferenceImpl.getVariants");
+//System.out.println ("XqyReferenceImpl.getVariants");
 		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
 
 		ResolveResult[] results = resolveCache.resolveWithCaching (this, variantResolver, true, false);
@@ -101,7 +101,7 @@ System.out.println ("XqyReferenceImpl.getVariants");
 	@Override
 	public ResolveResult[] multiResolve (boolean incompleteCode)
 	{
-System.out.println ("XqyReferenceImpl.multiResolve(" + incompleteCode + ")");
+//System.out.println ("XqyReferenceImpl.multiResolve(" + incompleteCode + ")");
 
 		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
 
@@ -133,9 +133,7 @@ System.out.println ("XqyReferenceImpl.multiResolve(" + incompleteCode + ")");
 
 		public ResolveResult[] resolve (XqyReference reference, boolean incompleteCode)
 		{
-System.out.println ("XqyReferenceResolver.resolve(): " + reference.getElement() + "/" + reference.getElement().getText());
 			final String localname = reference.getLocalname();
-System.out.println ("XqyReferenceResolver.resolve(): " + reference.getElement() + "/" + reference.getElement().getText() + "/" + localname);
 
 			if (localname == null) {
 				return null;

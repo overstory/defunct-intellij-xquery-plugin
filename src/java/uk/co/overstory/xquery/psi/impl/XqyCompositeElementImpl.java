@@ -7,10 +7,10 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import uk.co.overstory.xquery.psi.ResolveUtil;
 import uk.co.overstory.xquery.psi.XqyCompositeElement;
-import uk.co.overstory.xquery.psi.XqyImport;
-import uk.co.overstory.xquery.psi.XqyNamespaceDecl;
-import uk.co.overstory.xquery.psi.XqySetter;
-import uk.co.overstory.xquery.psi.XqyVersionDecl;
+import uk.co.overstory.xquery.psi.XqyExpr;
+import uk.co.overstory.xquery.psi.XqyFunctionDecl;
+import uk.co.overstory.xquery.psi.XqyProlog;
+import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,9 +35,10 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 
 	@SuppressWarnings("SimplifiableIfStatement")
 	@Override
-	public boolean processDeclarations (@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations (@NotNull PsiScopeProcessor processor,
+		@NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
-		if (canContainVariableDecls (this)) {
+		if (shouldDescend (place, lastParent)) {
 			return ResolveUtil.processChildren (this, processor, state, null, place);
 
 		}
@@ -47,15 +48,25 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 
 	// ---------------------------------------------------------------
 
-	// This is a simplistic optimization, it could probably be made better, or eliminated
-	private boolean canContainVariableDecls (Object that)
+	private boolean shouldDescend (PsiElement reference, PsiElement lastParent)
 	{
-		return ( ! (
-			(that instanceof XqyVersionDecl) ||
-				(that instanceof XqySetter) ||
-				(that instanceof XqyImport) ||
-				(that instanceof XqyNamespaceDecl)
-		));
+		if (reference instanceof XqyRefFunctionName) {
+			return !((this instanceof XqyExpr));
+		}
+
+		if ((this instanceof XqyFunctionDecl) && (lastParent instanceof XqyProlog)) {
+			return false;
+		}
+
+		return ! (this instanceof XqyExpr);
+
+//		return ( ! (
+//			(this instanceof XqyFunctionDecl) ||
+//			(this instanceof XqyVersionDecl) ||
+//			(this instanceof XqySetter) ||
+//			(this instanceof XqyImport) ||
+//			(this instanceof XqyNamespaceDecl)
+//		));
 	}
 
 }

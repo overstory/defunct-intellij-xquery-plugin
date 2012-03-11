@@ -25,7 +25,7 @@ public class XqyNamedElementImpl extends XqyCompositeElementImpl implements XqyN
 	public XqyNamedElementImpl (ASTNode node)
 	{
 		super (node);
-System.out.println ("XqyNamedElementImpl constructor: " + node.getText());
+//System.out.println ("XqyNamedElementImpl constructor: " + node.getText());
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class XqyResolveProcessor implements PsiScopeProcessor
 	@Override
 	public boolean execute (PsiElement element, ResolveState state)
 	{
-System.out.println ("XqyResolveProcessor.execute: " + element.toString() + "/" + element.getText());
+//System.out.println ("XqyResolveProcessor.execute: " + element.toString() + "/" + element.getText());
 		if (element instanceof PsiNamedElement && !myProcessedElements.contains (element))
 		{
 			PsiNamedElement namedElement = (PsiNamedElement) element;

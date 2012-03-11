@@ -23,29 +23,30 @@ public class XqyFileType extends LanguageFileType
 
 	@NotNull
 	@Override
-	public String getName ()
+	public String getName()
 	{
 		return "XQuery";
 	}
 
 	@NotNull
 	@Override
-	public String getDescription ()
+	public String getDescription()
 	{
 		return "XQuery Language Plugin";
 	}
 
 	@NotNull
 	@Override
-	public String getDefaultExtension ()
+	public String getDefaultExtension()
 	{
 		return "xqy";
 	}
 
 	@Override
-	public Icon getIcon ()
+	public Icon getIcon()
 	{
 		if (XqyIcons.FILE == null) throw new RuntimeException ("NULL icon");
+
 		return XqyIcons.FILE;
 	}
 
@@ -54,5 +55,4 @@ public class XqyFileType extends LanguageFileType
 		// turn off for now
 		return false;
 	}
-
 }

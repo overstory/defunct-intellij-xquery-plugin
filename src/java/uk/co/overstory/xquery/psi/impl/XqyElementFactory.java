@@ -17,7 +17,6 @@ public class XqyElementFactory
 {
 	private XqyElementFactory ()
 	{
-System.out.println ("XqyElementFactory: constructor");
 	}
 
 	public static PsiElement createLeafFromText (Project project, String text)

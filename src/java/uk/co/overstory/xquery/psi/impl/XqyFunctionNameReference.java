@@ -22,7 +22,7 @@ public class XqyFunctionNameReference extends XqyQNameImpl implements XqyRefFunc
 	public XqyFunctionNameReference (ASTNode node)
 	{
 		super (node);
-System.out.println ("XqyFunctionNameReference constructor called node=" + node.getText());
+//System.out.println ("XqyFunctionNameReference constructor called node=" + node.getText());
 	}
 
 	@NotNull
@@ -34,7 +34,7 @@ System.out.println ("XqyFunctionNameReference constructor called node=" + node.g
 	@Override
 	public PsiReference getReference()
 	{
-System.out.println ("XqyFunctionNameReference.getReference: " + super.toString() + "/" + super.getText());
+//System.out.println ("XqyFunctionNameReference.getReference: " + super.toString() + "/" + super.getText());
 
 		return new XqyReferenceImpl<XqyFunctionNameReference> (this, TextRange.from (0, getTextLength()))
 		{

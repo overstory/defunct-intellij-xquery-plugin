@@ -44,7 +44,7 @@ public abstract class ResolveUtil
 		while (run != null) {
 //System.out.println ("   processing child: " + run.toString() + ", " + place.toString ());
 			// FIXME: Need to properly prune out-of-scope subtrees
-			if ((PsiTreeUtil.findCommonParent (place, run) != run) && !run.processDeclarations (processor, substitutor, null, place)) {
+			if ((PsiTreeUtil.findCommonParent (place, run) != run) && !run.processDeclarations (processor, substitutor, element, place)) {
 				return false;
 			}
 
@@ -56,7 +56,7 @@ public abstract class ResolveUtil
 
 	public static boolean processElement (PsiScopeProcessor processor, PsiNamedElement namedElement)
 	{
-System.out.println ("ResolveUtil.processChildren: " + namedElement.toString() + "/" + namedElement.getText());
+//System.out.println ("ResolveUtil.processChildren: " + namedElement.toString() + "/" + namedElement.getText());
 		if (namedElement == null) {
 			return true;
 		}
@@ -65,7 +65,6 @@ System.out.println ("ResolveUtil.processChildren: " + namedElement.toString() + 
 		String name = nameHint == null ? null : nameHint.getName (ResolveState.initial());
 
 		if (name == null || name.equals (namedElement.getName ())) {
-System.out.println ("   match: " + name);
 			return processor.execute (namedElement, ResolveState.initial ());
 		}
 		return true;

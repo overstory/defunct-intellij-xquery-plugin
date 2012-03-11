@@ -22,7 +22,7 @@ public class XqyVarNameReference extends XqyQNameImpl implements XqyRefVarName
 	public XqyVarNameReference (ASTNode node)
 	{
 		super (node);
-System.out.println ("XqyVarNameReference constructor called node=" + node.getText());
+//System.out.println ("XqyVarNameReference constructor called node=" + node.getText());
 	}
 
 	@NotNull
@@ -34,7 +34,7 @@ System.out.println ("XqyVarNameReference constructor called node=" + node.getTex
 	@Override
 	public PsiReference getReference()
 	{
-System.out.println ("XqyVarNameReference.getReference: " + super.toString() + "/" + super.getText());
+//System.out.println ("XqyVarNameReference.getReference: " + super.toString() + "/" + super.getText());
 
 		return new XqyReferenceImpl<XqyVarNameReference> (this, TextRange.from (0, getTextLength()))
 		{
