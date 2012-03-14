@@ -1,4 +1,4 @@
-package uk.co.overstory.xquery.refactor;
+package uk.co.overstory.xquery;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;

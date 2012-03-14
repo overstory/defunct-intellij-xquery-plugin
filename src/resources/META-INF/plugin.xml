@@ -20,7 +20,7 @@
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
-		<completion.contributor implementationClass="uk.co.overstory.xquery.refactor.XqyCompletionContributor"/>
+		<completion.contributor implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
 	<!--
