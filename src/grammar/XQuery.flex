@@ -76,7 +76,7 @@ XFunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" |
 OpNCName=( "and" | "ascending" | "case" | "cast" | "castable" | "collation" | "default" | "descending" | "div" | "else" | "empty" | "eq" | "except" | "for" | "ge" | "gt" | "idiv" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "ne" | "or" | "order" | "return" | "satisfies" | "stable" | "to" | "treat" | "union" | "where" | "version" | "variable" | "function" | "as" )
 Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 
-id=([A-Za-z\_] [A-Za-z0-9\.\-\_]*)
+id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
 
 %state STRING_QUOTE
