@@ -21,10 +21,10 @@
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
 		<completion.contributor implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
+		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
 	<!--
-    <fileTemplateGroup implementation="org.jetbrains.plugins.clojure.actions.ClojureTemplatesFactory"/>
     <annotator language="Clojure" implementationClass="org.jetbrains.plugins.clojure.annotator.ClojureAnnotator"/>
     <lang.namesValidator language="Clojure"
                          implementationClass="org.jetbrains.plugins.clojure.refactoring.rename.ClojureNameValidator"/>
@@ -41,9 +41,10 @@
 	</project-components>
 
 	<actions>
-		<!-- Add your actions here -->
-		<action id="TestAction" class="uk.co.overstory.xquery.actions.TestAction" text="XQuery Test" description="Test action for the XQuery plugin">
-			<add-to-group group-id="RunMenu" anchor="last"/>
+		<!-- Create file actions -->
+		<action id="XQuery.XQueryFile" class="uk.co.overstory.xquery.actions.NewXqueryFileAction"
+				text="XQuery File" description="Create new XQuery File">
+			<add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
 		</action>
 	</actions>
 
