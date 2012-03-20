@@ -1,0 +1,9 @@
+xquery version "1.0-ml";
+
+(:
+	* Created by OverStory XQuery IntelliJ plugin.
+	* User: ${USER}
+	* Date: ${DATE}
+	* Time: ${TIME}
+:)
+

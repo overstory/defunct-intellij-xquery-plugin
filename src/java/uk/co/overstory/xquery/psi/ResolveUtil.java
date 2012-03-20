@@ -66,7 +66,7 @@ public abstract class ResolveUtil
 		NameHint nameHint = processor.getHint (NameHint.KEY);
 		String name = nameHint == null ? null : nameHint.getName (ResolveState.initial());
 
-		if (name == null || name.equals (namedElement.getName ())) {
+		if (name == null || name.equals (namedElement.getName())) {
 			return processor.execute (namedElement, ResolveState.initial ());
 		}
 		return true;

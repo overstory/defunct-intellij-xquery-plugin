@@ -7,10 +7,18 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
 import uk.co.overstory.xquery.psi.ResolveUtil;
+import uk.co.overstory.xquery.psi.XqyCaseClause;
+import uk.co.overstory.xquery.psi.XqyCatchClause;
 import uk.co.overstory.xquery.psi.XqyCompositeElement;
 import uk.co.overstory.xquery.psi.XqyExpr;
+import uk.co.overstory.xquery.psi.XqyExprSingle;
+import uk.co.overstory.xquery.psi.XqyFLWORExpr;
 import uk.co.overstory.xquery.psi.XqyFunctionDecl;
+import uk.co.overstory.xquery.psi.XqyLetClause;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
+import uk.co.overstory.xquery.psi.XqyTryCatchExpr;
+import uk.co.overstory.xquery.psi.XqyVarDecl;
+import uk.co.overstory.xquery.psi.XqyVarName;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,15 +46,41 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 	public boolean processDeclarations (@NotNull PsiScopeProcessor processor,
 		@NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
-		if (shouldDescend (place)) {
-			return ResolveUtil.processChildren (this, processor, state, null, place);
+		if ( ! shouldDescend (place)) {
+			return true;
+		}
 
+		PsiElement current = (this instanceof XqyFLWORExpr) ? findPrecedingFlworSibling (place) : getLastChild();
+
+//		if (this instanceof XqyFLWORExpr) {
+//			current = findPrecedingFlworSibling (place);
+//		}
+
+		while (current != null) {
+			if ( ! current.processDeclarations (processor, state, null, place)) {
+				return false;
+			}
+
+			current = current.getPrevSibling();
 		}
 
 		return true;
 	}
 
+	private PsiElement findPrecedingFlworSibling (PsiElement reference)
+	{
+		for (PsiElement e = getLastChild(); e != null; e = e.getPrevSibling()) {
+			if (PsiTreeUtil.isAncestor (e, reference, false)) {
+				return e.getPrevSibling();
+			}
+		}
+
+		return null;
+	}
+
 	// ---------------------------------------------------------------
+
+	// ToDo: handle quantified exprs
 
 	@SuppressWarnings("SimplifiableIfStatement")
 	private boolean shouldDescend (PsiElement reference)
@@ -55,10 +89,15 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 			return !((this instanceof XqyExpr));
 		}
 
-		if ((this instanceof XqyFunctionDecl) && ( ! PsiTreeUtil.isAncestor (this, reference, false))) {
+		if (((this instanceof XqyFunctionDecl) || (this instanceof XqyCatchClause) || (this instanceof XqyCaseClause)) &&
+			( ! PsiTreeUtil.isAncestor (this, reference, false))) {
 			return false;
 		}
 
-		return ! (this instanceof XqyExpr);
+		if (((this instanceof XqyVarDecl) || (this instanceof XqyLetClause)) && PsiTreeUtil.isAncestor (this, reference, false)) {
+			return false;
+		}
+
+		return ! ((this instanceof XqyExpr) || (this instanceof XqyExprSingle));
 	}
 }

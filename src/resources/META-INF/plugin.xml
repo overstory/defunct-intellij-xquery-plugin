@@ -20,11 +20,11 @@
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
-		<completion.contributor implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
-		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
 	<!--
+		<completion.contributor implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
+		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>
     <annotator language="Clojure" implementationClass="org.jetbrains.plugins.clojure.annotator.ClojureAnnotator"/>
     <lang.namesValidator language="Clojure"
                          implementationClass="org.jetbrains.plugins.clojure.refactoring.rename.ClojureNameValidator"/>

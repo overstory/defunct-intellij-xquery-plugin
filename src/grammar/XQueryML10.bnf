@@ -137,7 +137,9 @@ QueryBody ::= Expr
 Expr     ::= ExprSingle ( ',' ExprSingle )*
 ExprSingle ::= FLWORExpr | QuantifiedExpr | TypeswitchExpr | IfExpr | OrExpr | TryCatchExpr
 
-TryCatchExpr ::= 'try' EnclosedExpr 'catch' '(' '$' VarName ')' EnclosedExprExtended
+TryCatchExpr ::= TryClause CatchClause
+TryClause ::= 'try' EnclosedExpr
+CatchClause ::= 'catch' '(' '$' VarName ')' EnclosedExprExtended
 EnclosedExprExtended ::= '{' Expr? '}'
 
 FLWORExpr ::= ( ForClause | LetClause )+ WhereClause? OrderByClause? 'return' ExprSingle
@@ -150,8 +152,10 @@ OrderSpecList ::= OrderSpec ( ',' OrderSpec )*
 OrderSpec ::= ExprSingle OrderModifier
 OrderModifier ::= ( 'ascending' | 'descending' )? ( 'empty' ( 'greatest' | 'least' ) )? ( 'collation' URILiteral )?
 QuantifiedExpr ::= ( 'some' | 'every' ) '$' VarName TypeDeclaration? 'in' ExprSingle ( ',' '$' VarName TypeDeclaration? 'in' ExprSingle )* 'satisfies' ExprSingle
+
 TypeswitchExpr ::= 'typeswitch' '(' Expr ')' CaseClause+ 'default' ( '$' VarName )? 'return' ExprSingle
 CaseClause ::= 'case' ( '$' VarName 'as' )? SequenceType 'return' ExprSingle
+
 IfExpr   ::= 'if' '(' Expr ')' 'then' ExprSingle 'else' ExprSingle
 OrExpr   ::= AndExpr ( 'or' AndExpr )*
 AndExpr  ::= ComparisonExpr ( 'and' ComparisonExpr )*
