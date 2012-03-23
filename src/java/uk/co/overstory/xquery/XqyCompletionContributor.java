@@ -30,6 +30,7 @@ public class XqyCompletionContributor extends CompletionContributor
 				@Override
 				protected void addCompletions (@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 				{
+System.out.println ("XqyCompletionContributor.addCompletions");
 					// FIXME: auto-generated
 				}
 			});

@@ -1,23 +1,23 @@
 package uk.co.overstory.xquery.psi.impl;
 
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
-import uk.co.overstory.xquery.psi.ResolveUtil;
-import uk.co.overstory.xquery.psi.XqyLocalPart;
-import uk.co.overstory.xquery.psi.XqyPrefixedName;
-import uk.co.overstory.xquery.psi.XqyQName;
-import uk.co.overstory.xquery.psi.XqyRefFunctionName;
-import uk.co.overstory.xquery.psi.XqyRefVarName;
-import uk.co.overstory.xquery.psi.XqyReference;
-import uk.co.overstory.xquery.psi.XqyUnprefixedName;
+import com.intellij.psi.util.PsiTreeUtil;
+import uk.co.overstory.xquery.XqyIcons;
+import uk.co.overstory.xquery.psi.*;
 import uk.co.overstory.xquery.psi.resolve.XqyResolveProcessor;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 
 /**
@@ -55,15 +55,22 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
 
 		ResolveResult[] results = resolveCache.resolveWithCaching (this, variantResolver, true, false);
-		PsiElement[] elements = new PsiElement[results.length];
+		LookupElement [] lookups = new LookupElement[results.length];
 
-		for (int i = 0; i < elements.length; i++) {
-			elements [i] = results[i].getElement();
+		for (int i = 0; i < results.length; i++) {
+			PsiElement element = results[i].getElement();
+
+			LookupElementBuilder builder = LookupElementBuilder.create ((PsiNamedElement) element)
+				.setIcon (element.getIcon (0))
+				.setBold (boldForElement (element))	// FIXME
+				.setTailText (tailTextForElement (element), true)
+				.setTypeText (typeTextForElement (element), true);
+
+			lookups [i] = builder;
 		}
 
-		return elements;
+		return lookups;
 	}
-
 
 	@NotNull
 	public Project getProject() {
@@ -109,6 +116,101 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	}
 
 	// ---------------------------------------------------------
+
+	private String typeTextForElement (PsiElement element)
+	{
+		XqySequenceType seqType = findTypeDeclaration (element);
+
+		if (seqType != null) {
+			return seqType.getText ();
+		}
+
+		return null;
+	}
+
+	private XqySequenceType findTypeDeclaration (PsiElement element)
+	{
+		for (PsiElement el = element.getNextSibling (); el != null; el = el.getNextSibling ()) {
+			if (el instanceof XqyTypeDeclaration) {
+				return ((XqyTypeDeclaration) el).getSequenceType();
+			}
+			if (el instanceof XqySequenceType) {
+				return (XqySequenceType) el;
+			}
+		}
+
+		PsiElement parent = element.getParent();
+
+		for (PsiElement el : parent.getChildren()) {
+			if (el instanceof XqyTypeDeclaration) {
+				return ((XqyTypeDeclaration) el).getSequenceType();
+			}
+			if (el instanceof XqySequenceType) {
+				return (XqySequenceType) el;
+			}
+		}
+
+		return null;
+	}
+
+	private String tailTextForElement (PsiElement element)
+	{
+		if (element instanceof XqyFunctionName) return tailTextForFunction ((XqyFunctionName) element);
+
+		if (element instanceof XqyParamName) return " - parameter";	// ToDo: include function name?
+
+		if (element instanceof XqyVarName) {
+			PsiElement parent = element.getParent();
+
+			if (parent instanceof XqyVarDecl) return " - global";
+			if (parent instanceof XqyPositionalVar) return " - position";
+			if (parent instanceof XqyLetVar) return " - let";
+			if (parent instanceof XqyForVar) return " - for";
+			if (parent instanceof XqyCaseVar) return " - case";
+			if (parent instanceof XqyCatchClause) return " - catch";
+			if (parent instanceof XqyQuantVar) return " - quantified";
+
+			return " - variable";
+		}
+
+		return "???";
+	}
+
+	private String tailTextForFunction (XqyFunctionName functionName)
+	{
+		XqyFunctionDecl functionDecl = PsiTreeUtil.getParentOfType (functionName, XqyFunctionDecl.class);
+		XqyParamList paramList = functionDecl.getParamList();
+
+		if (paramList == null) return "()";
+
+		List<XqyParam> params = paramList.getParamList();
+		StringBuilder sb = new StringBuilder ("(");
+
+		for (XqyParam param : params) {
+			if (sb.length () != 1) sb.append (", ");
+
+			sb.append ("$").append (param.getParamName().getText());
+
+			if (param.getTypeDeclaration() != null) {
+				sb.append (" ");
+				sb.append (param.getTypeDeclaration().getText());
+			}
+		}
+
+		sb.append (")");
+
+		return sb.toString();
+	}
+
+
+	private boolean boldForElement (PsiElement element)
+	{
+		if (element instanceof XqyParamName) return true;
+
+		if ((element instanceof XqyVarName) && (element.getParent() instanceof XqyVarDecl)) return true;
+
+		return false;
+	}
 
 	// FIXME: This is hacky and needs to be sorted out, probably but tweaking the object model in the BNF file
 	private XqyQName qnameFor (T element)

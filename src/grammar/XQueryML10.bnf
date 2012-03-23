@@ -143,18 +143,23 @@ CatchClause ::= 'catch' '(' '$' VarName ')' EnclosedExprExtended
 EnclosedExprExtended ::= '{' Expr? '}'
 
 FLWORExpr ::= ( ForClause | LetClause )+ WhereClause? OrderByClause? 'return' ExprSingle
-ForClause ::= 'for' '$' VarName TypeDeclaration? PositionalVar? 'in' ExprSingle ( ',' '$' VarName TypeDeclaration? PositionalVar? 'in' ExprSingle )*
+ForClause ::= 'for' ForVar ( ',' ForVar )*
+ForVar ::= '$' VarName TypeDeclaration? PositionalVar? 'in' ExprSingle
 PositionalVar ::= 'at' '$' VarName
-LetClause ::= 'let' '$' VarName TypeDeclaration? ':=' ExprSingle ( ',' '$' VarName TypeDeclaration? ':=' ExprSingle )*
+LetClause ::= 'let' LetVar ( ',' LetVar )*
+LetVar ::= '$' VarName TypeDeclaration? ':=' ExprSingle
 WhereClause ::= 'where' ExprSingle
 OrderByClause ::= ( 'order' 'by' | 'stable' 'order' 'by' ) OrderSpecList
 OrderSpecList ::= OrderSpec ( ',' OrderSpec )*
 OrderSpec ::= ExprSingle OrderModifier
 OrderModifier ::= ( 'ascending' | 'descending' )? ( 'empty' ( 'greatest' | 'least' ) )? ( 'collation' URILiteral )?
-QuantifiedExpr ::= ( 'some' | 'every' ) '$' VarName TypeDeclaration? 'in' ExprSingle ( ',' '$' VarName TypeDeclaration? 'in' ExprSingle )* 'satisfies' ExprSingle
+
+QuantifiedExpr ::= ( 'some' | 'every' ) QuantVar ( ',' QuantVar )* 'satisfies' ExprSingle
+QuantVar ::= '$' VarName TypeDeclaration? 'in' ExprSingle
 
 TypeswitchExpr ::= 'typeswitch' '(' Expr ')' CaseClause+ 'default' ( '$' VarName )? 'return' ExprSingle
-CaseClause ::= 'case' ( '$' VarName 'as' )? SequenceType 'return' ExprSingle
+CaseClause ::= 'case' CaseVar 'return' ExprSingle
+CaseVar ::= ( '$' VarName 'as' )? SequenceType
 
 IfExpr   ::= 'if' '(' Expr ')' 'then' ExprSingle 'else' ExprSingle
 OrExpr   ::= AndExpr ( 'or' AndExpr )*
