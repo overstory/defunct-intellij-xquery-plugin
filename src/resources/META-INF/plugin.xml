@@ -16,6 +16,7 @@
 		<lang.braceMatcher language="XQY" implementationClass="uk.co.overstory.xquery.XqyBraceMatcher"/>
 		<lang.commenter language="XQY" implementationClass="uk.co.overstory.xquery.XqyCommenter"/>
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
+		<annotator language="XQY" implementationClass="uk.co.overstory.xquery.editor.XqyAnnotator"/>
 		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
 		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
@@ -25,7 +26,6 @@
 	<!--
 		<completion.contributor implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
 		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>
-    <annotator language="Clojure" implementationClass="org.jetbrains.plugins.clojure.annotator.ClojureAnnotator"/>
     <lang.namesValidator language="Clojure"
                          implementationClass="org.jetbrains.plugins.clojure.refactoring.rename.ClojureNameValidator"/>
 	-->
