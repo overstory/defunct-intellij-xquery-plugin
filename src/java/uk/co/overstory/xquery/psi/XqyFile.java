@@ -12,6 +12,5 @@ import java.util.List;
  */
 public interface XqyFile extends PsiFile
 {
-	List<XqyVarDecl> getVariables();
-	List<XqyFunctionDecl> getFunctions();
+	List<XqyCompositeElement> getDeclarations();
 }

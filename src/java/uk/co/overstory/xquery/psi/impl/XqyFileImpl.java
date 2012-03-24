@@ -10,9 +10,11 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.Processor;
 import uk.co.overstory.xquery.XqyFileType;
 import uk.co.overstory.xquery.XqyLanguage;
+import uk.co.overstory.xquery.psi.XqyCompositeElement;
 import uk.co.overstory.xquery.psi.XqyFile;
-import uk.co.overstory.xquery.psi.XqyFunctionDecl;
-import uk.co.overstory.xquery.psi.XqyVarDecl;
+import uk.co.overstory.xquery.psi.XqyFunctionName;
+import uk.co.overstory.xquery.psi.XqyParamName;
+import uk.co.overstory.xquery.psi.XqyVarName;
 
 import org.intellij.grammar.parser.GeneratedParserUtilBase;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +30,7 @@ import java.util.List;
  */
 public class XqyFileImpl  extends PsiFileBase implements XqyFile
 {
-	private CachedValue<List<XqyVarDecl>> myVariablesValue;
-	private CachedValue<List<XqyFunctionDecl>> myFunctionsValue;
+	private CachedValue<List<XqyCompositeElement>> declarationsValue;
 
 	public XqyFileImpl (FileViewProvider fileViewProvider)
 	{
@@ -45,87 +46,49 @@ public class XqyFileImpl  extends PsiFileBase implements XqyFile
 	}
 
 	@Override
-	public String toString ()
+	public String toString()
 	{
 		return "XqyFile:" + getName();
 	}
 
 	@Override
-	public List<XqyVarDecl> getVariables()
+	public List<XqyCompositeElement> getDeclarations()
 	{
-		if (myVariablesValue == null) {
-			myVariablesValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyVarDecl>>()
+		if (declarationsValue == null) {
+			declarationsValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyCompositeElement>>()
 			{
 				@Override
-				public Result<List<XqyVarDecl>> compute()
+				public Result<List<XqyCompositeElement>> compute()
 				{
-					return Result.create (calcVariables(), XqyFileImpl.this);
+					return Result.create (findDeclarations(), XqyFileImpl.this);
 				}
 			}, false);
 		}
-		return myVariablesValue.getValue();
-	}
-
-	@Override
-	public List<XqyFunctionDecl> getFunctions()
-	{
-		if (myFunctionsValue == null) {
-			myFunctionsValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyFunctionDecl>>()
-			{
-				@Override
-				public Result<List<XqyFunctionDecl>> compute()
-				{
-					return Result.create (calcFunctions (), XqyFileImpl.this);
-				}
-			}, false);
-		}
-		return myFunctionsValue.getValue();
+		return declarationsValue.getValue();
 	}
 
 	// -----------------------------------------------------------
 
-	private List<XqyVarDecl> calcVariables()
+	private List<XqyCompositeElement> findDeclarations()
 	{
-System.out.println ("calcVariables");
-		final List<XqyVarDecl> result = new ArrayList<XqyVarDecl> ();
-
-		processChildrenDummyAware (this, new Processor<PsiElement> ()
-		{
-			@Override
-			public boolean process (PsiElement psiElement)
-			{
-System.out.println ("  looking at: " + psiElement.getText ());
-				if (psiElement instanceof XqyVarDecl) {
-System.out.println ("  adding: " + psiElement.getText ());
-					result.add ((XqyVarDecl) psiElement);
-				}
-				return true;
-			}
-		});
-		return result;
-	}
-
-	private List<XqyFunctionDecl> calcFunctions()
-	{
-System.out.println ("calcFunctions");
-		final List<XqyFunctionDecl> result = new ArrayList<XqyFunctionDecl>();
+		final List<XqyCompositeElement> result = new ArrayList<XqyCompositeElement> ();
 
 		processChildrenDummyAware (this, new Processor<PsiElement>()
 		{
 			@Override
 			public boolean process (PsiElement psiElement)
 			{
-System.out.println ("  looking at: " + psiElement.toString ());
-				if (psiElement instanceof XqyFunctionDecl) {
-System.out.println ("  adding: " + psiElement.toString ());
-					result.add ((XqyFunctionDecl) psiElement);
+				if ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyParamName) || (psiElement instanceof XqyFunctionName)) {
+					result.add ((XqyCompositeElement) psiElement);
 				}
+
 				return true;
 			}
 		});
 		return result;
 	}
 
+	@SuppressWarnings("OverlyComplexAnonymousInnerClass")
 	private static boolean processChildrenDummyAware (PsiElement element, final Processor<PsiElement> processor)
 	{
 		return new Processor<PsiElement>()
@@ -133,20 +96,18 @@ System.out.println ("  adding: " + psiElement.toString ());
 			@Override
 			public boolean process (PsiElement psiElement)
 			{
-				for (PsiElement child = psiElement.getFirstChild(); child != null; child = child.getNextSibling()) {
-System.out.println ("Processing child: " + child.toString ());
+				for (PsiElement child : psiElement.getChildren()) {
 					if (child instanceof GeneratedParserUtilBase.DummyBlock) {
-						if (!process (child)) {
-							return false;
-						}
-					} else if (!processor.process (child)) {
-						return false;
+						process (child);
+					} else {
+						processor.process (child);
 					}
+
+					processChildrenDummyAware (child, processor);
 				}
+
 				return true;
 			}
 		}.process (element);
 	}
-
-
 }

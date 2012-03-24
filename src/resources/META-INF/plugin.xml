@@ -37,7 +37,10 @@
 	</application-components>
 
 	<project-components>
-		<!-- Add your project components here -->
+		<component>
+			<implementation-class>uk.co.overstory.xquery.components.UnusedItemsHighlightPassFactory</implementation-class>
+			<skipForDefaultProject/>
+		</component>
 	</project-components>
 
 	<actions>

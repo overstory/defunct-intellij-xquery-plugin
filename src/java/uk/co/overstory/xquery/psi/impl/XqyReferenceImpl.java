@@ -420,7 +420,7 @@ System.out.println ("processResolveVariants: " + myElement.toString() + "=" + my
 		if (!(file instanceof XqyFile)) return;
 
 		if (myElement instanceof XqyVarNameReference) {
-			ContainerUtil.process (((XqyFile) file).getVariables(), processor);
+			ContainerUtil.process (((XqyFile) file).getDeclarations(), processor);
 		}
 
 		if (myElement instanceof XqyFunctionname) {		// FIXME: Not unique to function call
