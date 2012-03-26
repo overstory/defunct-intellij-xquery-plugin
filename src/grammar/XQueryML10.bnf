@@ -78,7 +78,7 @@ VersionDecl ::= 'xquery' 'version' XqueryVersionString ( 'encoding' XqueryEncodi
 XqueryEncodingString ::= StringLiteral
 XqueryVersionString ::= StringLiteral
 
-MainModuleSequence ::= MainModule ( ';' VersionDecl? MainModule)* ';'?
+MainModuleSequence ::= MainModule ( Separator VersionDecl? MainModule)* Separator?
 
 MainModule ::= Prolog QueryBody
 LibraryModule ::= ModuleDecl Prolog
@@ -95,6 +95,7 @@ Setter   ::= BoundarySpaceDecl
            | CopyNamespacesDecl
 Import   ::= SchemaImport | ModuleImport | ImportStylesheetDecl
 Separator ::= ';'
+//private prolog_recover ::= !(';' | QueryBody )
 
 NamespaceDecl ::= 'declare' 'namespace' NamespaceName '=' NamespaceValue
 NamespaceName ::= NCName
@@ -123,45 +124,49 @@ SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',
 SchemaPrefix ::= 'namespace' NamespaceName '=' | 'default' 'element' 'namespace'
 ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )?
 
-VarDecl  ::= 'declare' 'private'? 'variable' '$' VarName TypeDeclaration? ( ':=' ExprSingle | 'external' )
+DollarVarName ::= '$' VarName {pin=1}
+
+VarDecl  ::= 'declare' Visibility 'variable' DollarVarName TypeDeclaration? ( ':=' ExprSingle | 'external' )  {pin=3}
+Visibility ::= 'private'?
 
 ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' )
-FunctionDecl ::= 'declare' 'private'? 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' )
+FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' ) {pin=3}
 
 ParamList ::= Param ( ',' Param )*
-Param    ::= '$' ParamName TypeDeclaration?
+Param    ::= '$' ParamName TypeDeclaration? {pin=1}
 ParamName ::= QName
 
-EnclosedExpr ::= '{' Expr '}'
+EnclosedExpr ::= '{' Expr '}' {pin=1}
 QueryBody ::= Expr
 Expr     ::= ExprSingle ( ',' ExprSingle )*
 ExprSingle ::= FLWORExpr | QuantifiedExpr | TypeswitchExpr | IfExpr | OrExpr | TryCatchExpr
 
 TryCatchExpr ::= TryClause CatchClause
 TryClause ::= 'try' EnclosedExpr
-CatchClause ::= 'catch' '(' '$' VarName ')' EnclosedExprExtended
+CatchClause ::= 'catch' '(' DollarVarName ')' EnclosedExprExtended
 EnclosedExprExtended ::= '{' Expr? '}'
 
 FLWORExpr ::= ( ForClause | LetClause )+ WhereClause? OrderByClause? 'return' ExprSingle
-ForClause ::= 'for' ForVar ( ',' ForVar )*
-ForVar ::= '$' VarName TypeDeclaration? PositionalVar? 'in' ExprSingle
-PositionalVar ::= 'at' '$' VarName
-LetClause ::= 'let' LetVar ( ',' LetVar )*
-LetVar ::= '$' VarName TypeDeclaration? ':=' ExprSingle
-WhereClause ::= 'where' ExprSingle
-OrderByClause ::= ( 'order' 'by' | 'stable' 'order' 'by' ) OrderSpecList
+ForClause ::= 'for' ForVar ( ',' ForVar )*  {pin=1 }//{recoverUntil='flwor_recover'}
+ForVar ::= DollarVarName TypeDeclaration? PositionalVar? 'in' ExprSingle
+PositionalVar ::= 'at' DollarVarName
+LetClause ::= 'let' LetVar ( ',' LetVar )*  {pin=1}//{recoverUntil='flwor_recover'}
+LetVar ::= DollarVarName TypeDeclaration? ':=' ExprSingle
+WhereClause ::= 'where' ExprSingle	 //{recoverUntil='flwor_recover'}
+OrderByClause ::= ( 'order' 'by' | 'stable' 'order' 'by' ) OrderSpecList   //{recoverUntil='flwor_recover'}
 OrderSpecList ::= OrderSpec ( ',' OrderSpec )*
 OrderSpec ::= ExprSingle OrderModifier
 OrderModifier ::= ( 'ascending' | 'descending' )? ( 'empty' ( 'greatest' | 'least' ) )? ( 'collation' URILiteral )?
+//private flwor_recover ::= !( ForClause | LetClause | WhereClause | OrderByClause | ExprSingle)
 
-QuantifiedExpr ::= ( 'some' | 'every' ) QuantVar ( ',' QuantVar )* 'satisfies' ExprSingle
-QuantVar ::= '$' VarName TypeDeclaration? 'in' ExprSingle
+QuantifiedExpr ::= ( 'some' | 'every' ) QuantVar ( ',' QuantVar )* 'satisfies' ExprSingle {pin=1}
+QuantVar ::= DollarVarName TypeDeclaration? 'in' ExprSingle
 
-TypeswitchExpr ::= 'typeswitch' '(' Expr ')' CaseClause+ 'default' ( '$' VarName )? 'return' ExprSingle
+TypeswitchExpr ::= 'typeswitch' '(' Expr ')' CaseClause+ 'default' DollarVarName? 'return' ExprSingle
 CaseClause ::= 'case' CaseVar 'return' ExprSingle
-CaseVar ::= ( '$' VarName 'as' )? SequenceType
+CaseVar ::= ( DollarVarName 'as' )? SequenceType
 
-IfExpr   ::= 'if' '(' Expr ')' 'then' ExprSingle 'else' ExprSingle
+IfExpr   ::= 'if' '(' Expr ')' 'then' ExprSingle 'else' ExprSingle {pin=1}
 OrExpr   ::= AndExpr ( 'or' AndExpr )*
 AndExpr  ::= ComparisonExpr ( 'and' ComparisonExpr )*
 ComparisonExpr ::= RangeExpr ( ( ValueComp | GeneralComp | NodeComp ) RangeExpr )?
