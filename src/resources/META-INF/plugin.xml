@@ -1,10 +1,10 @@
 <idea-plugin version="2">
 	<id>uk.co.overstory.xquery</id>
-	<name>XQuery Langage Plugin</name>
-	<description>Attempt to create an XQuery plugin for IntelliJ</description>
 	<version>1.0</version>
-	<vendor email="ron@overstory.co.uk" url="http://overstory.co.uk">OverStory Ltd</vendor>
+	<vendor email="ron@overstory.co.uk" url="http://overstory.co.uk">Ron Hitchens, OverStory Ltd</vendor>
 	<idea-version since-build="111.222" until-build=""/>
+	<name>XQuery Langage Plugin</name>
+	<description>An XQuery language plugin for IntelliJ</description>
 
 	<depends optional="true" config-file="plugin-java.xml">com.intellij.modules.java</depends>
 
@@ -20,17 +20,15 @@
 		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
 		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
+		<completion.contributor language="XQY" implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
 	<!--
-		<completion.contributor implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
 		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>
     <lang.namesValidator language="Clojure"
                          implementationClass="org.jetbrains.plugins.clojure.refactoring.rename.ClojureNameValidator"/>
 	-->
-
-
 
 	<application-components>
 		<!-- Add your application components here -->
@@ -45,10 +43,12 @@
 
 	<actions>
 		<!-- Create file actions -->
+<!--
 		<action id="XQuery.XQueryFile" class="uk.co.overstory.xquery.actions.NewXqueryFileAction"
 				text="XQuery File" description="Create new XQuery File">
 			<add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
 		</action>
+-->
 	</actions>
 
 </idea-plugin>

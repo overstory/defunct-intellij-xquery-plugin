@@ -103,33 +103,33 @@ NamespaceValue ::= URILiteral
 
 PathHint ::= StringLiteral
 
-BoundarySpaceDecl ::= 'declare' 'boundary-space' BoundarySpaceAction
+BoundarySpaceDecl ::= 'declare' 'boundary-space' BoundarySpaceAction {pin=2}
 BoundarySpaceAction ::= ( 'preserve' | 'strip' )
 
-DefaultNamespaceDecl ::= 'declare' 'default' DefaultNamespaceKind 'namespace' NamespaceValue
+DefaultNamespaceDecl ::= 'declare' 'default' DefaultNamespaceKind 'namespace' NamespaceValue {pin=2}
 DefaultNamespaceKind ::= ( 'element' | 'function' )
 
-ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' PathHint
+ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' PathHint {pin=2}
 
-OptionDecl ::= 'declare' 'option' OptionName StringLiteral
+OptionDecl ::= 'declare' 'option' OptionName StringLiteral {pin=2}
 OptionName ::= QName
-OrderingModeDecl ::= 'declare' 'ordering' ( 'ordered' | 'unordered' )
-EmptyOrderDecl ::= 'declare' 'default' 'order' 'empty' ( 'greatest' | 'least' )
+OrderingModeDecl ::= 'declare' 'ordering' ( 'ordered' | 'unordered' ) {pin=2}
+EmptyOrderDecl ::= 'declare' 'default' 'order' 'empty' ( 'greatest' | 'least' ) {pin=3}
 CopyNamespacesDecl ::= 'declare' 'copy-namespaces' PreserveMode ',' InheritMode
 PreserveMode ::= 'preserve' | 'no-preserve'
 InheritMode ::= 'inherit' | 'no-inherit'
-DefaultCollationDecl ::= 'declare' 'default' 'collation' URILiteral
-BaseURIDecl ::= 'declare' 'base-uri' URILiteral
-SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',' PathHint )* )?
-SchemaPrefix ::= 'namespace' NamespaceName '=' | 'default' 'element' 'namespace'
-ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )?
+DefaultCollationDecl ::= 'declare' 'default' 'collation' URILiteral {pin=3}
+BaseURIDecl ::= 'declare' 'base-uri' URILiteral {pin=2}
+SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',' PathHint )* )? {pin=2}
+SchemaPrefix ::= 'namespace' NamespaceName '=' | 'default' 'element' 'namespace' {pin=2}
+ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )? {pin=2}
 
 DollarVarName ::= '$' VarName {pin=1}
 
 VarDecl  ::= 'declare' Visibility 'variable' DollarVarName TypeDeclaration? ( ':=' ExprSingle | 'external' )  {pin=3}
 Visibility ::= 'private'?
 
-ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' )
+ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' ) {pin=2}
 FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' ) {pin=3}
 
 ParamList ::= Param ( ',' Param )*
@@ -142,9 +142,9 @@ Expr     ::= ExprSingle ( ',' ExprSingle )*
 ExprSingle ::= FLWORExpr | QuantifiedExpr | TypeswitchExpr | IfExpr | OrExpr | TryCatchExpr
 
 TryCatchExpr ::= TryClause CatchClause
-TryClause ::= 'try' EnclosedExpr
-CatchClause ::= 'catch' '(' DollarVarName ')' EnclosedExprExtended
-EnclosedExprExtended ::= '{' Expr? '}'
+TryClause ::= 'try' EnclosedExpr  {pin=1}
+CatchClause ::= 'catch' '(' DollarVarName ')' EnclosedExprExtended {pin=1}
+EnclosedExprExtended ::= '{' Expr? '}' {pin=1}
 
 FLWORExpr ::= ( ForClause | LetClause )+ WhereClause? OrderByClause? 'return' ExprSingle
 ForClause ::= 'for' ForVar ( ',' ForVar )*  {pin=1 }//{recoverUntil='flwor_recover'}
@@ -152,8 +152,8 @@ ForVar ::= DollarVarName TypeDeclaration? PositionalVar? 'in' ExprSingle
 PositionalVar ::= 'at' DollarVarName
 LetClause ::= 'let' LetVar ( ',' LetVar )*  {pin=1}//{recoverUntil='flwor_recover'}
 LetVar ::= DollarVarName TypeDeclaration? ':=' ExprSingle
-WhereClause ::= 'where' ExprSingle	 //{recoverUntil='flwor_recover'}
-OrderByClause ::= ( 'order' 'by' | 'stable' 'order' 'by' ) OrderSpecList   //{recoverUntil='flwor_recover'}
+WhereClause ::= 'where' ExprSingle {pin=1}	 //{recoverUntil='flwor_recover'}
+OrderByClause ::= ( 'order' 'by' | 'stable' 'order' 'by' ) OrderSpecList    {pin=1}//{recoverUntil='flwor_recover'}
 OrderSpecList ::= OrderSpec ( ',' OrderSpec )*
 OrderSpec ::= ExprSingle OrderModifier
 OrderModifier ::= ( 'ascending' | 'descending' )? ( 'empty' ( 'greatest' | 'least' ) )? ( 'collation' URILiteral )?
@@ -163,7 +163,7 @@ QuantifiedExpr ::= ( 'some' | 'every' ) QuantVar ( ',' QuantVar )* 'satisfies' E
 QuantVar ::= DollarVarName TypeDeclaration? 'in' ExprSingle
 
 TypeswitchExpr ::= 'typeswitch' '(' Expr ')' CaseClause+ 'default' DollarVarName? 'return' ExprSingle
-CaseClause ::= 'case' CaseVar 'return' ExprSingle
+CaseClause ::= 'case' CaseVar 'return' ExprSingle {pin=1}
 CaseVar ::= ( DollarVarName 'as' )? SequenceType
 
 IfExpr   ::= 'if' '(' Expr ')' 'then' ExprSingle 'else' ExprSingle {pin=1}
