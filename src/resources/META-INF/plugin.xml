@@ -20,7 +20,7 @@
 		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
 		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
-		<completion.contributor language="XQY" implementationClass="uk.co.overstory.xquery.XqyCompletionContributor"/>
+		<completion.contributor language="XQY" implementationClass="uk.co.overstory.xquery.completion.XqyCompletionContributor"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
 		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>

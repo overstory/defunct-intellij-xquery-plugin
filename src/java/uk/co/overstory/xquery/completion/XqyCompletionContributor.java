@@ -1,4 +1,4 @@
-package uk.co.overstory.xquery;
+package uk.co.overstory.xquery.completion;
 
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.CompletionContributor;
@@ -33,9 +33,8 @@ public class XqyCompletionContributor extends CompletionContributor
 {
 	public XqyCompletionContributor()
 	{
-		extend (CompletionType.BASIC,
-			psiElement().afterLeaf (":="),
-			new BindSuggestProvider());
+		extend (CompletionType.BASIC, psiElement().afterLeaf (":="), new BindSuggestProvider());
+		extend (CompletionType.BASIC, psiElement().afterLeaf ("version"), new XqueryVersionSuggestProvider());  // FIXME: smarten this up
 
 //		extend (CompletionType.BASIC,
 //			psiElement ().inside (PlatformPatterns.instanceOf (XqyFLWORExpr.class)),
@@ -69,6 +68,22 @@ public class XqyCompletionContributor extends CompletionContributor
 
 	// ----------------------------------------------------------------
 
+	private class AppendSemiColonInsertHandler implements InsertHandler<LookupElement>
+	{
+
+		@Override
+		public void handleInsert (InsertionContext context, LookupElement lookupElement)
+		{
+			Document document = context.getDocument();
+			Editor editor = context.getEditor();
+			CaretModel caretModel = editor.getCaretModel();
+
+			int offset = caretModel.getOffset();
+			document.insertString (offset, ";");
+			caretModel.moveToOffset (offset);
+		}
+	}
+
 	private class VarRefInsertHandler implements InsertHandler<LookupElement>
 	{
 		@Override
@@ -79,7 +94,7 @@ public class XqyCompletionContributor extends CompletionContributor
 			Editor editor = context.getEditor();
 			CaretModel caretModel = editor.getCaretModel();
 
-			int offset = caretModel.getOffset();
+			int offset = caretModel.getOffset ();
 			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset);
 
@@ -101,7 +116,7 @@ public class XqyCompletionContributor extends CompletionContributor
 			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset - 2);
 
-			AutoPopupController.getInstance (project).autoPopupMemberLookup(editor, null);
+			AutoPopupController.getInstance (project).autoPopupMemberLookup (editor, null);
 		}
 	}
 
@@ -112,10 +127,14 @@ public class XqyCompletionContributor extends CompletionContributor
 		protected void addCompletions (@NotNull CompletionParameters parameters,
 			ProcessingContext context, @NotNull CompletionResultSet result)
 		{
-			result.addElement (LookupElementBuilder.create ("$").setTailText ("<variable name>", true)
+			result.addElement (LookupElementBuilder.create ("$")
+				.setBold (true)
+				.setTailText ("<variable name>", true)
 				.setInsertHandler (new VarRefInsertHandler()));
 
 			result.addElement (LookupElementBuilder.create ("()")
+				.setBold (true)
+				.setTailText ("function", true)
 				.setInsertHandler (new FuncRefInsertHandler()));
 
 			addLocalInScopeFunctionSuggestions (parameters, context, result);
@@ -124,7 +143,7 @@ public class XqyCompletionContributor extends CompletionContributor
 		}
 	}
 
-	private static class FlworSuggestProvider extends CompletionProvider<CompletionParameters>
+	private class FlworSuggestProvider extends CompletionProvider<CompletionParameters>
 	{
 		@Override
 		protected void addCompletions (@NotNull CompletionParameters parameters,
@@ -155,6 +174,23 @@ public class XqyCompletionContributor extends CompletionContributor
 
 //			result.addElement(LookupElementBuilder.create ("monkeybutt"));
 			// FIXME: auto-generated
+		}
+	}
+
+	private class XqueryVersionSuggestProvider extends CompletionProvider<CompletionParameters>
+	{
+		@Override
+		protected void addCompletions (@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+		{
+			result.addElement (LookupElementBuilder.create ("'1.0-ml'")
+				.setTypeText ("MarkLogic Extensions", true)
+				.setInsertHandler (new AppendSemiColonInsertHandler()));
+			result.addElement (LookupElementBuilder.create ("'1.0'")
+				.setTypeText ("XQuery 1.0 Strict", true)
+				.setInsertHandler (new AppendSemiColonInsertHandler()));
+			result.addElement (LookupElementBuilder.create ("'3.0'")
+				.setTypeText ("XQuery 3.0 Strict", true)
+				.setInsertHandler (new AppendSemiColonInsertHandler()));
 		}
 	}
 }

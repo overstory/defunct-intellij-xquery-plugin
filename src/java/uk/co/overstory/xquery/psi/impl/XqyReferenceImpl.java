@@ -205,11 +205,12 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 
 	private boolean boldForElement (PsiElement element)
 	{
-		if (element instanceof XqyParamName) return true;
-
-		if ((element instanceof XqyVarName) && (element.getParent() instanceof XqyVarDecl)) return true;
-
-		return false;
+		return true;
+//		if (element instanceof XqyParamName) return true;
+//
+//		if ((element instanceof XqyVarName) && (element.getParent() instanceof XqyVarDecl)) return true;
+//
+//		return false;
 	}
 
 	// FIXME: This is hacky and needs to be sorted out, probably but tweaking the object model in the BNF file

@@ -85,7 +85,7 @@ LibraryModule ::= ModuleDecl Prolog
 
 ModuleDecl ::= 'module' 'namespace' NamespaceName '=' NamespaceValue Separator
 
-Prolog   ::= ( ( DefaultNamespaceDecl | Setter | NamespaceDecl | Import ) Separator )* ( ( VarDecl | FunctionDecl | OptionDecl ) Separator )*
+Prolog   ::= ( DefaultNamespaceDecl | Setter | NamespaceDecl | Import )* ( VarDecl | FunctionDecl | OptionDecl )*
 Setter   ::= BoundarySpaceDecl
            | DefaultCollationDecl
            | BaseURIDecl
@@ -97,40 +97,42 @@ Import   ::= SchemaImport | ModuleImport | ImportStylesheetDecl
 Separator ::= ';'
 //private prolog_recover ::= !(';' | QueryBody )
 
-NamespaceDecl ::= 'declare' 'namespace' NamespaceName '=' NamespaceValue
+NamespaceDecl ::= 'declare' 'namespace' NamespaceName '=' NamespaceValue Separator
 NamespaceName ::= NCName
 NamespaceValue ::= URILiteral
 
 PathHint ::= StringLiteral
 
-BoundarySpaceDecl ::= 'declare' 'boundary-space' BoundarySpaceAction {pin=2}
+BoundarySpaceDecl ::= 'declare' 'boundary-space' BoundarySpaceAction Separator {pin=2}
 BoundarySpaceAction ::= ( 'preserve' | 'strip' )
 
-DefaultNamespaceDecl ::= 'declare' 'default' DefaultNamespaceKind 'namespace' NamespaceValue {pin=2}
+DefaultNamespaceDecl ::= 'declare' 'default' DefaultNamespaceKind 'namespace' NamespaceValue Separator {pin=2}
 DefaultNamespaceKind ::= ( 'element' | 'function' )
 
 ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' PathHint {pin=2}
 
-OptionDecl ::= 'declare' 'option' OptionName StringLiteral {pin=2}
+OptionDecl ::= 'declare' 'option' OptionName StringLiteral Separator {pin=2}
 OptionName ::= QName
-OrderingModeDecl ::= 'declare' 'ordering' ( 'ordered' | 'unordered' ) {pin=2}
-EmptyOrderDecl ::= 'declare' 'default' 'order' 'empty' ( 'greatest' | 'least' ) {pin=3}
-CopyNamespacesDecl ::= 'declare' 'copy-namespaces' PreserveMode ',' InheritMode
+OrderingModeDecl ::= 'declare' 'ordering' ( 'ordered' | 'unordered' ) Separator {pin=2}
+EmptyOrderDecl ::= 'declare' 'default' 'order' 'empty' ( 'greatest' | 'least' ) Separator {pin=3}
+CopyNamespacesDecl ::= 'declare' 'copy-namespaces' PreserveMode ',' InheritMode Separator
 PreserveMode ::= 'preserve' | 'no-preserve'
 InheritMode ::= 'inherit' | 'no-inherit'
-DefaultCollationDecl ::= 'declare' 'default' 'collation' URILiteral {pin=3}
-BaseURIDecl ::= 'declare' 'base-uri' URILiteral {pin=2}
+DefaultCollationDecl ::= 'declare' 'default' 'collation' URILiteral Separator {pin=3}
+BaseURIDecl ::= 'declare' 'base-uri' URILiteral Separator {pin=2}
 SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',' PathHint )* )? {pin=2}
 SchemaPrefix ::= 'namespace' NamespaceName '=' | 'default' 'element' 'namespace' {pin=2}
 ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )? {pin=2}
 
 DollarVarName ::= '$' VarName {pin=1}
 
-VarDecl  ::= 'declare' Visibility 'variable' DollarVarName TypeDeclaration? ( ':=' ExprSingle | 'external' )  {pin=3}
+BindSymbol ::= ':='
+
+VarDecl  ::= 'declare' Visibility 'variable' DollarVarName TypeDeclaration? ( BindSymbol ExprSingle | 'external' ) Separator {pin=3}
 Visibility ::= 'private'?
 
-ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' ) {pin=2}
-FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' ) {pin=3}
+ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' ) Separator {pin=2}
+FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' ) Separator {pin=3}
 
 ParamList ::= Param ( ',' Param )*
 Param    ::= '$' ParamName TypeDeclaration? {pin=1}
@@ -151,7 +153,7 @@ ForClause ::= 'for' ForVar ( ',' ForVar )*  {pin=1 }//{recoverUntil='flwor_recov
 ForVar ::= DollarVarName TypeDeclaration? PositionalVar? 'in' ExprSingle
 PositionalVar ::= 'at' DollarVarName
 LetClause ::= 'let' LetVar ( ',' LetVar )*  {pin=1}//{recoverUntil='flwor_recover'}
-LetVar ::= DollarVarName TypeDeclaration? ':=' ExprSingle
+LetVar ::= DollarVarName TypeDeclaration? BindSymbol ExprSingle
 WhereClause ::= 'where' ExprSingle {pin=1}	 //{recoverUntil='flwor_recover'}
 OrderByClause ::= ( 'order' 'by' | 'stable' 'order' 'by' ) OrderSpecList    {pin=1}//{recoverUntil='flwor_recover'}
 OrderSpecList ::= OrderSpec ( ',' OrderSpec )*
