@@ -5,8 +5,12 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.util.PsiTreeUtil;
+import uk.co.overstory.xquery.psi.XqyFunctionDecl;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 import uk.co.overstory.xquery.psi.XqyRefVarName;
+import uk.co.overstory.xquery.psi.XqyVarDecl;
+import uk.co.overstory.xquery.psi.XqyVarName;
 import uk.co.overstory.xquery.psi.XqyXqueryVersionString;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +47,14 @@ public class XqyAnnotator implements Annotator, DumbAware
 			}
 		}
 
+		if (element instanceof XqyVarDecl) {
+			checkForDupeGlobalVars (element, holder);
+		}
+
+		if (element instanceof XqyFunctionDecl) {
+			checkForDupeFuncitons (element, holder);
+		}
+
 		PsiReference reference = element.getReference();
 		Object resolve = reference == null ? null : reference.resolve();
 
@@ -54,6 +66,35 @@ public class XqyAnnotator implements Annotator, DumbAware
 		if ((element instanceof XqyRefFunctionName) && (resolve == null) && ( ! functionInScope (element))) {
 			holder.createErrorAnnotation (element, "Unknown function '" + element.getText () + "'()");
 			return;
+		}
+	}
+
+	// -----------------------------------------------------------
+
+	private void checkForDupeFuncitons (@NotNull PsiElement element, @NotNull AnnotationHolder holder)
+	{
+		// FIXME: auto-generated
+	}
+
+	private void checkForDupeGlobalVars (@NotNull PsiElement varDecl, @NotNull AnnotationHolder holder)
+	{
+		PsiElement varNameElement = PsiTreeUtil.findChildOfType (varDecl, XqyVarName.class);
+		String varName = getTextOfElement (varNameElement);
+
+		if (varName == null) return;
+
+		for (PsiElement element : varDecl.getParent().getChildren()) {
+			if (element == varDecl) continue;	// self
+			if ( ! (element instanceof XqyVarDecl)) continue;
+
+			PsiElement targetVarNameElement = PsiTreeUtil.findChildOfType (element, XqyVarName.class);
+			String targetName = getTextOfElement (targetVarNameElement);
+
+			if (targetName == null) continue;
+
+			if (varName.equals (targetName)) {
+				holder.createErrorAnnotation (targetVarNameElement, "Duplicate variable declaration '$" + targetName + "'");
+			}
 		}
 	}
 
@@ -76,4 +117,16 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 		return false;
 	}
+
+	private String getTextOfElement (PsiElement element)
+	{
+		if (element == null) return null;
+
+		String s = element.getText();
+
+		if ((s == null) || (s.length () == 0)) return null;
+
+		return s;
+	}
+
 }

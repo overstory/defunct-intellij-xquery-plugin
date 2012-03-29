@@ -11,7 +11,6 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.util.PsiTreeUtil;
-import uk.co.overstory.xquery.XqyIcons;
 import uk.co.overstory.xquery.psi.*;
 import uk.co.overstory.xquery.psi.resolve.XqyResolveProcessor;
 
@@ -160,15 +159,13 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		if (element instanceof XqyParamName) return " - parameter";	// ToDo: include function name?
 
 		if (element instanceof XqyVarName) {
-			PsiElement parent = element.getParent();
-
-			if (parent instanceof XqyVarDecl) return " - global";
-			if (parent instanceof XqyPositionalVar) return " - position";
-			if (parent instanceof XqyLetVar) return " - let";
-			if (parent instanceof XqyForVar) return " - for";
-			if (parent instanceof XqyCaseVar) return " - case";
-			if (parent instanceof XqyCatchClause) return " - catch";
-			if (parent instanceof XqyQuantVar) return " - quantified";
+			if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) return " - position";
+			if (PsiTreeUtil.getParentOfType (element, XqyQuantVar.class) != null) return " - quantified";
+			if (PsiTreeUtil.getParentOfType (element, XqyLetVar.class) != null) return " - let";
+			if (PsiTreeUtil.getParentOfType (element, XqyForVar.class) != null) return " - for";
+			if (PsiTreeUtil.getParentOfType (element, XqyCaseVar.class) != null) return " - case";
+			if (PsiTreeUtil.getParentOfType (element, XqyCatchClause.class) != null) return " - catch";
+			if (PsiTreeUtil.getParentOfType (element, XqyVarDecl.class) != null) return " - global";
 
 			return " - variable";
 		}
