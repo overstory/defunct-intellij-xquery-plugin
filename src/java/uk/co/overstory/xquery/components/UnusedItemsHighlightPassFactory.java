@@ -22,15 +22,20 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.util.PsiTreeUtil;
 import gnu.trove.THashSet;
 import uk.co.overstory.xquery.psi.XqyCompositeElement;
 import uk.co.overstory.xquery.psi.XqyFile;
+import uk.co.overstory.xquery.psi.XqyFunctionDecl;
 import uk.co.overstory.xquery.psi.XqyFunctionName;
+import uk.co.overstory.xquery.psi.XqyLibraryModule;
 import uk.co.overstory.xquery.psi.XqyNamedElement;
-import uk.co.overstory.xquery.psi.XqyParamName;
+import uk.co.overstory.xquery.psi.XqyParam;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 import uk.co.overstory.xquery.psi.XqyRefVarName;
+import uk.co.overstory.xquery.psi.XqyVarDecl;
 import uk.co.overstory.xquery.psi.XqyVarName;
+import uk.co.overstory.xquery.psi.XqyVisibility;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -54,9 +59,10 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 	// ToDo: check types and arity of function params
 	// ToDo: highlight when variables hide other variables
 	// ToDo: check types of expressions against declared types of variables
-	// ToDo: check return type of function of return value, where possible
+	// ToDo: check return type of function return value, where possible
 	// ToDo: check validity of option values
 	// ToDo: warn about missing return type for functions
+	// ToDo: Warn if library module has a body
 
 	public UnusedItemsHighlightPassFactory (Project project, TextEditorHighlightingPassRegistrar highlightingPassRegistrar)
 	{
@@ -146,16 +152,30 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		private boolean externallyVisible (XqyCompositeElement element)
 		{
-			return false;  // FIXME: Check if declaration is private, no warning if so
+			if (PsiTreeUtil.getParentOfType (element, XqyLibraryModule.class) == null) return false;
+
+			XqyCompositeElement decl = PsiTreeUtil.getParentOfType (element, XqyVarDecl.class, XqyFunctionDecl.class);
+			XqyVisibility visibility = PsiTreeUtil.findChildOfType (decl, XqyVisibility.class);
+
+			if ((visibility != null) && ("private".equals (visibility.getText ()))) {
+				return false;
+			}
+
+			return true;
 		}
 
 		private String unusedMessageForElement (XqyCompositeElement element)
 		{
-			if (element instanceof XqyVarName) return "Unused variable";
-			if (element instanceof XqyParamName) return "Unused parameter";
 			if (element instanceof XqyFunctionName) return "Unused function";
+			if (element instanceof XqyVarName) {
+				if (PsiTreeUtil.getParentOfType (element, XqyParam.class) != null) {
+					return "Unused parameter";
+				}
+				return "Unused variable";
+			}
 
 			return "Unused declaration";
 		}

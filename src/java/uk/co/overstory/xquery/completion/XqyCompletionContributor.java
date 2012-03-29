@@ -173,7 +173,6 @@ public class XqyCompletionContributor extends CompletionContributor
 //			);
 
 //			result.addElement(LookupElementBuilder.create ("monkeybutt"));
-			// FIXME: auto-generated
 		}
 	}
 

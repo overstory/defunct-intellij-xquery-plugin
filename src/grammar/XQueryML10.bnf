@@ -56,9 +56,8 @@
   CHAR_REF_START="&#"
   CHAR_HEX_REF_START="&#x"
 
-  implements("VarName|ParamName|FunctionName")="uk.co.overstory.xquery.psi.XqyNamedElement"
+  implements("VarName|FunctionName")="uk.co.overstory.xquery.psi.XqyNamedElement"
   extends("VarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameElementImpl"
-  extends("ParamName")="uk.co.overstory.xquery.psi.impl.XqyParamNameElementImpl"
   extends("FunctionName")="uk.co.overstory.xquery.psi.impl.XqyFunctionNameElementImpl"
 
   mixin("RefVarName")="uk.co.overstory.xquery.psi.impl.XqyVarNameReference"
@@ -135,8 +134,7 @@ ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' ) Separator
 FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' ) Separator {pin=3}
 
 ParamList ::= Param ( ',' Param )*
-Param    ::= '$' ParamName TypeDeclaration? {pin=1}
-ParamName ::= QName
+Param    ::= DollarVarName TypeDeclaration?
 
 EnclosedExpr ::= '{' Expr '}' {pin=1}
 QueryBody ::= Expr

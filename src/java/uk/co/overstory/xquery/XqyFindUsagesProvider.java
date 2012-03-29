@@ -7,8 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import uk.co.overstory.xquery.parser.XqyLexer;
 import uk.co.overstory.xquery.psi.XqyFunctionName;
-import uk.co.overstory.xquery.psi.XqyParamName;
-import uk.co.overstory.xquery.psi.XqyRefVarName;
 import uk.co.overstory.xquery.psi.XqyTypes;
 import uk.co.overstory.xquery.psi.XqyVarName;
 
@@ -42,7 +40,7 @@ public class XqyFindUsagesProvider implements FindUsagesProvider
 	public boolean canFindUsagesFor (@NotNull PsiElement psiElement)
 	{
 //System.out.println ("XqyFindUsagesProvider.canFindUsagesFor: " + psiElement.toString() + "/" + psiElement.getText());
-		return ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyParamName) || (psiElement instanceof XqyFunctionName));
+		return ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyFunctionName));
 	}
 
 	@Override

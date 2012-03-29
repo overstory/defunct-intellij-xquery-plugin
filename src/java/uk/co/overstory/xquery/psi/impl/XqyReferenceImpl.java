@@ -59,11 +59,12 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		for (int i = 0; i < results.length; i++) {
 			PsiElement element = results[i].getElement();
 
+			// ToDo: made a proper mutable builder to accumlulate attributes, use it to build LookUpElement
 			LookupElementBuilder builder = LookupElementBuilder.create ((PsiNamedElement) element)
 				.setIcon (element.getIcon (0))
 				.setBold (boldForElement (element))	// FIXME
 				.setTailText (tailTextForElement (element), true)
-				.setTypeText (typeTextForElement (element), true);
+				.setTypeText (typeTextForElement (element), false);
 
 			lookups [i] = builder;
 		}
@@ -121,7 +122,11 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		XqySequenceType seqType = findTypeDeclaration (element);
 
 		if (seqType != null) {
-			return seqType.getText ();
+			return seqType.getText();
+		}
+
+		if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) {
+			return "xs:integer";
 		}
 
 		return null;
@@ -129,7 +134,9 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 
 	private XqySequenceType findTypeDeclaration (PsiElement element)
 	{
-		for (PsiElement el = element.getNextSibling (); el != null; el = el.getNextSibling ()) {
+		XqyDollarVarName dollarVar = PsiTreeUtil.getParentOfType (element, XqyDollarVarName.class);
+
+		for (PsiElement el = dollarVar.getNextSibling(); el != null; el = el.getNextSibling()) {
 			if (el instanceof XqyTypeDeclaration) {
 				return ((XqyTypeDeclaration) el).getSequenceType();
 			}
@@ -138,16 +145,16 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 			}
 		}
 
-		PsiElement parent = element.getParent();
-
-		for (PsiElement el : parent.getChildren()) {
-			if (el instanceof XqyTypeDeclaration) {
-				return ((XqyTypeDeclaration) el).getSequenceType();
-			}
-			if (el instanceof XqySequenceType) {
-				return (XqySequenceType) el;
-			}
-		}
+//		PsiElement parent = element.getParent();
+//
+//		for (PsiElement el : parent.getChildren()) {
+//			if (el instanceof XqyTypeDeclaration) {
+//				return ((XqyTypeDeclaration) el).getSequenceType();
+//			}
+//			if (el instanceof XqySequenceType) {
+//				return (XqySequenceType) el;
+//			}
+//		}
 
 		return null;
 	}
@@ -156,21 +163,31 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	{
 		if (element instanceof XqyFunctionName) return tailTextForFunction ((XqyFunctionName) element);
 
-		if (element instanceof XqyParamName) return " - parameter";	// ToDo: include function name?
-
-		if (element instanceof XqyVarName) {
-			if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) return " - position";
-			if (PsiTreeUtil.getParentOfType (element, XqyQuantVar.class) != null) return " - quantified";
-			if (PsiTreeUtil.getParentOfType (element, XqyLetVar.class) != null) return " - let";
-			if (PsiTreeUtil.getParentOfType (element, XqyForVar.class) != null) return " - for";
-			if (PsiTreeUtil.getParentOfType (element, XqyCaseVar.class) != null) return " - case";
-			if (PsiTreeUtil.getParentOfType (element, XqyCatchClause.class) != null) return " - catch";
-			if (PsiTreeUtil.getParentOfType (element, XqyVarDecl.class) != null) return " - global";
-
-			return " - variable";
-		}
+		if (element instanceof XqyVarName) return tailTextForVariable (element);
 
 		return "???";
+	}
+
+	private String tailTextForVariable (PsiElement element)
+	{
+		if (PsiTreeUtil.getParentOfType (element, XqyParam.class) != null) return " - parameter";
+		if (PsiTreeUtil.getParentOfType (element, XqyQuantVar.class) != null) return " - quantified";
+		if (PsiTreeUtil.getParentOfType (element, XqyLetVar.class) != null) return " - let";
+		if (PsiTreeUtil.getParentOfType (element, XqyCaseVar.class) != null) return " - case";
+		if (PsiTreeUtil.getParentOfType (element, XqyCatchClause.class) != null) return " - catch";
+		if (PsiTreeUtil.getParentOfType (element, XqyVarDecl.class) != null) return " - prolog var";
+
+		if (PsiTreeUtil.getParentOfType (element, XqyForVar.class) != null) {
+			if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) {
+				XqyForVar forVar = PsiTreeUtil.getParentOfType (element, XqyForVar.class);
+				String forVarname = forVar.getDollarVarName().getVarName().getText();
+
+				return " - position ($" + forVarname + ")";
+			}
+			return " - for";
+		}
+
+		return " - variable";
 	}
 
 	private String tailTextForFunction (XqyFunctionName functionName)
@@ -186,7 +203,7 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		for (XqyParam param : params) {
 			if (sb.length () != 1) sb.append (", ");
 
-			sb.append ("$").append (param.getParamName().getText());
+			sb.append ("$").append (param.getDollarVarName().getVarName().getText());
 
 			if (param.getTypeDeclaration() != null) {
 				sb.append (" ");
@@ -202,12 +219,11 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 
 	private boolean boldForElement (PsiElement element)
 	{
-		return true;
-//		if (element instanceof XqyParamName) return true;
-//
-//		if ((element instanceof XqyVarName) && (element.getParent() instanceof XqyVarDecl)) return true;
-//
-//		return false;
+		if ((element instanceof XqyVarName) && (PsiTreeUtil.getParentOfType (element, XqyVarDecl.class) != null)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	// FIXME: This is hacky and needs to be sorted out, probably but tweaking the object model in the BNF file

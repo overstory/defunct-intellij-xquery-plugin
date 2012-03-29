@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
-import uk.co.overstory.xquery.psi.ResolveUtil;
 import uk.co.overstory.xquery.psi.XqyCaseClause;
 import uk.co.overstory.xquery.psi.XqyCatchClause;
 import uk.co.overstory.xquery.psi.XqyCompositeElement;
@@ -16,9 +15,7 @@ import uk.co.overstory.xquery.psi.XqyFLWORExpr;
 import uk.co.overstory.xquery.psi.XqyFunctionDecl;
 import uk.co.overstory.xquery.psi.XqyLetClause;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
-import uk.co.overstory.xquery.psi.XqyTryCatchExpr;
 import uk.co.overstory.xquery.psi.XqyVarDecl;
-import uk.co.overstory.xquery.psi.XqyVarName;
 
 import org.jetbrains.annotations.NotNull;
 

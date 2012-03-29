@@ -13,7 +13,6 @@ import uk.co.overstory.xquery.XqyLanguage;
 import uk.co.overstory.xquery.psi.XqyCompositeElement;
 import uk.co.overstory.xquery.psi.XqyFile;
 import uk.co.overstory.xquery.psi.XqyFunctionName;
-import uk.co.overstory.xquery.psi.XqyParamName;
 import uk.co.overstory.xquery.psi.XqyVarName;
 
 import org.intellij.grammar.parser.GeneratedParserUtilBase;
@@ -78,7 +77,7 @@ public class XqyFileImpl  extends PsiFileBase implements XqyFile
 			@Override
 			public boolean process (PsiElement psiElement)
 			{
-				if ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyParamName) || (psiElement instanceof XqyFunctionName)) {
+				if ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyFunctionName)) {
 					result.add ((XqyCompositeElement) psiElement);
 				}
 
