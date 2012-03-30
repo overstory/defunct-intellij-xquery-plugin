@@ -31,6 +31,7 @@ public class XqyFunctionNameReference extends XqyQNameImpl implements XqyRefFunc
 		return this;
 	}
 
+	// FIXME: This is the same as for XqyVarNameReference, consolidate
 	@Override
 	public PsiReference getReference()
 	{

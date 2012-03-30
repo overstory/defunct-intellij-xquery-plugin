@@ -9,6 +9,11 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.HashSet;
+import uk.co.overstory.xquery.psi.XqyCompositeElement;
+import uk.co.overstory.xquery.psi.XqyFunctionDecl;
+import uk.co.overstory.xquery.psi.XqyLibraryModule;
+import uk.co.overstory.xquery.psi.XqyVarDecl;
+import uk.co.overstory.xquery.psi.XqyVisibility;
 import uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider;
 
 import org.jetbrains.annotations.Nullable;
@@ -79,9 +84,19 @@ public class XqyResolveProcessor implements PsiScopeProcessor
 
 	// ----------------------------------------------------------
 
-	private boolean isAccessible (PsiNamedElement namedElement) {
-		//todo implement me
+	// ToDo: verify that this is correct for this context
+	@SuppressWarnings("unchecked")
+	private boolean isAccessible (PsiNamedElement element)
+	{
+		XqyCompositeElement decl = PsiTreeUtil.getParentOfType (element, XqyVarDecl.class, XqyFunctionDecl.class);
+		XqyVisibility visibility = PsiTreeUtil.findChildOfType (decl, XqyVisibility.class);
+
+		if ((visibility != null) && ("private".equals (visibility.getText ()))) {
+			return false;
+		}
+
 		return true;
+
 	}
 
 	private boolean sameNameSeen (PsiNamedElement element)

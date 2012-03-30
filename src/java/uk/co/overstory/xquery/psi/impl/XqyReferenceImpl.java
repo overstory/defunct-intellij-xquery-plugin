@@ -59,7 +59,7 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		for (int i = 0; i < results.length; i++) {
 			PsiElement element = results[i].getElement();
 
-			// ToDo: made a proper mutable builder to accumlulate attributes, use it to build LookUpElement
+			// ToDo: make a proper mutable builder to accumlulate attributes, use it to build LookUpElement
 			LookupElementBuilder builder = LookupElementBuilder.create ((PsiNamedElement) element)
 				.setIcon (element.getIcon (0))
 				.setBold (boldForElement (element))	// FIXME
@@ -125,9 +125,9 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 			return seqType.getText();
 		}
 
-		if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) {
-			return "xs:integer";
-		}
+		if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) return "xs:integer";
+
+		if (PsiTreeUtil.getParentOfType (element, XqyCatchClause.class) != null) return "element(error)";
 
 		return null;
 	}
@@ -226,7 +226,6 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		return false;
 	}
 
-	// FIXME: This is hacky and needs to be sorted out, probably but tweaking the object model in the BNF file
 	private XqyQName qnameFor (T element)
 	{
 		if (element instanceof XqyRefFunctionName) return ((XqyRefFunctionName) element).getQName();

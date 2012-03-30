@@ -26,7 +26,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 	private static final String ALLOWED_XQUERY_VERSIONS = "'1.0-ml', '1.0' or '0.9-ml'";
 
 	private static final String [] knownXQueryVersionStrings = {
-		"0.9-ml", "1.0", "1.0-ml", "3.0", "3.0-ml"		// FIXME: This should be defined in a property or something, matching parse rules in effect
+		"0.9-ml", "1.0", "1.0-ml", "3.0"		// FIXME: This should be defined in a property or something, matching parse rules in effect
 	};
 
 	private static final String [] definedFunctionPrefixes = {
@@ -52,7 +52,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 		}
 
 		if (element instanceof XqyFunctionDecl) {
-			checkForDupeFuncitons (element, holder);
+			checkForDupeFunctions (element, holder);
 		}
 
 		PsiReference reference = element.getReference();
@@ -71,7 +71,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 	// -----------------------------------------------------------
 
-	private void checkForDupeFuncitons (@NotNull PsiElement element, @NotNull AnnotationHolder holder)
+	private void checkForDupeFunctions (@NotNull PsiElement element, @NotNull AnnotationHolder holder)
 	{
 		// FIXME: auto-generated
 	}
