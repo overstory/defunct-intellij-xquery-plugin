@@ -108,7 +108,7 @@ BoundarySpaceAction ::= ( 'preserve' | 'strip' )
 DefaultNamespaceDecl ::= 'declare' 'default' DefaultNamespaceKind 'namespace' NamespaceValue Separator {pin=2}
 DefaultNamespaceKind ::= ( 'element' | 'function' )
 
-ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' PathHint {pin=2}
+ImportStylesheetDecl ::= 'import' 'stylesheet' 'at' PathHint Separator {pin=2}
 
 OptionDecl ::= 'declare' 'option' OptionName StringLiteral Separator {pin=2}
 OptionName ::= QName
@@ -119,9 +119,9 @@ PreserveMode ::= 'preserve' | 'no-preserve'
 InheritMode ::= 'inherit' | 'no-inherit'
 DefaultCollationDecl ::= 'declare' 'default' 'collation' URILiteral Separator {pin=3}
 BaseURIDecl ::= 'declare' 'base-uri' URILiteral Separator {pin=2}
-SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',' PathHint )* )? {pin=2}
+SchemaImport ::= 'import' 'schema' SchemaPrefix? URILiteral ( 'at' PathHint ( ',' PathHint )* )? Separator {pin=2}
 SchemaPrefix ::= 'namespace' NamespaceName '=' | 'default' 'element' 'namespace' {pin=2}
-ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )? {pin=2}
+ModuleImport ::= 'import' 'module' ( 'namespace' NamespaceName '=' )? NamespaceValue ( 'at' PathHint ( ',' PathHint )* )? Separator {pin=2}
 
 DollarVarName ::= '$' VarName {pin=1}
 
