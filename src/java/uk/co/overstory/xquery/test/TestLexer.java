@@ -15,6 +15,8 @@ public class TestLexer
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
 			"\n" +
+			"(: embedded (parens) :)\n" +
+			"\n" +
 			"(# myqname this is a pragma #)\n" +
 			"" +
 			"<?target This is a processing instruction ?>\n" +

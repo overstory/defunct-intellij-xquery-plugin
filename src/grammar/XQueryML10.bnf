@@ -131,7 +131,7 @@ VarDecl  ::= 'declare' Visibility 'variable' DollarVarName TypeDeclaration? ( Bi
 Visibility ::= 'private'?
 
 ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' ) Separator {pin=2}
-FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' ( 'as' SequenceType )? ( EnclosedExpr | 'external' ) Separator {pin=3}
+FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' TypeDeclaration? ( EnclosedExpr | 'external' ) Separator {pin=3}
 
 ParamList ::= Param ( ',' Param )*
 Param    ::= DollarVarName TypeDeclaration?
@@ -275,11 +275,13 @@ CompCommentConstructor ::= 'comment' '{' Expr '}'
 CompPIConstructor ::= 'processing-instruction' ( PIName | '{' Expr '}' ) '{' Expr? '}'
 SingleType ::= AtomicType OccurrenceIndicator?
 //SingleType ::= AtomicType ('?'|'*'^OccurrenceIndicator)?
+
 TypeDeclaration ::= 'as' SequenceType
-SequenceType ::= 'empty-sequence' '(' ')' | ItemType OccurrenceIndicator?
+SequenceType ::= EmptySequenceTest | ItemType OccurrenceIndicator?
 OccurrenceIndicator ::= '?' | '*' | '+'
+
 //OccurrenceIndicator ::= '?' | '*'^OccurrenceIndicator | '+'^OccurrenceIndicator
-ItemType ::= KindTest | 'item' '(' ')' | AtomicType
+ItemType ::= KindTest | ItemTest | AtomicType
 AtomicType ::= QName
 KindTest ::= DocumentTest
            | ElementTest
@@ -291,6 +293,8 @@ KindTest ::= DocumentTest
            | TextTest
            | AnyKindTest
            | BinaryTest
+EmptySequenceTest ::= 'empty-sequence' '(' ')'
+ItemTest ::= 'item' '(' ')'
 BinaryTest ::= 'binary' '(' ')'
 AnyKindTest ::= 'node' '(' ')'
 DocumentTest ::= 'document-node' '(' ( ElementTest | SchemaElementTest )? ')'
@@ -344,7 +348,7 @@ Wildcard ::= NCName ':' '*' | '*' ( ':' NCName )?
 
 Comment ::= COMMENT_START COMMENT_CONTENTS COMMENT_END
 
-CDataSection ::= CDATA_START  CDATA_CONTENTS CDATA_END
+CDataSection ::= CDATA_START CDATA_CONTENTS CDATA_END
 
 /*
 FIXME: Pragma parsing intentionally simplified for now, need to recognize and highlight qname appropriately

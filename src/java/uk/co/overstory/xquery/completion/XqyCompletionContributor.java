@@ -89,13 +89,13 @@ public class XqyCompletionContributor extends CompletionContributor
 		@Override
 		public void handleInsert (InsertionContext context, LookupElement lookupElement)
 		{
-			Document document = context.getDocument();
+//			Document document = context.getDocument();
 			Project project = context.getProject();
 			Editor editor = context.getEditor();
 			CaretModel caretModel = editor.getCaretModel();
 
-			int offset = caretModel.getOffset ();
-			document.insertString (offset, ";");
+			int offset = caretModel.getOffset();
+//			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset);
 
 			AutoPopupController.getInstance (project).autoPopupMemberLookup(editor, null);
@@ -107,13 +107,13 @@ public class XqyCompletionContributor extends CompletionContributor
 		@Override
 		public void handleInsert (InsertionContext context, LookupElement lookupElement)
 		{
-			Document document = context.getDocument();
+//			Document document = context.getDocument();
 			Project project = context.getProject();
 			Editor editor = context.getEditor();
 			CaretModel caretModel = editor.getCaretModel();
 
 			int offset = caretModel.getOffset();
-			document.insertString (offset, ";");
+//			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset - 2);
 
 			AutoPopupController.getInstance (project).autoPopupMemberLookup (editor, null);

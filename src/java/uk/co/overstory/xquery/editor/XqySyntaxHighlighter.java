@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import uk.co.overstory.xquery.XqyParserDefinition;
 import uk.co.overstory.xquery.parser.XqyLexer;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +61,7 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		if (type == TokenType.BAD_CHARACTER) {
 			return pack (ILLEGAL);
 		}
-		if ((type == XQY_COMMENT) || (type == XQY_COMMENT_START) || (type == XQY_COMMENT_END) || (type == XQY_COMMENT_CONTENTS)) {
+		if ((type == XqyParserDefinition.XQY_BLOCK_COMMENT) || (type == XQY_COMMENT) || (type == XQY_COMMENT_START) || (type == XQY_COMMENT_END) || (type == XQY_COMMENT_CONTENTS)) {
 			return pack (COMMENT);
 		}
 		if ((type == XQY_XML_COMMENT_START) || (type == XQY_XML_COMMENT_END) || (type == XQY_XML_COMMENT_CONTENTS)) {

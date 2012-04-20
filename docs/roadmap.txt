@@ -3,7 +3,7 @@
 
 Basic functionality
 	Syntax color highlighting with XQuery-specific color settings
-	Visiual matching of (), [], {}, quotes, XQuery and XML comments, etc
+	Visual matching of (), [], {}, quotes, XQuery and XML comments, etc
 	Auto comment/uncomment of XQuery code
 	Jump to definition of variable or function
 	Find usages of a variable or function
@@ -12,8 +12,8 @@ Basic functionality
 	Auto suggest
 		variables and functions in scope at insertion point
 		Types are displayed if defined
-		Function paramters (with types) are displayed
-	Refactor: rename variabled and functions
+		Function parameters (with types) are displayed
+	Refactor: rename variables and functions
 
 	All the above are working now, within the limits of the current
 	state of the Parser/Lexer.  Some of these features currently

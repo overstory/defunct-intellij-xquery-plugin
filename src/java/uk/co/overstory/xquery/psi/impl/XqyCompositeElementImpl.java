@@ -49,10 +49,6 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 
 		PsiElement current = (this instanceof XqyFLWORExpr) ? findPrecedingFlworSibling (place) : getLastChild();
 
-//		if (this instanceof XqyFLWORExpr) {
-//			current = findPrecedingFlworSibling (place);
-//		}
-
 		while (current != null) {
 			if ( ! current.processDeclarations (processor, state, null, place)) {
 				return false;

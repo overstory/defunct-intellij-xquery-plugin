@@ -43,7 +43,7 @@ CommentContents= ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | '(' ) '('* & '(' | ( (
 CommentContents= ~":)"
 */
 /* FIXME: Need to properly parse nested comments */
-CommentContents=  ( [^(:] | ([:]+ [^)]) )*
+CommentContents=  ( [^(:] | \( [^:] | ([:]+ [^)]) )*
 XmlCommentContents=  ( [^-] | '-' [^-] )*
 CdataContents=  ( [^\]] | ']' [^\]] | ']' ']' [^\]] )*
 PragmaContents=  ( [^#)] | '#'+ [^)] )*
@@ -94,25 +94,19 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 /* TODO: Need state for XML comments?  CDATA?  Pragmas? */
 
 <STRING_QUOTE> {
-  \"                             { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
-  \"\"                           { string.append('"') ; }
-  [^\n\r\"\\]+                   { string.append( yytext() ); }
-  \\n                            { string.append('\n'); }
-  \\r                            { string.append('\r'); }
-  \\                             { string.append('\\'); }
+  \"\"    { string.append('"') ; }
+  \"      { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+  [^\"]+  { string.append( yytext() ); }
 }
 
 <STRING_APOST> {
-  \'                             { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
-  \'\'                           { string.append("'") ; }
-  [^\n\r\'\\]+                   { string.append( yytext() ); }
-  \\n                            { string.append('\n'); }
-  \\r                            { string.append('\r'); }
-  \\                             { string.append('\\'); }
+  \'\'    { string.append("'") ; }
+  \'      { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+  [^\']+  { string.append( yytext() ); }
 }
 
 <COMMENT> {
-  {CommentContents} { return XqyTypes.XQY_COMMENT_CONTENTS;}
+  {CommentContents} { return XqyTypes.XQY_COMMENT_CONTENTS; }
   ":)" { yybegin(YYINITIAL); return XqyTypes.XQY_COMMENT_END; }
 }
 
@@ -152,6 +146,7 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
   \"  { string.setLength(0); yybegin(STRING_QUOTE); }
   \'  { string.setLength(0); yybegin(STRING_APOST); }
+
   "(:" { yybegin(COMMENT); return XqyTypes.XQY_COMMENT_START; }
   "<!--" { yybegin(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
   "<?" { yybegin(PI_TARGET); return XqyTypes.XQY_PI_START; }
@@ -163,7 +158,6 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
   ( {DoubleLiteral} | {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
   {id} { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
-
 
   "//" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH_SLASH; }
   "/" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH; }

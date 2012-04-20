@@ -53,7 +53,7 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 //System.out.println ("XqyReferenceImpl.getVariants");
 		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
 
-		ResolveResult[] results = resolveCache.resolveWithCaching (this, variantResolver, true, false);
+		ResolveResult [] results = resolveCache.resolveWithCaching (this, variantResolver, true, false);
 		LookupElement [] lookups = new LookupElement[results.length];
 
 		for (int i = 0; i < results.length; i++) {
@@ -135,6 +135,8 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	private XqySequenceType findTypeDeclaration (PsiElement element)
 	{
 		XqyDollarVarName dollarVar = PsiTreeUtil.getParentOfType (element, XqyDollarVarName.class);
+
+		if (dollarVar == null) return null;
 
 		for (PsiElement el = dollarVar.getNextSibling(); el != null; el = el.getNextSibling()) {
 			if (el instanceof XqyTypeDeclaration) {

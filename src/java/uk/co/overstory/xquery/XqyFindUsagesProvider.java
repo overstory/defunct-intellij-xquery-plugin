@@ -6,6 +6,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import uk.co.overstory.xquery.parser.XqyLexer;
+import uk.co.overstory.xquery.psi.XqyFile;
 import uk.co.overstory.xquery.psi.XqyFunctionName;
 import uk.co.overstory.xquery.psi.XqyTypes;
 import uk.co.overstory.xquery.psi.XqyVarName;
@@ -68,8 +69,11 @@ System.out.println ("XqyFindUsagesProvider.getHelpId: " + element.getText());
 	{
 //System.out.println ("XqyFindUsagesProvider.getDescriptiveName: " + element.getText());
 		if (element instanceof XqyFunctionName) return element.getText() + "()";
+		if (element instanceof XqyVarName) return "$" + element.getText();
 
-		return "$" + element.getText();
+		if (element instanceof XqyFile) return ((XqyFile) element).getName();
+
+		return "FIXME: XqyFindUsagesProvider.getDescriptiveName";
 
 //		return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE);
 	}

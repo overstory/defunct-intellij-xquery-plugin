@@ -2,7 +2,7 @@
 	<id>uk.co.overstory.xquery</id>
 	<version>1.0</version>
 	<vendor email="ron@overstory.co.uk" url="http://overstory.co.uk">Ron Hitchens, OverStory Ltd</vendor>
-	<idea-version since-build="111.222" until-build=""/>
+	<idea-version since-build="111.1" until-build=""/>
 	<name>XQuery Langage Plugin</name>
 	<description>An XQuery language plugin for IntelliJ</description>
 
