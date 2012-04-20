@@ -1,5 +1,5 @@
 *.iws
+*~
 gen
 out
 src/java/uk/co/overstory/xquery/parser/_XqyLexer.java
-src/java/uk/co/overstory/xquery/parser/_XqyLexer.java~
