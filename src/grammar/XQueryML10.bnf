@@ -263,6 +263,8 @@ ComputedConstructor
            | CompBinaryConstructor
            | CompNamespaceConstructor
 
+ElementContentChar ::= ELEMENT_CONTENT_CHAR
+
 CompBinaryConstructor ::= 'binary' EnclosedExprExtended
 CompNamespaceConstructor ::= 'namespace' ( NamespaceName | '{' Expr '}' ) EnclosedExprExtended
 
@@ -324,10 +326,13 @@ Whitespace ::= ( S | Comment )*
 
 
 //<?TOKENS?>
-
           /* ws: explicit */
 
-StringLiteral ::= string
+// Intellij gets upset if a crosses a line boundary, lexer will generate
+// a sequence of partial string broken at newlines, these are bundled
+// under a StringLiteral parent
+StringLiteral ::= StringPart+
+StringPart ::= string
 
 PredefinedEntityRef ::= '&' AsciiAlpha ';'
           /* ws: explicit */

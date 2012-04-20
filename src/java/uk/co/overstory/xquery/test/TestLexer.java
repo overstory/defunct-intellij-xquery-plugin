@@ -14,6 +14,7 @@ public class TestLexer
 {
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
+			"\"multi\n  line\n  comment\"" +
 			"\n" +
 			"(: embedded (parens) :)\n" +
 			"\n" +
@@ -59,10 +60,12 @@ public class TestLexer
 		lexer.start (XQUERY);
 
 		while ((tokenType = lexer.getTokenType()) != null)  {
-			String token = lexer.getTokenText ();
+			String token = lexer.getTokenText();
+			CharSequence seq = lexer.getTokenSequence();
 
-			System.out.println ("-->" + token + "<-- " + tokenType);
-			lexer.advance ();
+			System.out.println ("-->" + seq + "<-- " + tokenType + " (start: " + lexer.getTokenStart() + ", end: " + lexer.getTokenEnd() + ", len: " + seq.length () + ")");
+
+			lexer.advance();
 		}
 
 	}

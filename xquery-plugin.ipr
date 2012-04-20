@@ -72,6 +72,7 @@
             <value />
           </option>
           <option name="ignoreClassWithParameterization" value="false" />
+          <option name="ignoreThrowables" value="true" />
         </inspection_tool>
         <inspection_tool class="EmptyFinallyBlock" enabled="false" level="WARNING" enabled_by_default="false" />
         <inspection_tool class="EmptyStatementBody" enabled="false" level="WARNING" enabled_by_default="false">

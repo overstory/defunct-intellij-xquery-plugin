@@ -25,18 +25,24 @@ import uk.co.overstory.xquery.psi.XqyTypes;
 
 S=[\ \t\f\n\r]+
 
-
+/*
 AsciiAlpha=[A-Za-z]+
 Alpha=[:letter:]
+*/
 Digit=[:digit:]
 Digits={Digit}+
 OptionalDigits={Digit}*
 
+/*
 Hex={Digit} | [aAbBcCdDeEfF]
+*/
 
 DecimalLiteral= ( ('.' {Digits}) | ( {Digits} '.' {OptionalDigits} ) )
 DoubleLiteral= ( ( "." {Digits} ) | ( {Digits} ( "." {OptionalDigits} )? ) [eE] [+\-]? {Digits} )
 
+/*
+ElementContentChar=  ( [^{}<&] )*
+*/
 
 /*
 CommentContents= ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | '(' ) '('* & '(' | ( ( [^(:] | '('+ [^(:] | ':'+ [^:)] )+ | ':' ) ':'* & ':'
@@ -94,15 +100,21 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 /* TODO: Need state for XML comments?  CDATA?  Pragmas? */
 
 <STRING_QUOTE> {
-  \"\"    { string.append('"') ; }
-  \"      { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
-  [^\"]+  { string.append( yytext() ); }
+  \"\"      { string.append(yytext()) ; }
+  [^\r\n\"\\]+  { string.append(yytext()); }
+  \n       { string.append(yytext()); return XqyTypes.XQY_STRING; }
+  \r       { string.append(yytext()); return XqyTypes.XQY_STRING; }
+  \\        { string.append(yytext()); }
+  \"        { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
 }
 
 <STRING_APOST> {
-  \'\'    { string.append("'") ; }
-  \'      { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
-  [^\']+  { string.append( yytext() ); }
+  \'\'      { string.append(yytext()) ; }
+  [^\r\n\'\\]+  { string.append(yytext()); }
+  \n       { string.append(yytext()); return XqyTypes.XQY_STRING; }
+  \r       { string.append(yytext()); return XqyTypes.XQY_STRING; }
+  \\        { string.append(yytext()); }
+  \'        { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
 }
 
 <COMMENT> {
@@ -144,8 +156,8 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
   {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
-  \"  { string.setLength(0); yybegin(STRING_QUOTE); }
-  \'  { string.setLength(0); yybegin(STRING_APOST); }
+  "\""   { string.setLength(0); yybegin(STRING_QUOTE); }
+  "'"  { string.setLength(0); yybegin(STRING_APOST); }
 
   "(:" { yybegin(COMMENT); return XqyTypes.XQY_COMMENT_START; }
   "<!--" { yybegin(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
