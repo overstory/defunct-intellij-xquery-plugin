@@ -1,0 +1,49 @@
+<function-categories group="MarkLogic">
+	<category prefix="admin" desc="Admin Library" />
+	<category prefix="alert" desc="Alerting" />
+	<category prefix="cdict" desc="Custom Dictionary Management" />
+	<category prefix="cpf" desc="Content Processing Framework" />
+	<category prefix="css" desc="CSS Conversion" />
+	<category prefix="cts" desc="Search Builtins" />
+	<category prefix="cvt" desc="Generic Conversion" />
+	<category prefix="dbg" desc="Debug Builtins" />
+	<category prefix="dbk" desc="DocBook Conversion" />
+	<category prefix="dls" desc="Library Services" />
+	<category prefix="dom" desc="Domains" />
+	<category prefix="ec2" desc="Elastic Compute Cloud" />
+	<category prefix="entity" desc="Entity Enrichment" />
+	<category prefix="excel" desc="Excel Conversion" />
+	<category prefix="exsl" desc="Extension" />
+	<category prefix="flexrep" desc="Flexible Replication" />
+	<category prefix="fn" desc="Error and Trace" />
+	<category prefix="geo" desc="Geospatial Supporting Functions" />
+	<category prefix="georss" desc="Geospatial Supporting Functions" />
+	<category prefix="gml" desc="Geospatial Supporting Functions" />
+	<category prefix="hadoop" desc="Hadoop Library" />
+	<category prefix="info" desc="Information Studio" />
+	<category prefix="infodev" desc="Information Studio Developer" />
+	<category prefix="kml" desc="Geospatial Supporting Functions" />
+	<category prefix="lnk" desc="Links" />
+	<category prefix="map" desc="map" />
+	<category prefix="math" desc="Math Builtins" />
+	<category prefix="mcgm" desc="Geospatial Supporting Functions" />
+	<category prefix="msword" desc="MSWord Conversion" />
+	<category prefix="ooxml" desc="WordProcessingML" />
+	<category prefix="p" desc="Pipelines" />
+	<category prefix="package" desc="Configuration Packaging" />
+	<category prefix="pdf" desc="PDF Conversion" />
+	<category prefix="pki" desc="PKI" />
+	<category prefix="plugin" desc="Plugin" />
+	<category prefix="ppt" desc="Powerpoint Conversion" />
+	<category prefix="prof" desc="Profile Builtins" />
+	<category prefix="rest" desc="rest Library" />
+	<category prefix="search" desc="Search" />
+	<category prefix="sec" desc="Security-sec" />
+	<category prefix="spell" desc="Spell Builtins" />
+	<category prefix="thsr" desc="Thesaurus" />
+	<category prefix="trgr" desc="Triggers" />
+	<category prefix="xdmp" desc="Extension" />
+	<category prefix="xhtml" desc="XHTML Conversion" />
+	<category prefix="xinc" desc="Modular Documents" />
+	<category prefix="xp" desc="Modular Documents" />
+</function-categories>

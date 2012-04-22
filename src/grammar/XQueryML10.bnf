@@ -328,9 +328,9 @@ Whitespace ::= ( S | Comment )*
 //<?TOKENS?>
           /* ws: explicit */
 
-// Intellij gets upset if a crosses a line boundary, lexer will generate
-// a sequence of partial string broken at newlines, these are bundled
-// under a StringLiteral parent
+// Intellij gets upset if a token crosses a line boundary.  The lexer will
+// generate a sequence of partial strings broken at newlines, these are bundled
+// under a StringLiteral parent.
 StringLiteral ::= StringPart+
 StringPart ::= string
 
