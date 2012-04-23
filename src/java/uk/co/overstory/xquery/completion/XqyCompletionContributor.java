@@ -8,6 +8,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -57,6 +58,10 @@ public class XqyCompletionContributor extends CompletionContributor
 
 	}
 
+
+
+	// --------------------------------------------------------
+
 	private class BuiltinFunctionsProvider extends CompletionProvider<CompletionParameters>
 	{
 		@Override
@@ -67,11 +72,19 @@ public class XqyCompletionContributor extends CompletionContributor
 
 			for (FunctionDefs.Function func : functions) {
 				if (func.isHidden()) continue;
-				result.addElement (LookupElementBuilder.create (func.getFullName())
+
+				LookupElementBuilder lookup = LookupElementBuilder.create (func.getFullName())
 					.setBold (false)
 					.setTailText ("()")
 					.setIcon (XqyIcons.FUNCTION)
-					.setTypeText (func.getReturnType()));
+					.setTypeText (func.getReturnType());
+
+				// ToDo: This should be sensitive to default element namespace declaration
+				if (func.getPrefix().equals ("fn")) {
+					lookup = lookup.addLookupString (func.getLocalName());
+				}
+
+				result.addElement (lookup);
 			}
 		}
 	}
@@ -182,17 +195,21 @@ public class XqyCompletionContributor extends CompletionContributor
 		protected void addCompletions (@NotNull CompletionParameters parameters,
 			ProcessingContext context, @NotNull CompletionResultSet result)
 		{
-			result.addElement (LookupElementBuilder.create ("$")
+			result.addElement (PrioritizedLookupElement.withPriority (
+				LookupElementBuilder.create ("$")
 				.setBold (true)
 				.setIcon (XqyIcons.VARIABLE)
 				.setTailText (" <variable name>", true)
-				.setInsertHandler (new VarRefInsertHandler()));
+				.setInsertHandler (new VarRefInsertHandler()),
+				100000.0));
 
-			result.addElement (LookupElementBuilder.create ("()")
+			result.addElement (PrioritizedLookupElement.withPriority (
+				LookupElementBuilder.create ("()")
 				.setBold (true)
 				.setIcon (XqyIcons.FUNCTION)
 				.setTailText (" <local function>", true)
-				.setInsertHandler (new FuncRefInsertHandler()));
+				.setInsertHandler (new FuncRefInsertHandler()),
+				99999.0));
 
 			addLocalInScopeFunctionSuggestions (parameters, context, result);
 			addImportedFunctionPrefixSuggestions (parameters, context, result);

@@ -15,7 +15,7 @@
 	<category prefix="excel" desc="Excel Conversion" />
 	<category prefix="exsl" desc="Extension" />
 	<category prefix="flexrep" desc="Flexible Replication" />
-	<category prefix="fn" desc="Error and Trace" />
+	<category prefix="fn" desc="XQuery Standard Functions" />
 	<category prefix="geo" desc="Geospatial Supporting Functions" />
 	<category prefix="georss" desc="Geospatial Supporting Functions" />
 	<category prefix="gml" desc="Geospatial Supporting Functions" />

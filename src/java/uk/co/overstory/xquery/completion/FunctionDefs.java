@@ -75,7 +75,9 @@ public class FunctionDefs
 		for (Category cat : categories) categoryMap.put (cat.getPrefix(), cat);
 
 		for (Function func : functions) {
-			Category cat = categoryMap.get (func.getPrefix ());
+			if (func.isHidden ()) continue;
+
+			Category cat = categoryMap.get (func.getPrefix());
 
 			if (cat != null) cat.incrementCount();
 		}

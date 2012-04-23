@@ -60,13 +60,22 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 			PsiElement element = results[i].getElement();
 
 			// ToDo: make a proper mutable builder to accumlulate attributes, use it to build LookUpElement
-			LookupElementBuilder builder = LookupElementBuilder.create ((PsiNamedElement) element)
+			LookupElementBuilder lookup = LookupElementBuilder.create ((PsiNamedElement) element)
 				.setIcon (element.getIcon (0))
 				.setBold (boldForElement (element))	// FIXME
 				.setTailText (tailTextForElement (element), true)
 				.setTypeText (typeTextForElement (element), false);
 
-			lookups [i] = builder;
+
+			if (element instanceof XqyFunctionName) {
+				String text = element.getText();
+
+				if (text.startsWith ("local:")) {
+					lookup = lookup.addLookupString (text.substring (text.indexOf (":") + 1));
+				}
+			}
+
+			lookups [i] = lookup;
 		}
 
 		return lookups;
