@@ -58,6 +58,43 @@ public class XqyCompletionContributor extends CompletionContributor
 
 	}
 
+	private LookupElement createFunctionLookup (FunctionDefs.Function function)
+	{
+		LookupElementBuilder lookup = LookupElementBuilder.create (function.getFullName() + "()")
+			.setPresentableText (function.getFullName())
+			.setBold (false)
+			.setTailText (tailTextForFunction (function), true)
+			.setIcon (XqyIcons.FUNCTION)
+			.setTypeText (function.getReturnType());
+
+		// ToDo: This should be sensitive to default element namespace declaration
+		if (function.getPrefix().equals ("fn")) {
+			lookup = lookup.addLookupString (function.getLocalName());
+		}
+
+		return lookup;
+	}
+
+	private String tailTextForFunction (FunctionDefs.Function function)
+	{
+		StringBuilder sb = new StringBuilder("(");
+
+		for (FunctionDefs.Parameter param : function.getParameters()) {
+			if (sb.length() > 1) sb.append (", ");
+
+			sb.append ("$").append (param.getName());
+
+			String type = param.getType();
+
+			if ((type != null) && (type.length() > 0)) {
+				sb.append (" as ").append (type);
+			}
+		}
+
+		sb.append (")");
+
+		return sb.toString();
+	}
 
 
 	// --------------------------------------------------------
@@ -73,22 +110,10 @@ public class XqyCompletionContributor extends CompletionContributor
 			for (FunctionDefs.Function func : functions) {
 				if (func.isHidden()) continue;
 
-				LookupElementBuilder lookup = LookupElementBuilder.create (func.getFullName())
-					.setBold (false)
-					.setTailText ("()")
-					.setIcon (XqyIcons.FUNCTION)
-					.setTypeText (func.getReturnType());
-
-				// ToDo: This should be sensitive to default element namespace declaration
-				if (func.getPrefix().equals ("fn")) {
-					lookup = lookup.addLookupString (func.getLocalName());
-				}
-
-				result.addElement (lookup);
+				result.addElement (createFunctionLookup (func));
 			}
 		}
 	}
-
 
 	private void addLocalInScopeFunctionSuggestions (@NotNull CompletionParameters parameters,
 		ProcessingContext context, @NotNull CompletionResultSet result)
@@ -111,13 +136,7 @@ public class XqyCompletionContributor extends CompletionContributor
 			if (cat.getFunctionCount() == 1) {
 				FunctionDefs.Function func = functionDefs.getFunctionsForPrefix (cat.getPrefix()).get (0);
 
-				result.addElement (
-					LookupElementBuilder.create (func.getFullName () + "()")
-						.setPresentableText (func.getFullName ())
-						.setIcon (XqyIcons.FUNCTION)
-						.setTailText (" FIXME-ARGS", true)
-						.setTypeText (func.getReturnType ())
-				);
+				result.addElement (createFunctionLookup (func));
 
 				continue;
 			}

@@ -132,11 +132,16 @@ public class FunctionDefs
 
 	public static class Function
 	{
-		private String localName = null;
-		private String fullName = null;
-		private String prefix = null;
+		private final List<Parameter> parameters = new ArrayList<Parameter>();
+		private final String localName;
+		private final String fullName;
+		private final String prefix;
+		private final boolean hidden;
 		private String returnType = null;
-		private boolean hidden = false;
+
+		private String summary = "";
+		private String example = "";
+		private String usage = "";
 
 		public Function (String prefix, String localName, String fullName, String returnType, boolean hidden)
 		{
@@ -147,41 +152,99 @@ public class FunctionDefs
 			this.returnType = returnType;
 		}
 
-		public String getPrefix ()
+		private void addParam (Parameter param)
+		{
+			parameters.add (param);
+		}
+
+		public String getPrefix()
 		{
 			return prefix;
 		}
 
-		public String getLocalName ()
+		public String getLocalName()
 		{
 			return localName;
 		}
 
-		public String getFullName ()
+		public String getFullName()
 		{
 			return fullName;
 		}
 
-		public String getReturnType ()
+		public String getReturnType()
 		{
 			return returnType;
 		}
 
-		public boolean isHidden ()
+		public boolean isHidden()
 		{
 			return hidden;
+		}
+
+		public String getSummary()
+		{
+			return summary;
+		}
+
+		public String getExample()
+		{
+			return example;
+		}
+
+		public String getUsage()
+		{
+			return usage;
+		}
+
+		public List<Parameter> getParameters()
+		{
+			return Collections.unmodifiableList (parameters);
+		}
+	}
+
+	public static class Parameter
+	{
+		private final String name;
+		private final String type;
+		private final boolean optional;
+		private String description = "";
+
+		private Parameter (String name, String type, boolean optional)
+		{
+			this.name = name;
+			this.type = type;
+			this.optional = optional;
+		}
+
+		public String getName ()
+		{
+			return name;
+		}
+
+		public String getType ()
+		{
+			return type;
+		}
+
+		public boolean isOptional ()
+		{
+			return optional;
+		}
+
+		public String getDescription ()
+		{
+			return description;
 		}
 	}
 
 	private static class FunctionDefFunctionParser extends DefaultHandler
 	{
+		private final StringBuilder text = new StringBuilder();
 		private final List<Function> functions;
-		private String prefix = null;
-		private String localName = null;
-		private String fullName = null;
-		private String returnType = null;
-		private boolean hidden = false;
-		private String text = null;
+
+		private Function func = null;
+		private Parameter param = null;
 
 		private FunctionDefFunctionParser (List<Function> functions)
 		{
@@ -191,31 +254,39 @@ public class FunctionDefs
 		@Override
 		public void startElement (String namespaceName, String name, String qname, Attributes attributes) throws SAXException
 		{
+			text.setLength (0);
+
 			if (qname.equals ("function")) {
-				prefix = attributes.getValue ("lib");
-				localName = attributes.getValue ("name");
-				fullName = attributes.getValue ("fullname");
-				hidden = Boolean.valueOf (attributes.getValue ("hidden"));
-				returnType = "item()*";
+				func = new Function (attributes.getValue ("lib"),
+					attributes.getValue ("name"),
+					attributes.getValue ("fullname"),
+					"item()*",
+					Boolean.valueOf (attributes.getValue ("hidden")));
+			}
+
+			if (qname.equals ("param")) {
+				param = new Parameter (attributes.getValue ("name"),
+					attributes.getValue ("type"),
+					Boolean.valueOf (attributes.getValue ("optional")));
 			}
 		}
 
 		@Override
 		public void endElement (String namespaceName, String name, String qname) throws SAXException
 		{
-			if (qname.equals ("function")) {
-				functions.add (new Function (prefix, localName, fullName, returnType, hidden));
-			}
+			if (qname.equals ("function")) functions.add (func);
+			if (qname.equals ("param")) func.addParam (param);
 
-			if (qname.equals ("return")) {
-				returnType = text;
-			}
+			if (qname.equals ("return")) func.returnType = text.toString();
+			if (qname.equals ("summary")) func.summary = text.toString();
+			if (qname.equals ("example")) func.example = text.toString();
+			if (qname.equals ("usage")) func.usage = text.toString();
 		}
 
 		@Override
 		public void characters (char[] chars, int start, int length) throws SAXException
 		{
-			text = new String (chars, start, length);
+			text.append (chars, start, length);
 		}
 	}
 
