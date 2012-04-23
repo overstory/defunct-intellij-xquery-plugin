@@ -42,7 +42,7 @@
 	<category prefix="spell" desc="Spell Builtins" />
 	<category prefix="thsr" desc="Thesaurus" />
 	<category prefix="trgr" desc="Triggers" />
-	<category prefix="xdmp" desc="Extension" />
+	<category prefix="xdmp" desc="MarkLogic Extensions" />
 	<category prefix="xhtml" desc="XHTML Conversion" />
 	<category prefix="xinc" desc="Modular Documents" />
 	<category prefix="xp" desc="Modular Documents" />

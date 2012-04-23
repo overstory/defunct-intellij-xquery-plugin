@@ -59966,7 +59966,7 @@ The html document from the filesystem converted to xhtml
   import module namespace xp = "http://marklogic.com/xdmp/xpointer"
       at "/MarkLogic/xpointer.xqy";
 
-    
+
 </example>
 	</function>
 	<function name="dereference" lib="xp" category="Modular Documents" subcategory="XPointer" bucket="XQuery Library Modules" hidden="false" fullname="xp:dereference">

@@ -8,18 +8,28 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.patterns.ElementPattern;
+import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import uk.co.overstory.xquery.XqyIcons;
 import uk.co.overstory.xquery.psi.XqyFLWORExpr;
+import uk.co.overstory.xquery.psi.XqyReference;
+import uk.co.overstory.xquery.psi.impl.XqyFunctionNameReference;
+import uk.co.overstory.xquery.psi.impl.XqyReferenceImpl;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -31,10 +41,13 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  */
 public class XqyCompletionContributor extends CompletionContributor
 {
+	private final FunctionDefs functionDefs = FunctionDefs.instance();
+
 	public XqyCompletionContributor()
 	{
 		extend (CompletionType.BASIC, psiElement().afterLeaf (":="), new BindSuggestProvider());
-		extend (CompletionType.BASIC, psiElement().afterLeaf ("version"), new XqueryVersionSuggestProvider());  // FIXME: smarten this up
+		extend (CompletionType.BASIC, psiElement().afterLeaf ("version"), new XqueryVersionSuggestProvider());
+		extend (CompletionType.BASIC, psiElement().inside (PlatformPatterns.instanceOf (XqyFunctionNameReference.class)), new BuiltinFunctionsProvider());
 
 //		extend (CompletionType.BASIC,
 //			psiElement ().inside (PlatformPatterns.instanceOf (XqyFLWORExpr.class)),
@@ -43,34 +56,74 @@ public class XqyCompletionContributor extends CompletionContributor
 		// --------------------------------------------------------
 
 	}
+
+	private class BuiltinFunctionsProvider extends CompletionProvider<CompletionParameters>
+	{
+		@Override
+		protected void addCompletions (@NotNull CompletionParameters parameters,
+			ProcessingContext context, @NotNull CompletionResultSet result)
+		{
+			List<FunctionDefs.Function> functions = functionDefs.getFunctions();
+
+			for (FunctionDefs.Function func : functions) {
+				if (func.isHidden()) continue;
+				result.addElement (LookupElementBuilder.create (func.getFullName())
+					.setBold (false)
+					.setTailText ("()")
+					.setIcon (XqyIcons.FUNCTION)
+					.setTypeText (func.getReturnType()));
+			}
+		}
+	}
+
+
 	private void addLocalInScopeFunctionSuggestions (@NotNull CompletionParameters parameters,
 		ProcessingContext context, @NotNull CompletionResultSet result)
 	{
 		// ToDo: Get suggestions of in-scope functions in this module, relative to parameters.getPosition()
 	}
 
-	private void addImportedFunctionSuggestions (@NotNull CompletionParameters parameters,
+	private void addImportedFunctionPrefixSuggestions (@NotNull CompletionParameters parameters,
 		ProcessingContext context, @NotNull CompletionResultSet result)
 	{
 		// ToDo: Get in-scope functions in imported modules
 	}
 
-	private void addPredefinedFunctionSuggestions (@NotNull CompletionParameters parameters,
+	private void addPredefinedFunctionPrefixSuggestions (@NotNull CompletionParameters parameters,
 		ProcessingContext context, @NotNull CompletionResultSet result)
 	{
-		// ToDo: Get list of standard modules, as per XQuery declared version
-		result.addElement (LookupElementBuilder.create ("fn:count").setTypeText ("xs:integer"));
-		result.addElement (LookupElementBuilder.create ("fn:exists").setTypeText ("xs:boolean"));
-		result.addElement (LookupElementBuilder.create ("xdmp:estimate").setTypeText ("xs:integer"));
-		result.addElement (LookupElementBuilder.create ("xdmp:log").setTypeText ("empty-sequence()"));
-		result.addElement (LookupElementBuilder.create ("cts:search").setTypeText ("node()*"));
+		List<FunctionDefs.Category> categories = functionDefs.getCategories();
+
+		for (FunctionDefs.Category cat : categories) {
+			if (cat.getFunctionCount() == 1) {
+				FunctionDefs.Function func = functionDefs.getFunctionsForPrefix (cat.getPrefix()).get (0);
+
+				result.addElement (
+					LookupElementBuilder.create (func.getFullName () + "()")
+						.setPresentableText (func.getFullName ())
+						.setIcon (XqyIcons.FUNCTION)
+						.setTailText (" FIXME-ARGS", true)
+						.setTypeText (func.getReturnType ())
+				);
+
+				continue;
+			}
+
+			result.addElement (
+				LookupElementBuilder.create (cat.getPrefix() + ":()")
+					.setPresentableText (cat.getPrefix () + ":")
+					.setIcon (XqyIcons.FUNCTION)
+					.setTailText (" " + cat.getDesc() + " (" + cat.getFunctionCount() + " functions)", true)
+					.setInsertHandler (new FuncRefInsertHandler())
+			);
+		}
 	}
 
 	// ----------------------------------------------------------------
 
+	// ToDo: Smarten up to not add semicolon if already present.  Fix this up.
 	private class AppendSemiColonInsertHandler implements InsertHandler<LookupElement>
 	{
-
 		@Override
 		public void handleInsert (InsertionContext context, LookupElement lookupElement)
 		{
@@ -79,6 +132,8 @@ public class XqyCompletionContributor extends CompletionContributor
 			CaretModel caretModel = editor.getCaretModel();
 
 			int offset = caretModel.getOffset();
+//			String tmp = document.getText (TextRange.from (context.getTailOffset(), 5));
+
 			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset);
 		}
@@ -98,7 +153,7 @@ public class XqyCompletionContributor extends CompletionContributor
 //			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset);
 
-			AutoPopupController.getInstance (project).autoPopupMemberLookup(editor, null);
+			AutoPopupController.getInstance (project).autoPopupMemberLookup (editor, null);
 		}
 	}
 
@@ -129,17 +184,19 @@ public class XqyCompletionContributor extends CompletionContributor
 		{
 			result.addElement (LookupElementBuilder.create ("$")
 				.setBold (true)
-				.setTailText ("<variable name>", true)
+				.setIcon (XqyIcons.VARIABLE)
+				.setTailText (" <variable name>", true)
 				.setInsertHandler (new VarRefInsertHandler()));
 
 			result.addElement (LookupElementBuilder.create ("()")
 				.setBold (true)
-				.setTailText ("function", true)
+				.setIcon (XqyIcons.FUNCTION)
+				.setTailText (" <local function>", true)
 				.setInsertHandler (new FuncRefInsertHandler()));
 
 			addLocalInScopeFunctionSuggestions (parameters, context, result);
-			addImportedFunctionSuggestions (parameters, context, result);
-			addPredefinedFunctionSuggestions (parameters, context, result);
+			addImportedFunctionPrefixSuggestions (parameters, context, result);
+			addPredefinedFunctionPrefixSuggestions (parameters, context, result);
 		}
 	}
 
@@ -151,8 +208,6 @@ public class XqyCompletionContributor extends CompletionContributor
 		{
 			PsiElement pos = parameters.getPosition();
 			PsiElement flwor = PsiTreeUtil.getParentOfType (pos, XqyFLWORExpr.class);
-
-
 
 			PsiElement parent = pos.getParent ();
 
@@ -189,6 +244,9 @@ public class XqyCompletionContributor extends CompletionContributor
 				.setInsertHandler (new AppendSemiColonInsertHandler()));
 			result.addElement (LookupElementBuilder.create ("'3.0'")
 				.setTypeText ("XQuery 3.0 Strict", true)
+				.setInsertHandler (new AppendSemiColonInsertHandler()));
+			result.addElement (LookupElementBuilder.create ("'0.9-ml'")
+				.setTypeText ("MarkLogic pre-1.0", true)
 				.setInsertHandler (new AppendSemiColonInsertHandler()));
 		}
 	}

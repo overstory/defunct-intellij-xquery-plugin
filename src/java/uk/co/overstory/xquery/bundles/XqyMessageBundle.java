@@ -22,6 +22,10 @@ public class XqyMessageBundle
 	@NonNls
 	private static final String BUNDLE = "uk.co.overstory.xquery.bundles.XqyMessageBundle";
 
+	private XqyMessageBundle ()
+	{
+	}
+
 	public static String message (@PropertyKey(resourceBundle = BUNDLE) String key, Object... params)
 	{
 		return CommonBundle.message (getBundle (), key, params);
