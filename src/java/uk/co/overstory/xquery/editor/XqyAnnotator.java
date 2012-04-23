@@ -6,7 +6,11 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
+import uk.co.overstory.xquery.completion.FunctionDefs;
+import uk.co.overstory.xquery.psi.XqyExprSingle;
 import uk.co.overstory.xquery.psi.XqyFunctionDecl;
+import uk.co.overstory.xquery.psi.XqyFunctionName;
+import uk.co.overstory.xquery.psi.XqyParam;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 import uk.co.overstory.xquery.psi.XqyRefVarName;
 import uk.co.overstory.xquery.psi.XqyVarDecl;
@@ -14,6 +18,8 @@ import uk.co.overstory.xquery.psi.XqyVarName;
 import uk.co.overstory.xquery.psi.XqyXqueryVersionString;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class XqyAnnotator implements Annotator, DumbAware
 {
-	private static final String ALLOWED_XQUERY_VERSIONS = "'1.0-ml', '1.0' or '0.9-ml'";
+	private static final String ALLOWED_XQUERY_VERSIONS = "'1.0-ml', '1.0', '3.0' or '0.9-ml'";
 
 	private static final String [] knownXQueryVersionStrings = {
 		"0.9-ml", "1.0", "1.0-ml", "3.0"		// FIXME: This should be defined in a property or something, matching parse rules in effect
@@ -35,6 +41,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 		"fn:", "xdmp:", "cts:", "map:", "math:", "spell:", "admin:", "prof:", "dbg:", "sec:", "thsr:", "trgr", "err:", "error:"
 	};
 
+	private final FunctionDefs functionDefs = FunctionDefs.instance();
 
 	@Override
 	public void annotate (@NotNull PsiElement element, @NotNull AnnotationHolder holder)
@@ -58,22 +65,65 @@ public class XqyAnnotator implements Annotator, DumbAware
 		PsiReference reference = element.getReference();
 		Object resolve = reference == null ? null : reference.resolve();
 
+		// Annotate unknown variables
 		if ((element instanceof XqyRefVarName) && (resolve == null)) {
-			holder.createErrorAnnotation (element, "Unknown variable '$" + element.getText () + "'");
+			holder.createErrorAnnotation (element, "Unknown variable '$" + element.getText() + "'");
 			return;
 		}
 
-		if ((element instanceof XqyRefFunctionName) && (resolve == null) && ( ! functionInScope (element))) {
-			holder.createErrorAnnotation (element, "Unknown function '" + element.getText () + "'()");
-			return;
+		// Annotate function calls with short description
+		if ((element instanceof XqyRefFunctionName)) {
+			String functionName = ((XqyRefFunctionName) element).getQName().getText();
+			FunctionDefs.Function func = functionDefs.getFunction (functionName);
+
+			// FIXME: This should be sensitive to default function namespace
+			if (func == null) func = functionDefs.getFunction ("fn:" + functionName);
+
+			if (func != null) {
+				holder.createInfoAnnotation (element, func.getSummary());
+
+				List<FunctionDefs.Parameter> params = func.getParameters();
+				XqyExprSingle [] xparams = PsiTreeUtil.getChildrenOfType (element.getParent(), XqyExprSingle.class);
+				int xcount = (xparams == null) ? 0 : xparams.length;
+				int minParamCount = func.getMinParamCount();
+
+				if ((xcount > params.size()) || (xcount < minParamCount)) {
+					holder.createErrorAnnotation (element, "Wrong # params: got " + xcount +  ", expected " +
+						((params.size() == minParamCount) ? params.size() : minParamCount + " - " + params.size()) +
+						": " + func.paramListAsString());
+				}
+			}
+
+			// Annotate unknown functions
+			if ((resolve == null) && ( ! functionInScope (element))) {
+				holder.createErrorAnnotation (element, "Unknown function '" + element.getText () + "'()");
+				return;
+			}
 		}
 	}
 
 	// -----------------------------------------------------------
 
-	private void checkForDupeFunctions (@NotNull PsiElement element, @NotNull AnnotationHolder holder)
+	private void checkForDupeFunctions (@NotNull PsiElement funcDecl, @NotNull AnnotationHolder holder)
 	{
-		// FIXME: auto-generated
+		PsiElement funcNameElement = PsiTreeUtil.findChildOfType (funcDecl, XqyFunctionName.class);
+		String funcName = getTextOfElement (funcNameElement);
+
+		if (funcName == null) return;
+
+		for (PsiElement element : funcDecl.getParent().getChildren()) {
+			if (element == funcDecl) continue;	// self
+			if ( ! (element instanceof XqyFunctionDecl)) continue;
+
+			PsiElement targetFunctionNameElement = PsiTreeUtil.findChildOfType (element, XqyFunctionName.class);
+			String targetName = getTextOfElement (targetFunctionNameElement);
+
+			if (targetName == null) continue;
+
+			if (funcName.equals (targetName)) {
+				holder.createErrorAnnotation (targetFunctionNameElement, "Duplicate function declaration '" + targetName + "()'");
+			}
+		}
 	}
 
 	private void checkForDupeGlobalVars (@NotNull PsiElement varDecl, @NotNull AnnotationHolder holder)
@@ -114,6 +164,8 @@ public class XqyAnnotator implements Annotator, DumbAware
 		for (String prefix: definedFunctionPrefixes) {
 			if (name.startsWith (prefix)) return true;
 		}
+
+		// FIXME: need to check imports, etc.
 
 		return false;
 	}

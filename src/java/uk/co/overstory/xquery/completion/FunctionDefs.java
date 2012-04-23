@@ -39,6 +39,7 @@ public class FunctionDefs
 	private final SAXParserFactory spf = SAXParserFactory.newInstance();
 	private final List<Category> categories = new ArrayList<Category>();
 	private final List<Function> functions = new ArrayList<Function>();
+	private final Map<String, Function> functionMap = new HashMap<String, Function>();
 
 	// ------------------------------------------------------------
 
@@ -50,6 +51,11 @@ public class FunctionDefs
 	public List<Function> getFunctions()
 	{
 		return Collections.unmodifiableList (functions);
+	}
+
+	public Function getFunction (String name)
+	{
+		return functionMap.get (name);
 	}
 
 	public List<Function> getFunctionsForPrefix (String prefix)
@@ -64,6 +70,7 @@ public class FunctionDefs
 	}
 
 	// ------------------------------------------------------------
+	// Private constructor
 
 	private FunctionDefs()
 	{
@@ -76,6 +83,8 @@ public class FunctionDefs
 
 		for (Function func : functions) {
 			if (func.isHidden ()) continue;
+
+			functionMap.put (func.getFullName(), func);
 
 			Category cat = categoryMap.get (func.getPrefix());
 
@@ -142,6 +151,7 @@ public class FunctionDefs
 		private String summary = "";
 		private String example = "";
 		private String usage = "";
+		private int minParamCount = 0;
 
 		public Function (String prefix, String localName, String fullName, String returnType, boolean hidden)
 		{
@@ -155,6 +165,8 @@ public class FunctionDefs
 		private void addParam (Parameter param)
 		{
 			parameters.add (param);
+
+			if ( ! param.isOptional()) minParamCount++;
 		}
 
 		public String getPrefix()
@@ -197,9 +209,39 @@ public class FunctionDefs
 			return usage;
 		}
 
+		public int getMinParamCount()
+		{
+			return minParamCount;
+		}
+
 		public List<Parameter> getParameters()
 		{
 			return Collections.unmodifiableList (parameters);
+		}
+
+		public String paramListAsString()
+		{
+			StringBuilder sb = new StringBuilder("(");
+
+			for (Parameter param : getParameters ()) {
+				if (sb.length() > 1) sb.append (", ");
+
+				if (param.isOptional()) sb.append ("[");
+
+				sb.append ("$").append (param.getName());
+
+				String type = param.getType();
+
+				if ((type != null) && (type.length() > 0)) {
+					sb.append (" as ").append (type);
+				}
+
+				if (param.isOptional()) sb.append ("]");
+			}
+
+			sb.append (")");
+
+			return sb.toString();
 		}
 	}
 
@@ -254,9 +296,8 @@ public class FunctionDefs
 		@Override
 		public void startElement (String namespaceName, String name, String qname, Attributes attributes) throws SAXException
 		{
-			text.setLength (0);
-
 			if (qname.equals ("function")) {
+				text.setLength (0);
 				func = new Function (attributes.getValue ("lib"),
 					attributes.getValue ("name"),
 					attributes.getValue ("fullname"),
@@ -265,10 +306,19 @@ public class FunctionDefs
 			}
 
 			if (qname.equals ("param")) {
+				text.setLength (0);
 				param = new Parameter (attributes.getValue ("name"),
 					attributes.getValue ("type"),
 					Boolean.valueOf (attributes.getValue ("optional")));
 			}
+
+			if (qname.equals ("return") || qname.equals ("summary") || qname.equals ("example") || qname.equals ("usage"))
+			{
+				text.setLength (0);
+				return;
+			}
+
+			text.append (" ");	// replace unrecognized tags with space, for now.
 		}
 
 		@Override
@@ -281,6 +331,8 @@ public class FunctionDefs
 			if (qname.equals ("summary")) func.summary = text.toString();
 			if (qname.equals ("example")) func.example = text.toString();
 			if (qname.equals ("usage")) func.usage = text.toString();
+
+			text.append (" ");	// replace end tags with space for now, those above don't matter
 		}
 
 		@Override

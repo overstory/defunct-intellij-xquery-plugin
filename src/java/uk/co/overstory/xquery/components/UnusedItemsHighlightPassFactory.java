@@ -56,13 +56,12 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 	private static final Key<CachedValue<Set<PsiElement>>> USED_ITEMS_KEY = Key.create("USED_ITEMS_KEY");
 
 	// ToDo: check usage of namespaces
-	// ToDo: check types and arity of function params
 	// ToDo: highlight when variables hide other variables
 	// ToDo: check types of expressions against declared types of variables
 	// ToDo: check return type of function return value, where possible
 	// ToDo: check validity of option values
 	// ToDo: warn about missing return type for functions
-	// ToDo: Warn if library module has a body
+	// ToDo: Error if library module has a body
 
 	public UnusedItemsHighlightPassFactory (Project project, TextEditorHighlightingPassRegistrar highlightingPassRegistrar)
 	{
@@ -170,10 +169,12 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 		private String unusedMessageForElement (XqyCompositeElement element)
 		{
 			if (element instanceof XqyFunctionName) return "Unused function";
+
 			if (element instanceof XqyVarName) {
 				if (PsiTreeUtil.getParentOfType (element, XqyParam.class) != null) {
 					return "Unused parameter";
 				}
+
 				return "Unused variable";
 			}
 
@@ -181,7 +182,8 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 		}
 
 		@Override
-		public void doApplyInformationToEditor() {
-			UpdateHighlightersUtil.setHighlightersToEditor (myProject, myDocument, 0, myFile.getTextLength (), myHighlights, getColorsScheme (), getId ());
+		public void doApplyInformationToEditor()
+		{
+			UpdateHighlightersUtil.setHighlightersToEditor (myProject, myDocument, 0, myFile.getTextLength(), myHighlights, getColorsScheme(), getId());
 		}
 	}}

@@ -63,7 +63,7 @@ public class XqyCompletionContributor extends CompletionContributor
 		LookupElementBuilder lookup = LookupElementBuilder.create (function.getFullName() + "()")
 			.setPresentableText (function.getFullName())
 			.setBold (false)
-			.setTailText (tailTextForFunction (function), true)
+			.setTailText (function.paramListAsString(), true)
 			.setIcon (XqyIcons.FUNCTION)
 			.setTypeText (function.getReturnType());
 
@@ -74,28 +74,6 @@ public class XqyCompletionContributor extends CompletionContributor
 
 		return lookup;
 	}
-
-	private String tailTextForFunction (FunctionDefs.Function function)
-	{
-		StringBuilder sb = new StringBuilder("(");
-
-		for (FunctionDefs.Parameter param : function.getParameters()) {
-			if (sb.length() > 1) sb.append (", ");
-
-			sb.append ("$").append (param.getName());
-
-			String type = param.getType();
-
-			if ((type != null) && (type.length() > 0)) {
-				sb.append (" as ").append (type);
-			}
-		}
-
-		sb.append (")");
-
-		return sb.toString();
-	}
-
 
 	// --------------------------------------------------------
 
