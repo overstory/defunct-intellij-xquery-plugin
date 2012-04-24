@@ -9,24 +9,20 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
-import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import uk.co.overstory.xquery.XqyIcons;
+import uk.co.overstory.xquery.completion.handlers.FuncRefInsertHandler;
 import uk.co.overstory.xquery.psi.XqyFLWORExpr;
-import uk.co.overstory.xquery.psi.XqyReference;
 import uk.co.overstory.xquery.psi.impl.XqyFunctionNameReference;
-import uk.co.overstory.xquery.psi.impl.XqyReferenceImpl;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -60,12 +56,12 @@ public class XqyCompletionContributor extends CompletionContributor
 
 	private LookupElement createFunctionLookup (FunctionDefs.Function function)
 	{
-		LookupElementBuilder lookup = LookupElementBuilder.create (function.getFullName() + "()")
-			.setPresentableText (function.getFullName())
+		LookupElementBuilder lookup = LookupElementBuilder.create (function.getFullName())
 			.setBold (false)
 			.setTailText (function.paramListAsString(), true)
 			.setIcon (XqyIcons.FUNCTION)
-			.setTypeText (function.getReturnType());
+			.setTypeText (function.getReturnType())
+			.setInsertHandler (new FuncRefInsertHandler (false));
 
 		// ToDo: This should be sensitive to default element namespace declaration
 		if (function.getPrefix().equals ("fn")) {
@@ -120,18 +116,16 @@ public class XqyCompletionContributor extends CompletionContributor
 			}
 
 			result.addElement (
-				LookupElementBuilder.create (cat.getPrefix() + ":()")
-					.setPresentableText (cat.getPrefix () + ":")
+				LookupElementBuilder.create (cat.getPrefix() + ":")
 					.setIcon (XqyIcons.FUNCTION)
 					.setTailText (" " + cat.getDesc() + " (" + cat.getFunctionCount() + " functions)", true)
-					.setInsertHandler (new FuncRefInsertHandler())
+					.setInsertHandler (new FuncRefInsertHandler (true))
 			);
 		}
 	}
 
 	// ----------------------------------------------------------------
 
-	// ToDo: Smarten up to not add semicolon if already present.  Fix this up.
 	private class AppendSemiColonInsertHandler implements InsertHandler<LookupElement>
 	{
 		@Override
@@ -140,9 +134,13 @@ public class XqyCompletionContributor extends CompletionContributor
 			Document document = context.getDocument();
 			Editor editor = context.getEditor();
 			CaretModel caretModel = editor.getCaretModel();
-
+			CharSequence cs = document.getText ();
 			int offset = caretModel.getOffset();
-//			String tmp = document.getText (TextRange.from (context.getTailOffset(), 5));
+
+			for (int i = offset; i < cs.length (); i++) {
+				if (cs.charAt (i) == ';') return;
+				if ( ! Character.isWhitespace (cs.charAt (i))) break;
+			}
 
 			document.insertString (offset, ";");
 			caretModel.moveToOffset (offset);
@@ -167,24 +165,6 @@ public class XqyCompletionContributor extends CompletionContributor
 		}
 	}
 
-	private class FuncRefInsertHandler implements InsertHandler<LookupElement>
-	{
-		@Override
-		public void handleInsert (InsertionContext context, LookupElement lookupElement)
-		{
-//			Document document = context.getDocument();
-			Project project = context.getProject();
-			Editor editor = context.getEditor();
-			CaretModel caretModel = editor.getCaretModel();
-
-			int offset = caretModel.getOffset();
-//			document.insertString (offset, ";");
-			caretModel.moveToOffset (offset - 2);
-
-			AutoPopupController.getInstance (project).autoPopupMemberLookup (editor, null);
-		}
-	}
-
 
 	private class BindSuggestProvider extends CompletionProvider<CompletionParameters>
 	{
@@ -192,6 +172,7 @@ public class XqyCompletionContributor extends CompletionContributor
 		protected void addCompletions (@NotNull CompletionParameters parameters,
 			ProcessingContext context, @NotNull CompletionResultSet result)
 		{
+			// ToDo: Look at using result.withRelevanceSorter instead
 			result.addElement (PrioritizedLookupElement.withPriority (
 				LookupElementBuilder.create ("$")
 				.setBold (true)
@@ -201,11 +182,12 @@ public class XqyCompletionContributor extends CompletionContributor
 				100000.0));
 
 			result.addElement (PrioritizedLookupElement.withPriority (
-				LookupElementBuilder.create ("()")
-				.setBold (true)
-				.setIcon (XqyIcons.FUNCTION)
-				.setTailText (" <local function>", true)
-				.setInsertHandler (new FuncRefInsertHandler()),
+				LookupElementBuilder.create ("")
+					.setPresentableText ("()")
+					.setBold (true)
+					.setIcon (XqyIcons.FUNCTION)
+					.setTailText (" User Functions", true)
+					.setInsertHandler (new FuncRefInsertHandler (true)),
 				99999.0));
 
 			addLocalInScopeFunctionSuggestions (parameters, context, result);
