@@ -37,7 +37,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 	private static final String [] definedFunctionPrefixes = {
 		// FIXME: This should be obtained from known namespaces as per XQuery version decl
-		// Should not include namespaces like "search", thos will be resolved by looking at imports
+		// Should not include namespaces like "search", those will be resolved by looking at imports
 		"fn:", "xdmp:", "cts:", "map:", "math:", "spell:", "admin:", "prof:", "dbg:", "sec:", "thsr:", "trgr", "err:", "error:"
 	};
 
@@ -81,6 +81,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 			if (func != null) {
 				holder.createInfoAnnotation (element, func.getSummary());
+				holder.createInfoAnnotation (element, func.getFullName () + " " + func.paramListAsString());
 
 				List<FunctionDefs.Parameter> params = func.getParameters();
 				XqyExprSingle [] xparams = PsiTreeUtil.getChildrenOfType (element.getParent(), XqyExprSingle.class);

@@ -97,8 +97,6 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
 %%
 
-/* TODO: Need state for XML comments?  CDATA?  Pragmas? */
-
 <STRING_QUOTE> {
   \"\"      { string.append(yytext()) ; }
   [^\r\n\"\\]+  { string.append(yytext()); }

@@ -55,13 +55,13 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 {
 	private static final Key<CachedValue<Set<PsiElement>>> USED_ITEMS_KEY = Key.create("USED_ITEMS_KEY");
 
-	// ToDo: check usage of namespaces
+	// ToDo: warn about missing return type for functions
+	// ToDo: Error if library module has a body
 	// ToDo: highlight when variables hide other variables
+	// ToDo: check usage of namespaces
 	// ToDo: check types of expressions against declared types of variables
 	// ToDo: check return type of function return value, where possible
 	// ToDo: check validity of option values
-	// ToDo: warn about missing return type for functions
-	// ToDo: Error if library module has a body
 
 	public UnusedItemsHighlightPassFactory (Project project, TextEditorHighlightingPassRegistrar highlightingPassRegistrar)
 	{

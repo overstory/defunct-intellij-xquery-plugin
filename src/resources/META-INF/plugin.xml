@@ -16,13 +16,13 @@
 		<lang.braceMatcher language="XQY" implementationClass="uk.co.overstory.xquery.XqyBraceMatcher"/>
 		<lang.commenter language="XQY" implementationClass="uk.co.overstory.xquery.XqyCommenter"/>
 		<lang.refactoringSupport language="XQY" implementationClass="uk.co.overstory.xquery.refactor.XqyRefactoringSupportProvider"/>
+		<lang.documentationProvider language="XQY" implementationClass="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 		<annotator language="XQY" implementationClass="uk.co.overstory.xquery.editor.XqyAnnotator"/>
 		<fileTypeFactory implementation="uk.co.overstory.xquery.XqyFileTypeFactory"/>
 		<colorSettingsPage implementation="uk.co.overstory.xquery.editor.XqyColorSettingsPage"/>
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
 		<completion.contributor language="XQY" implementationClass="uk.co.overstory.xquery.completion.XqyCompletionContributor"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
-		<documentationProvider implementation="uk.co.overstory.xquery.XqyDocumentationProvider"/>
 	</extensions>
 	<!--
 		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>
