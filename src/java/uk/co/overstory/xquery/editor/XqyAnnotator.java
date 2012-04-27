@@ -11,6 +11,7 @@ import uk.co.overstory.xquery.psi.XqyExprSingle;
 import uk.co.overstory.xquery.psi.XqyFunctionDecl;
 import uk.co.overstory.xquery.psi.XqyFunctionName;
 import uk.co.overstory.xquery.psi.XqyParam;
+import uk.co.overstory.xquery.psi.XqyParamList;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 import uk.co.overstory.xquery.psi.XqyRefVarName;
 import uk.co.overstory.xquery.psi.XqyVarDecl;
@@ -112,7 +113,9 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 		if (funcName == null) return;
 
-		for (PsiElement element : funcDecl.getParent().getChildren()) {
+		PsiElement [] children = funcDecl.getParent().getChildren();
+
+		for (PsiElement element : children) {
 			if (element == funcDecl) continue;	// self
 			if ( ! (element instanceof XqyFunctionDecl)) continue;
 
@@ -122,9 +125,24 @@ public class XqyAnnotator implements Annotator, DumbAware
 			if (targetName == null) continue;
 
 			if (funcName.equals (targetName)) {
-				holder.createErrorAnnotation (targetFunctionNameElement, "Duplicate function declaration '" + targetName + "()'");
+				if (arrityOf (funcDecl) == arrityOf (element)) {
+					holder.createErrorAnnotation (targetFunctionNameElement, "Duplicate function declaration '" + targetName + "()'");
+				} else {
+					holder.createWeakWarningAnnotation (targetFunctionNameElement, "Another function '" + targetName + "()' exists with different arity");
+				}
 			}
 		}
+	}
+
+	private int arrityOf (PsiElement element)
+	{
+		PsiElement paramList = PsiTreeUtil.findChildOfType (element, XqyParamList.class);
+
+		if (paramList == null) return 0;
+
+		PsiElement [] params = PsiTreeUtil.getChildrenOfType (paramList, XqyParam.class);
+
+		return (params == null) ? 0 : params.length;
 	}
 
 	private void checkForDupeGlobalVars (@NotNull PsiElement varDecl, @NotNull AnnotationHolder holder)

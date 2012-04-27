@@ -143,7 +143,7 @@ public class XqyCompletionContributor extends CompletionContributor
 			}
 
 			document.insertString (offset, ";");
-			caretModel.moveToOffset (offset);
+			caretModel.moveToOffset (offset + 1);
 		}
 	}
 
