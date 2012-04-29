@@ -14,7 +14,12 @@ public class TestLexer
 {
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
-			"\"multi\n  line\n  comment\"" +
+			"            <options xmlns=\"xdmp:eval\">\n" +
+			"        \t  <database>{xdmp:database(\"CitationTracker\")}</database>\n" +
+			"        \t</options>\n" +
+			"<foo>bar</foo>\n" +
+			"<foo2>{$blah}</foo2>" +
+			"\"multi\n  line\n  string\"" +
 			"\n" +
 			"(: embedded (parens) :)\n" +
 			"\n" +

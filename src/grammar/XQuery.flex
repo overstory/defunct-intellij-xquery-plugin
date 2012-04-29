@@ -1,5 +1,6 @@
 package uk.co.overstory.xquery.parser;
 
+import java.util.Stack;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import uk.co.overstory.xquery.psi.XqyTypes;
@@ -8,6 +9,24 @@ import uk.co.overstory.xquery.psi.XqyTypes;
 
 %{
   StringBuffer string = new StringBuffer();
+  private Stack<Integer> stack = new Stack<Integer>();
+
+  public void yypushState(int newState) {
+    //System.out.println ("Pushing state: " + newState);
+    stack.push (yystate());
+    yybegin (newState);
+  }
+
+  public void yypopState() {
+    if (stack.empty()) {
+      System.out.println ("yypopStack: stack empty, going to YYINITIAL");
+      yybegin (YYINITIAL);
+      return;
+    }
+
+    //System.out.println ("Popped state");
+    yybegin (stack.pop());
+  }
 
   public _XqyLexer() {
     this((java.io.Reader)null);
@@ -84,6 +103,18 @@ Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 
 id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
+/*
+Nmstart               ({Letter}|_)
+Nmchar                ({Letter}|{Digit}|[._-])
+NCName                {Nmstart}{Nmchar}*
+QName                 ({NCName}":")?{NCName}
+SchemaGlobalTypeName  type\({SO}{QName}{SO}\)
+SchemaGlobalContext   ({QName}|{SchemaGlobalTypeName})
+Char                  [\x09\x0D\x0A\x20-\xFD]
+NumericLiteral        ((\.[0-9]+)|([0-9]+(\.[0-9]+)?))([eE][+-]?[0-9]+)?
+StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
+*/
+
 
 %state STRING_QUOTE
 %state STRING_APOST
@@ -95,7 +126,42 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 %state PI
 %state PI_TARGET
 
+%state START_TAG
+%state END_TAG
+%state ELEM_CONTENT
+
 %%
+
+<START_TAG> {
+  "{" { yypushState(YYINITIAL); return XqyTypes.XQY_LEFT_BRACE; }
+  ">" { yypopState(); yypushState(ELEM_CONTENT); return XqyTypes.XQY_GT; }
+  "/>" { yypopState(); return XqyTypes.XQY_EMPTY_TAG_END; }
+  {id} { return XqyTypes.XQY_ID; }
+  ":" { return XqyTypes.XQY_COLON; }
+  "=" { return XqyTypes.XQY_EQUAL; }
+  {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
+  "\"" { yypushState(STRING_QUOTE); }
+  "'"  { yypushState(STRING_APOST); }
+  [^ \t\r\n] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
+
+<ELEM_CONTENT> {
+  "{" { yypushState(YYINITIAL); return XqyTypes.XQY_LEFT_BRACE; }
+  "<" {yypushState(START_TAG); return XqyTypes.XQY_LT; }
+  "</" { yypopState(); yypushState(END_TAG); return XqyTypes.XQY_END_TAG_START; }
+  "{{" | "}}" | [^{}<]+ { return XqyTypes.XQY_ELEMENT_CONTENT_CHAR; }
+  "<![CDATA[" { yypushState(CDATA); return XqyTypes.XQY_CDATA_START; }
+  "<!--" { yypushState(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
+  "<?" { yypushState(PI_TARGET); return XqyTypes.XQY_PI_START; }
+}
+
+<END_TAG> {
+  "{" { yypushState(YYINITIAL); return XqyTypes.XQY_LEFT_BRACE; }
+  ">" { yypopState(); return XqyTypes.XQY_GT; }
+  {id} { return XqyTypes.XQY_ID; }
+  ":" { return XqyTypes.XQY_COLON; }
+  [^ \t\r\n] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
 
 <STRING_QUOTE> {
   \"\"      { string.append(yytext()) ; }
@@ -103,7 +169,7 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
   \n       { string.append(yytext()); return XqyTypes.XQY_STRING; }
   \r       { string.append(yytext()); return XqyTypes.XQY_STRING; }
   \\        { string.append(yytext()); }
-  \"        { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+  \"        { yypopState(); return XqyTypes.XQY_STRING; }
 }
 
 <STRING_APOST> {
@@ -112,35 +178,36 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
   \n       { string.append(yytext()); return XqyTypes.XQY_STRING; }
   \r       { string.append(yytext()); return XqyTypes.XQY_STRING; }
   \\        { string.append(yytext()); }
-  \'        { yybegin(YYINITIAL); return XqyTypes.XQY_STRING; }
+  \'        { yypopState(); return XqyTypes.XQY_STRING; }
 }
 
 <COMMENT> {
   {CommentContents} { return XqyTypes.XQY_COMMENT_CONTENTS; }
-  ":)" { yybegin(YYINITIAL); return XqyTypes.XQY_COMMENT_END; }
+  "(:" { yypushState(COMMENT); return XqyTypes.XQY_COMMENT_START; }
+  ":)" { yypopState(); return XqyTypes.XQY_COMMENT_END; }
 }
 
 <XML_COMMENT> {
   {XmlCommentContents} { return XqyTypes.XQY_XML_COMMENT_CONTENTS;}
-  "-->" { yybegin(YYINITIAL); return XqyTypes.XQY_XML_COMMENT_END; }
+  "-->" { yypopState(); return XqyTypes.XQY_XML_COMMENT_END; }
 }
 
 <PI> {
   {PiContents} { return XqyTypes.XQY_PI_CONTENTS;}
-  "?>" { yybegin(YYINITIAL); return XqyTypes.XQY_PI_END; }
+  "?>" { yypopState(); return XqyTypes.XQY_PI_END; }
 }
 <PI_TARGET> {
-  {id} { yybegin(PI); return XqyTypes.XQY_ID; }
+  {id} { yypopState(); yypushState(PI); return XqyTypes.XQY_ID; }
 }
 
 <CDATA> {
   {CdataContents} { return XqyTypes.XQY_CDATA_CONTENTS;}
-  "]]>" { yybegin(YYINITIAL); return XqyTypes.XQY_CDATA_END; }
+  "]]>" { yypopState(); return XqyTypes.XQY_CDATA_END; }
 }
 
 <PRAGMA> {
   {PragmaContents} { return XqyTypes.XQY_PRAGMA_CONTENTS;}
-  "#)" { yybegin(YYINITIAL); return XqyTypes.XQY_PRAGMA_END; }
+  "#)" { yypopState(); return XqyTypes.XQY_PRAGMA_END; }
 }
 <PRAGMA_QNAME> {
 /* FIXME
@@ -154,14 +221,14 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
   {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
-  "\""   { string.setLength(0); yybegin(STRING_QUOTE); }
-  "'"  { string.setLength(0); yybegin(STRING_APOST); }
+  "\""   { string.setLength(0); yypushState(STRING_QUOTE); }
+  "'"  { string.setLength(0); yypushState(STRING_APOST); }
 
-  "(:" { yybegin(COMMENT); return XqyTypes.XQY_COMMENT_START; }
-  "<!--" { yybegin(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
-  "<?" { yybegin(PI_TARGET); return XqyTypes.XQY_PI_START; }
-  "(#" { yybegin(PRAGMA_QNAME); return XqyTypes.XQY_PRAGMA_START; }
-  "<![CDATA[" { yybegin(CDATA); return XqyTypes.XQY_CDATA_START; }
+  "(:" { yypushState(COMMENT); return XqyTypes.XQY_COMMENT_START; }
+  "<!--" { yypushState(XML_COMMENT); return XqyTypes.XQY_XML_COMMENT_START; }
+  "<?" { yypushState(PI_TARGET); return XqyTypes.XQY_PI_START; }
+  "(#" { yypushState(PRAGMA_QNAME); return XqyTypes.XQY_PRAGMA_START; }
+  "<![CDATA[" { yypushState(CDATA); return XqyTypes.XQY_CDATA_START; }
 
   {Keyword} { return XqyTypes.XQY_KEYWORD; }
 
@@ -169,42 +236,48 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 
   {id} { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
 
-  "//" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH_SLASH; }
-  "/" {yybegin(YYINITIAL); return XqyTypes.XQY_SLASH; }
-  ":=" {yybegin(YYINITIAL); return XqyTypes.XQY_OP_BIND; }
-  "::" {yybegin(YYINITIAL); return XqyTypes.XQY_AXIS; }
-  "</" {yybegin(YYINITIAL); return XqyTypes.XQY_END_TAG_START; }
-  "/>" {yybegin(YYINITIAL); return XqyTypes.XQY_EMPTY_TAG_END; }
-  "&#" {yybegin(YYINITIAL); return XqyTypes.XQY_CHAR_REF_START; }
-  "&#x" {yybegin(YYINITIAL); return XqyTypes.XQY_CHAR_HEX_REF_START; }
+  "//" { return XqyTypes.XQY_SLASH_SLASH; }
+  "/" { return XqyTypes.XQY_SLASH; }
+  ":=" { return XqyTypes.XQY_OP_BIND; }
+  "::" { return XqyTypes.XQY_AXIS; }
 
-  "(" {yybegin(YYINITIAL); return XqyTypes.XQY_LEFT_PAREN; }
-  ")" {yybegin(YYINITIAL); return XqyTypes.XQY_RIGHT_PAREN; }
-  "{" {yybegin(YYINITIAL); return XqyTypes.XQY_LEFT_BRACE; }
-  "}" {yybegin(YYINITIAL); return XqyTypes.XQY_RIGHT_BRACE; }
-  "[" {yybegin(YYINITIAL); return XqyTypes.XQY_LEFT_BRACKET; }
-  "]" {yybegin(YYINITIAL); return XqyTypes.XQY_RIGHT_BRACKET; }
-  "<" {yybegin(YYINITIAL); return XqyTypes.XQY_LT; }
-  ">" {yybegin(YYINITIAL); return XqyTypes.XQY_GT; }
-  "&" {yybegin(YYINITIAL); return XqyTypes.XQY_AMP; }
-  "@" {yybegin(YYINITIAL); return XqyTypes.XQY_AT_SIGN; }
+  "</" { return XqyTypes.XQY_END_TAG_START; }
+  "/>" { return XqyTypes.XQY_EMPTY_TAG_END; }
 
-  ";" {yybegin(YYINITIAL); return XqyTypes.XQY_SEMICOLON; }
-  ":" {yybegin(YYINITIAL); return XqyTypes.XQY_COLON; }
-  "," {yybegin(YYINITIAL); return XqyTypes.XQY_COMMA; }
-  "." {yybegin(YYINITIAL); return XqyTypes.XQY_DOT; }
-  ".." {yybegin(YYINITIAL); return XqyTypes.XQY_DOTDOT; }
-  "$" {yybegin(YYINITIAL); return XqyTypes.XQY_DOLLAR; }
-  "=" {yybegin(YYINITIAL); return XqyTypes.XQY_EQUAL; }
-  "!=" {yybegin(YYINITIAL); return XqyTypes.XQY_NOT_EQUAL; }
-  "<=" {yybegin(YYINITIAL); return XqyTypes.XQY_LESS_EQUAL; }
-  ">=" {yybegin(YYINITIAL); return XqyTypes.XQY_GREATER_EQUAL; }
-  "?" {yybegin(YYINITIAL); return XqyTypes.XQY_QMARK; }
-  "|" {yybegin(YYINITIAL); return XqyTypes.XQY_VERT_BAR; }
-  "+" {yybegin(YYINITIAL); return XqyTypes.XQY_PLUS_SIGN; }
-  "*" {yybegin(YYINITIAL); return XqyTypes.XQY_STAR; }
+  "&#" { return XqyTypes.XQY_CHAR_REF_START; }
+  "&#x" { return XqyTypes.XQY_CHAR_HEX_REF_START; }
 
-  "-" {yybegin(YYINITIAL); return XqyTypes.XQY_MINUS_SIGN; }
+  "(" { return XqyTypes.XQY_LEFT_PAREN; }
+  ")" { return XqyTypes.XQY_RIGHT_PAREN; }
+
+  "{" { yypushState(YYINITIAL); return XqyTypes.XQY_LEFT_BRACE; }
+  "}" { yypopState(); return XqyTypes.XQY_RIGHT_BRACE; }
+
+  "[" { return XqyTypes.XQY_LEFT_BRACKET; }
+  "]" { return XqyTypes.XQY_RIGHT_BRACKET; }
+
+  "<" { yypushState(START_TAG); return XqyTypes.XQY_LT; }
+  ">" { return XqyTypes.XQY_GT; }
+
+  "&" { return XqyTypes.XQY_AMP; }
+  "@" { return XqyTypes.XQY_AT_SIGN; }
+
+  ";" { return XqyTypes.XQY_SEMICOLON; }
+  ":" { return XqyTypes.XQY_COLON; }
+  "," { return XqyTypes.XQY_COMMA; }
+  "." { return XqyTypes.XQY_DOT; }
+  ".." { return XqyTypes.XQY_DOTDOT; }
+  "$" { return XqyTypes.XQY_DOLLAR; }
+  "=" { return XqyTypes.XQY_EQUAL; }
+  "!=" { return XqyTypes.XQY_NOT_EQUAL; }
+  "<=" { return XqyTypes.XQY_LESS_EQUAL; }
+  ">=" { return XqyTypes.XQY_GREATER_EQUAL; }
+  "?" { return XqyTypes.XQY_QMARK; }
+  "|" { return XqyTypes.XQY_VERT_BAR; }
+  "+" { return XqyTypes.XQY_PLUS_SIGN; }
+  "*" { return XqyTypes.XQY_STAR; }
+
+  "-" { return XqyTypes.XQY_MINUS_SIGN; }
 
 
 /*
@@ -212,4 +285,4 @@ id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
 */
 }
 
-.|\n {yybegin(YYINITIAL); return com.intellij.psi.TokenType.BAD_CHARACTER; }
+.|\n {yypopState(); return com.intellij.psi.TokenType.BAD_CHARACTER; }
