@@ -4,7 +4,11 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.PsiTreeUtil;
 import uk.co.overstory.xquery.XqyIcons;
+import uk.co.overstory.xquery.psi.XqyForVar;
+import uk.co.overstory.xquery.psi.XqyLetClause;
+import uk.co.overstory.xquery.psi.XqyLetVar;
 import uk.co.overstory.xquery.psi.XqyRefVarName;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +44,22 @@ public class XqyVarNameElementImpl extends XqyNamedElementImpl
 		}
 
 		// TODO: Suppress vars with same name in wider scope
-		if (state == XqyReferenceImpl.variantResolveState) {
+		if ((state == XqyReferenceImpl.variantResolveState) && inScope (place)) {
 			processor.execute (this, null);
+		}
+
+		return true;
+	}
+
+	// FIXME: Need to constrain to immediate ancestor only (quantified)
+	// This is a hack that seems unnecessary, the FLWOR check in findPrecedingFlworSibling
+	// in XqyCompositeElementImpl should be enough
+	private boolean inScope (PsiElement place)
+	{
+		if ((this.getParent().getParent() instanceof XqyLetVar) &&
+			PsiTreeUtil.getParentOfType (this, XqyLetClause.class, false) == PsiTreeUtil.getParentOfType (place, XqyLetClause.class, false))
+		{
+			return false;
 		}
 
 		return true;

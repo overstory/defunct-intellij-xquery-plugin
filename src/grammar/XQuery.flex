@@ -1,6 +1,8 @@
 package uk.co.overstory.xquery.parser;
 
 import java.util.Stack;
+import java.util.Map;
+import java.util.HashMap;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import uk.co.overstory.xquery.psi.XqyTypes;
@@ -8,24 +10,48 @@ import uk.co.overstory.xquery.psi.XqyTypes;
 %%
 
 %{
+	private static final Map<Integer,String> stateNames = new HashMap<Integer,String>();
+
+	static {
+		stateNames.put (YYINITIAL, "YYINITIAL");
+		stateNames.put (STRING_QUOTE, "STRING_QUOTE");
+		stateNames.put (STRING_APOST, "STRING_APOST");
+		stateNames.put (COMMENT, "COMMENT");
+		stateNames.put (XML_COMMENT, "XML_COMMENT");
+		stateNames.put (PRAGMA, "PRAGMA");
+		stateNames.put (CDATA, "CDATA");
+		stateNames.put (PRAGMA, "PRAGMA");
+		stateNames.put (PRAGMA_QNAME, "PRAGMA_QNAME");
+		stateNames.put (PI, "PI");
+		stateNames.put (PI_TARGET, "PI_TARGET");
+		stateNames.put (START_TAG, "START_TAG");
+		stateNames.put (END_TAG, "END_TAG");
+		stateNames.put (ELEM_CONTENT, "ELEM_CONTENT");
+	}
+
   StringBuffer string = new StringBuffer();
   private Stack<Integer> stack = new Stack<Integer>();
 
   public void yypushState(int newState) {
-    //System.out.println ("Pushing state: " + newState);
+    //System.out.println ("Pushing state: " + stateName (yystate()) + " -> " + stateName (newState));
     stack.push (yystate());
     yybegin (newState);
   }
 
   public void yypopState() {
     if (stack.empty()) {
-      System.out.println ("yypopStack: stack empty, going to YYINITIAL");
+      //System.out.println ("yypopStack: stack empty, going to YYINITIAL");
       yybegin (YYINITIAL);
       return;
     }
 
-    //System.out.println ("Popped state");
+    //System.out.println ("Popped state: " + stateName (yystate()) + " -> " + stateName (stack.peek()));
     yybegin (stack.pop());
+  }
+
+  private String stateName (int state)
+  {
+  	return stateNames.get (state);
   }
 
   public _XqyLexer() {
@@ -54,10 +80,10 @@ OptionalDigits={Digit}*
 
 /*
 Hex={Digit} | [aAbBcCdDeEfF]
+DecimalLiteral= ( ('.' {Digits}) | ( {Digits} '.' {OptionalDigits} ) )
 */
 
-DecimalLiteral= ( ('.' {Digits}) | ( {Digits} '.' {OptionalDigits} ) )
-DoubleLiteral= ( ( "." {Digits} ) | ( {Digits} ( "." {OptionalDigits} )? ) [eE] [+\-]? {Digits} )
+DecimalLiteral= ( ( "." {Digits} ) | ( {Digits} "." {OptionalDigits} ) | ( {Digits} ( "." {OptionalDigits} )? ) [eE] [+\-]? {Digits} )
 
 /*
 ElementContentChar=  ( [^{}<&] )*
@@ -139,7 +165,7 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
   {id} { return XqyTypes.XQY_ID; }
   ":" { return XqyTypes.XQY_COLON; }
   "=" { return XqyTypes.XQY_EQUAL; }
-  {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
+  {S} { return XqyTypes.XQY_S; }
   "\"" { yypushState(STRING_QUOTE); }
   "'"  { yypushState(STRING_APOST); }
   [^ \t\r\n] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
@@ -183,17 +209,23 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
 
 <COMMENT> {
   {CommentContents} { return XqyTypes.XQY_COMMENT_CONTENTS; }
+  \n { return XqyTypes.XQY_COMMENT_CONTENTS; }
+  \r { return XqyTypes.XQY_COMMENT_CONTENTS; }
   "(:" { yypushState(COMMENT); return XqyTypes.XQY_COMMENT_START; }
   ":)" { yypopState(); return XqyTypes.XQY_COMMENT_END; }
 }
 
 <XML_COMMENT> {
   {XmlCommentContents} { return XqyTypes.XQY_XML_COMMENT_CONTENTS;}
+  \n { return XqyTypes.XQY_XML_COMMENT_CONTENTS; }
+  \r { return XqyTypes.XQY_XML_COMMENT_CONTENTS; }
   "-->" { yypopState(); return XqyTypes.XQY_XML_COMMENT_END; }
 }
 
 <PI> {
   {PiContents} { return XqyTypes.XQY_PI_CONTENTS;}
+  \n { return XqyTypes.XQY_PI_CONTENTS; }
+  \r { return XqyTypes.XQY_PI_CONTENTS; }
   "?>" { yypopState(); return XqyTypes.XQY_PI_END; }
 }
 <PI_TARGET> {
@@ -208,6 +240,7 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
 <PRAGMA> {
   {PragmaContents} { return XqyTypes.XQY_PRAGMA_CONTENTS;}
   "#)" { yypopState(); return XqyTypes.XQY_PRAGMA_END; }
+  {S} { return XqyTypes.XQY_S; }
 }
 <PRAGMA_QNAME> {
 /* FIXME
@@ -232,7 +265,7 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
 
   {Keyword} { return XqyTypes.XQY_KEYWORD; }
 
-  ( {DoubleLiteral} | {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
+  ( {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
   {id} { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
 

@@ -195,7 +195,7 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 
 				return " - position ($" + forVarname + ")";
 			}
-			return " - for";
+			return " - for var";
 		}
 
 		return " - variable";

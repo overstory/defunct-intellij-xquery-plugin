@@ -51,7 +51,6 @@ public class XqyCompletionContributor extends CompletionContributor
 //			new FlworSuggestProvider ());
 
 		// --------------------------------------------------------
-
 	}
 
 	private LookupElement createFunctionLookup (FunctionDefs.Function function)

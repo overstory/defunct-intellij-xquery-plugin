@@ -14,6 +14,11 @@ public class TestLexer
 {
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
+			"123\n" +
+			"123.\n" +
+			".123\n" +
+			"123.45\n" +
+			"1.0e+5\n" +
 			"            <options xmlns=\"xdmp:eval\">\n" +
 			"        \t  <database>{xdmp:database(\"CitationTracker\")}</database>\n" +
 			"        \t</options>\n" +
