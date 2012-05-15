@@ -131,7 +131,7 @@ VarDecl  ::= 'declare' Visibility 'variable' DollarVarName TypeDeclaration? ( Bi
 Visibility ::= 'private'?
 
 ConstructionDecl ::= 'declare' 'construction' ( 'strip' | 'preserve' ) Separator {pin=2}
-FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' TypeDeclaration? ( EnclosedExpr | 'external' ) Separator {pin=3}
+FunctionDecl ::= 'declare' Visibility 'function' FunctionName '(' ParamList? ')' TypeDeclaration? ( EnclosedExpr | 'external' ) Separator {pin=4}
 
 ParamList ::= Param ( ',' Param )*
 Param    ::= DollarVarName TypeDeclaration?

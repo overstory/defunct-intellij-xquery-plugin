@@ -145,6 +145,7 @@ public class FunctionDefs
 		private final String localName;
 		private final String fullName;
 		private final String prefix;
+		private final boolean priv;
 		private final boolean hidden;
 		private String returnType = null;
 
@@ -153,16 +154,17 @@ public class FunctionDefs
 		private String usage = "";
 		private int minParamCount = 0;
 
-		public Function (String prefix, String localName, String fullName, String returnType, boolean hidden)
+		public Function (String prefix, String localName, String fullName, boolean priv, boolean hidden, String returnType)
 		{
 			this.prefix = prefix;
 			this.localName = localName;
 			this.fullName = fullName;
+			this.priv = priv;
 			this.hidden = hidden;
 			this.returnType = returnType;
 		}
 
-		private void addParam (Parameter param)
+		public void addParam (Parameter param)
 		{
 			parameters.add (param);
 
@@ -187,6 +189,11 @@ public class FunctionDefs
 		public String getReturnType()
 		{
 			return returnType;
+		}
+
+		public boolean isPrivate()
+		{
+			return priv;
 		}
 
 		public boolean isHidden()
@@ -252,7 +259,7 @@ public class FunctionDefs
 		private final boolean optional;
 		private String description = "";
 
-		private Parameter (String name, String type, boolean optional)
+		public Parameter (String name, String type, boolean optional)
 		{
 			this.name = name;
 			this.type = type;
@@ -301,8 +308,9 @@ public class FunctionDefs
 				func = new Function (attributes.getValue ("lib"),
 					attributes.getValue ("name"),
 					attributes.getValue ("fullname"),
-					"item()*",
-					Boolean.valueOf (attributes.getValue ("hidden")));
+					false,
+					Boolean.valueOf (attributes.getValue ("hidden")),
+					"item()*");
 			}
 
 			if (qname.equals ("param")) {

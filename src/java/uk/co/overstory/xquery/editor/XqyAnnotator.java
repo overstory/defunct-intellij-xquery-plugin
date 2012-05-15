@@ -7,16 +7,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import uk.co.overstory.xquery.completion.FunctionDefs;
-import uk.co.overstory.xquery.psi.XqyExprSingle;
-import uk.co.overstory.xquery.psi.XqyFunctionDecl;
-import uk.co.overstory.xquery.psi.XqyFunctionName;
-import uk.co.overstory.xquery.psi.XqyParam;
-import uk.co.overstory.xquery.psi.XqyParamList;
-import uk.co.overstory.xquery.psi.XqyRefFunctionName;
-import uk.co.overstory.xquery.psi.XqyRefVarName;
-import uk.co.overstory.xquery.psi.XqyVarDecl;
-import uk.co.overstory.xquery.psi.XqyVarName;
-import uk.co.overstory.xquery.psi.XqyXqueryVersionString;
+import uk.co.overstory.xquery.psi.*;
+import uk.co.overstory.xquery.psi.util.TreeUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,11 +28,17 @@ public class XqyAnnotator implements Annotator, DumbAware
 		"0.9-ml", "1.0", "1.0-ml", "3.0"		// FIXME: This should be defined in a property or something, matching parse rules in effect
 	};
 
-	private static final String [] definedFunctionPrefixes = {
-		// FIXME: This should be obtained from known namespaces as per XQuery version decl
-		// Should not include namespaces like "search", those will be resolved by looking at imports
-		"fn:", "xdmp:", "cts:", "map:", "math:", "spell:", "admin:", "prof:", "dbg:", "sec:", "thsr:", "trgr", "err:", "error:"
+	private static final String [] typeConstructorPrefixes = {
+		"xs:", "cts:", "map:"
 	};
+
+	// FIXME: This should be obtained from known namespaces as per XQuery version decl
+	// Should not include namespaces like "search", those will be resolved by looking at imports
+//	private static final String [] definedFunctionPrefixes = {
+//		"fn:", "xdmp:", "cts:", "map:", "math:", "spell:", "admin:", "prof:", "dbg:", "sec:", "thsr:", "trgr", "err:", "error:"
+//	};
+
+//	private static final String DEFAULT_XQUERY_TYPE = "item()*";
 
 	private final FunctionDefs functionDefs = FunctionDefs.instance();
 
@@ -68,40 +66,106 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 		// Annotate unknown variables
 		if ((element instanceof XqyRefVarName) && (resolve == null)) {
-			holder.createErrorAnnotation (element, "Unknown variable '$" + element.getText() + "'");
+			holder.createErrorAnnotation (element, "Undefined variable '$" + element.getText() + "'");
 			return;
 		}
 
 		// Annotate function calls with short description
 		if ((element instanceof XqyRefFunctionName)) {
-			String functionName = ((XqyRefFunctionName) element).getQName().getText();
-			FunctionDefs.Function func = functionDefs.getFunction (functionName);
-
-			// FIXME: This should be sensitive to default function namespace
-			if (func == null) func = functionDefs.getFunction ("fn:" + functionName);
-
-			if (func != null) {
-				holder.createInfoAnnotation (element, func.getSummary());
-				holder.createInfoAnnotation (element, func.getFullName () + " " + func.paramListAsString());
-
-				List<FunctionDefs.Parameter> params = func.getParameters();
-				XqyExprSingle [] xparams = PsiTreeUtil.getChildrenOfType (element.getParent(), XqyExprSingle.class);
-				int xcount = (xparams == null) ? 0 : xparams.length;
-				int minParamCount = func.getMinParamCount();
-
-				if ((xcount > params.size()) || (xcount < minParamCount)) {
-					holder.createErrorAnnotation (element, "Wrong # params: got " + xcount +  ", expected " +
-						((params.size() == minParamCount) ? params.size() : minParamCount + " - " + params.size()) +
-						": " + func.paramListAsString());
-				}
-			}
+			annotateForBuiltinFunction (element, holder);
+			annotateForUserDefinedFunction (element, holder, resolve);
 
 			// Annotate unknown functions
 			if ((resolve == null) && ( ! functionInScope (element))) {
-				holder.createErrorAnnotation (element, "Unknown function '" + element.getText () + "'()");
+				holder.createErrorAnnotation (element, "Undefined function '" + element.getText () + "'()");
 				return;
 			}
 		}
+	}
+
+	private void annotateForBuiltinFunction (PsiElement element, AnnotationHolder holder)
+	{
+		String functionName = ((XqyRefFunctionName) element).getQName().getText();
+		FunctionDefs.Function func = functionDefs.getFunction (functionName);
+
+		// FIXME: This should be sensitive to default function namespace
+		if (func == null) func = functionDefs.getFunction ("fn:" + functionName);
+
+		if (func == null) return;
+
+		annotateFunction (element, holder, func);
+	}
+
+	private void annotateForUserDefinedFunction (PsiElement element, AnnotationHolder holder,
+		Object resolved)
+	{
+		if (resolved == null) return;
+
+		XqyFunctionDecl functionDecl = null;
+
+		if (resolved instanceof XqyFunctionDecl) {
+			functionDecl = (XqyFunctionDecl) resolved;
+		} else {
+			functionDecl = PsiTreeUtil.getParentOfType ((PsiElement) resolved, XqyFunctionDecl.class);
+		}
+
+		if (functionDecl == null) return;
+
+		FunctionDefs.Function func = functionDefForUserDefined (functionDecl);
+
+		if (func != null) {
+			annotateFunction (element, holder, func);
+		}
+	}
+
+	private void annotateFunction (PsiElement element, AnnotationHolder holder, FunctionDefs.Function func)
+	{
+		holder.createInfoAnnotation (element, func.getFullName() + " " + func.paramListAsString() +
+			((func.getReturnType() == null) ? "" : (" as " + func.getReturnType())));
+		holder.createInfoAnnotation (element, func.getSummary());
+
+		List<FunctionDefs.Parameter> params = func.getParameters();
+		XqyExprSingle[] callParams = PsiTreeUtil.getChildrenOfType (element.getParent(), XqyExprSingle.class);
+		int callParamCount = (callParams == null) ? 0 : callParams.length;
+		int minParamCount = func.getMinParamCount();
+
+		if ((callParamCount > params.size()) || (callParamCount < minParamCount)) {
+			holder.createErrorAnnotation (element, "Wrong # params: got " + callParamCount + ", expected " +
+				((params.size () == minParamCount) ? params.size () : minParamCount + " - " + params.size ()) +
+				": " + func.paramListAsString ());
+		}
+
+		// FIXME: Check arg types: Chase each call param, if func or var ref, check type of ref'ed item against func param def.
+	}
+
+	@SuppressWarnings("unchecked")
+	private FunctionDefs.Function functionDefForUserDefined (XqyFunctionDecl functionDecl)
+	{
+		XqyFunctionName functionName = (XqyFunctionName) TreeUtil.getDescendentElementAtPath (functionDecl, XqyFunctionName.class);
+		String prefix = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyPrefixedName.class, XqyPrefix.class);
+		String localName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyPrefixedName.class, XqyLocalPart.class);
+		String fullName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class);
+		boolean priv = ! "private".equals (TreeUtil.getTextOfDescendentElementAtPath (functionDecl, XqyVisibility.class));
+		String returnType = TreeUtil.getTextOfDescendentElementAtPath (functionDecl, XqyTypeDeclaration.class, XqySequenceType.class);
+
+		if (localName == null) {
+			localName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyUnprefixedName.class, XqyLocalPart.class);
+		}
+
+		FunctionDefs.Function func =  new FunctionDefs.Function (prefix, localName, fullName, priv, false, returnType);
+
+		XqyParamList paramList = (XqyParamList) TreeUtil.getDescendentElementAtPath (functionDecl, XqyParamList.class);
+
+		if ((paramList != null) && (paramList.getParamList() != null)) {
+			for (XqyParam xparam : paramList.getParamList()) {
+				String paramName = xparam.getDollarVarName().getVarName().getText ();
+				String paramType = TreeUtil.getTextOfDescendentElementAtPath (xparam, XqyTypeDeclaration.class, XqySequenceType.class);
+
+				func.addParam (new FunctionDefs.Parameter (paramName, paramType, false));
+			}
+		}
+
+		return func;
 	}
 
 	// -----------------------------------------------------------
@@ -180,7 +244,9 @@ public class XqyAnnotator implements Annotator, DumbAware
 	{
 		String name = refFunctionName.getText();	// FIXME, should look at QName
 
-		for (String prefix: definedFunctionPrefixes) {
+		if (FunctionDefs.instance().getFunction (name) != null) return true;
+
+		for (String prefix: typeConstructorPrefixes) {
 			if (name.startsWith (prefix)) return true;
 		}
 
