@@ -239,9 +239,11 @@ UnorderedExpr ::= 'unordered' '{' Expr '}'
 FunctionCall ::= RefFunctionName '(' ( ExprSingle ( ',' ExprSingle )* )? ')'
 Constructor ::= DirectConstructor | ComputedConstructor
 DirectConstructor ::= DirElemConstructor | DirCommentConstructor | DirPIConstructor
-DirElemConstructor ::= '<' QName DirAttributeList ( '/>' | '>' DirElemContent* '</' QName S? '>' )
+DirElemConstructor ::= '<' QName DirAttributeList ( '/>' | '>' DirElemContent* '</' QName '>' )
           /* ws: explicit */
-DirAttributeList ::= ( S ( QName S? '=' S? DirAttributeValue )? )*
+
+/* DirAttributeList ::= ( S ( QName S? '=' S? DirAttributeValue )? )* */
+DirAttributeList ::= ( QName '=' DirAttributeValue )*
           /* ws: explicit */
 DirAttributeValue ::= string
 
