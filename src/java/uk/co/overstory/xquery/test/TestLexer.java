@@ -12,6 +12,11 @@ import uk.co.overstory.xquery.parser.XqyLexer;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class TestLexer
 {
+	private static final String TEST =
+		"<options xmlns=\"xdmp:eval\">\n" +
+		"    <database>{xdmp:database (\"CitationTracker\") }</database>\n" +
+		"</options>";
+
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +
 			"123\n" +
@@ -67,7 +72,7 @@ public class TestLexer
 		XqyLexer lexer = new XqyLexer ();
 		IElementType tokenType = null;
 
-		lexer.start (XQUERY);
+		lexer.start (TEST);
 
 		while ((tokenType = lexer.getTokenType()) != null)  {
 			String token = lexer.getTokenText();
