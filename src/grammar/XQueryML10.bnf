@@ -342,9 +342,11 @@ CharRef  ::= '&#' Digits ';' | '&#x' (Digits | Hex)+ ';'
 
 NCName ::= id
 
-QName    ::= PrefixedName | UnprefixedName
-PrefixedName ::= Prefix ':' LocalPart
-UnprefixedName ::= LocalPart
+//QName    ::= PrefixedName | UnprefixedName
+//PrefixedName ::= Prefix ':' LocalPart
+//UnprefixedName ::= LocalPart
+
+QName    ::= ( Prefix ':' LocalPart ) | LocalPart
 Prefix   ::= NCName
 LocalPart ::= NCName
 /*

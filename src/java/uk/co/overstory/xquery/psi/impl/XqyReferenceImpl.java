@@ -13,6 +13,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.util.PsiTreeUtil;
 import uk.co.overstory.xquery.psi.*;
 import uk.co.overstory.xquery.psi.resolve.XqyResolveProcessor;
+import uk.co.overstory.xquery.psi.util.TreeUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -89,13 +90,8 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	@Override
 	public String getLocalname()
 	{
-		XqyQName qname = qnameFor (getElement());
-
-		XqyPrefixedName prefixed = qname.getPrefixedName();
-		XqyUnprefixedName unprefixed = qname.getUnprefixedName();
-		XqyLocalPart localPart = (prefixed == null) ? unprefixed.getLocalPart() : prefixed.getLocalPart();
-
-		return localPart.getText();
+		//noinspection unchecked
+		return TreeUtil.getTextOfDescendentElementAtPath (getElement(), XqyQName.class, XqyLocalPart.class);
 	}
 
 	@Override
@@ -108,9 +104,8 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	@Override
 	public boolean hasNamespace()
 	{
-		XqyQName qname = qnameFor (getElement());
-
-		return (qname.getPrefixedName() != null) && (qname.getPrefixedName().getPrefix ().getText () != null);
+		//noinspection unchecked
+		return (TreeUtil.getDescendentElementAtPath (getElement(), XqyQName.class, XqyPrefix.class) != null);
 	}
 
 	@NotNull
@@ -134,9 +129,13 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 			return seqType.getText();
 		}
 
-		if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) return "xs:integer";
+		if (PsiTreeUtil.getParentOfType (element, XqyPositionalVar.class) != null) {
+			return "xs:integer";
+		}
 
-		if (PsiTreeUtil.getParentOfType (element, XqyCatchClause.class) != null) return "element(error)";
+		if (PsiTreeUtil.getParentOfType (element, XqyCatchClause.class) != null) {
+			return "element(error)";
+		}
 
 		return null;
 	}
@@ -145,7 +144,9 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	{
 		XqyDollarVarName dollarVar = PsiTreeUtil.getParentOfType (element, XqyDollarVarName.class);
 
-		if (dollarVar == null) return null;
+		if (dollarVar == null) {
+			return null;
+		}
 
 		for (PsiElement el = dollarVar.getNextSibling(); el != null; el = el.getNextSibling()) {
 			if (el instanceof XqyTypeDeclaration) {
@@ -156,25 +157,18 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 			}
 		}
 
-//		PsiElement parent = element.getParent();
-//
-//		for (PsiElement el : parent.getChildren()) {
-//			if (el instanceof XqyTypeDeclaration) {
-//				return ((XqyTypeDeclaration) el).getSequenceType();
-//			}
-//			if (el instanceof XqySequenceType) {
-//				return (XqySequenceType) el;
-//			}
-//		}
-
 		return null;
 	}
 
 	private String tailTextForElement (PsiElement element)
 	{
-		if (element instanceof XqyFunctionName) return tailTextForFunction ((XqyFunctionName) element);
+		if (element instanceof XqyFunctionName) {
+			return tailTextForFunction ((XqyFunctionName) element);
+		}
 
-		if (element instanceof XqyVarName) return tailTextForVariable (element);
+		if (element instanceof XqyVarName) {
+			return tailTextForVariable (element);
+		}
 
 		return "???";
 	}
@@ -212,7 +206,9 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		StringBuilder sb = new StringBuilder ("(");
 
 		for (XqyParam param : params) {
-			if (sb.length () != 1) sb.append (", ");
+			if (sb.length () != 1) {
+				sb.append (", ");
+			}
 
 			sb.append ("$").append (param.getDollarVarName().getVarName().getText());
 
@@ -235,14 +231,6 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 		}
 
 		return false;
-	}
-
-	private XqyQName qnameFor (T element)
-	{
-		if (element instanceof XqyRefFunctionName) return ((XqyRefFunctionName) element).getQName();
-		if (element instanceof XqyRefVarName) return ((XqyRefVarName) element).getQName();
-
-		return null;
 	}
 
 	// ---------------------------------------------------------

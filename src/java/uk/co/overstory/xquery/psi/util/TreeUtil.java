@@ -45,4 +45,12 @@ public class TreeUtil
 
 		return element.getText();
 	}
+
+	public static String getTextOfChildElement (
+		@NotNull PsiElement parent,
+		@NotNull Class<? extends PsiElement> child)
+	{
+		//noinspection unchecked
+		return getTextOfDescendentElementAtPath (parent, child);
+	}
 }

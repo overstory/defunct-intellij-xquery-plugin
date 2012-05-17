@@ -3,6 +3,7 @@ package uk.co.overstory.xquery.psi;
 import com.intellij.psi.PsiFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,5 +13,11 @@ import java.util.List;
  */
 public interface XqyFile extends PsiFile
 {
+	String getXQueryVersion();
+
 	List<XqyCompositeElement> getDeclarations();
+
+	Map<String,String> getNamespaceMappings();
+
+	String getDefaultFunctionNsPrefix();
 }

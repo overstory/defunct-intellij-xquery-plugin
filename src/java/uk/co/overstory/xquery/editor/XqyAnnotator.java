@@ -8,11 +8,13 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import uk.co.overstory.xquery.completion.FunctionDefs;
 import uk.co.overstory.xquery.psi.*;
+import uk.co.overstory.xquery.psi.impl.XqyFileImpl;
 import uk.co.overstory.xquery.psi.util.TreeUtil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,11 +48,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 	public void annotate (@NotNull PsiElement element, @NotNull AnnotationHolder holder)
 	{
 		if (element instanceof XqyXqueryVersionString) {
-			if ( ! validXqueryVersion (element)) {
-				holder.createErrorAnnotation (element, "Unknown version, should be: " + ALLOWED_XQUERY_VERSIONS);
-			} else {
-				holder.createInfoAnnotation (element, ALLOWED_XQUERY_VERSIONS);
-			}
+			annotateXQueryVersion (element, holder);
 		}
 
 		if (element instanceof XqyVarDecl) {
@@ -61,12 +59,55 @@ public class XqyAnnotator implements Annotator, DumbAware
 			checkForDupeFunctions (element, holder);
 		}
 
+		if (element instanceof XqyPrefix) {
+			annotateNamespacePrefix (element, holder);
+		}
+
+		if ((element instanceof XqyRefVarName) || (element instanceof XqyRefFunctionName)) {
+			annotateReference (element, holder);
+		}
+	}
+
+	private void annotateNamespacePrefix (PsiElement element, AnnotationHolder holder)
+	{
+		String prefix = element.getText();
+		String value = findNamespaceValue (element, prefix);
+
+		if (value == null) {
+			holder.createErrorAnnotation (element, "Undefined namespace prefix '" + prefix + "'");
+		} else {
+			holder.createInfoAnnotation (element, prefix + "=\"" + value + "\"");
+		}
+	}
+
+	private String findNamespaceValue (PsiElement element, String prefix)
+	{
+		XqyFileImpl fileImpl = (XqyFileImpl) element.getContainingFile();
+
+		Map<String,String> nsMap = fileImpl.getNamespaceMappings();
+
+		return nsMap.get (prefix);
+	}
+
+	private void annotateXQueryVersion (PsiElement element, AnnotationHolder holder)
+	{
+		if ( ! validXqueryVersion (element)) {
+			holder.createErrorAnnotation (element, "Unknown version, should be: " + ALLOWED_XQUERY_VERSIONS);
+		} else {
+			holder.createInfoAnnotation (element, ALLOWED_XQUERY_VERSIONS);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void annotateReference (PsiElement element, AnnotationHolder holder)
+	{
 		PsiReference reference = element.getReference();
 		Object resolve = reference == null ? null : reference.resolve();
 
 		// Annotate unknown variables
 		if ((element instanceof XqyRefVarName) && (resolve == null)) {
-			holder.createErrorAnnotation (element, "Undefined variable '$" + element.getText() + "'");
+			PsiElement localPart = TreeUtil.getDescendentElementAtPath (element, XqyQName.class, XqyLocalPart.class);
+			holder.createErrorAnnotation (localPart, "Undefined variable '$" + element.getText() + "'");
 			return;
 		}
 
@@ -75,9 +116,11 @@ public class XqyAnnotator implements Annotator, DumbAware
 			annotateForBuiltinFunction (element, holder);
 			annotateForUserDefinedFunction (element, holder, resolve);
 
+			// ToDo: Need to understand why this is not run if ns of qname is error annotated
 			// Annotate unknown functions
 			if ((resolve == null) && ( ! functionInScope (element))) {
-				holder.createErrorAnnotation (element, "Undefined function '" + element.getText () + "'()");
+				PsiElement localPart = TreeUtil.getDescendentElementAtPath (element, XqyQName.class, XqyLocalPart.class);
+				holder.createErrorAnnotation (localPart, "Undefined function '" + element.getText() + "()'");
 				return;
 			}
 		}
@@ -88,8 +131,11 @@ public class XqyAnnotator implements Annotator, DumbAware
 		String functionName = ((XqyRefFunctionName) element).getQName().getText();
 		FunctionDefs.Function func = functionDefs.getFunction (functionName);
 
-		// FIXME: This should be sensitive to default function namespace
-		if (func == null) func = functionDefs.getFunction ("fn:" + functionName);
+		if (func == null) {
+			XqyFileImpl fileImpl = (XqyFileImpl) element.getContainingFile();
+
+			func = functionDefs.getFunction (fileImpl.getDefaultFunctionNsPrefix() + ":" + functionName);
+		}
 
 		if (func == null) return;
 
@@ -120,19 +166,26 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 	private void annotateFunction (PsiElement element, AnnotationHolder holder, FunctionDefs.Function func)
 	{
-		holder.createInfoAnnotation (element, func.getFullName() + " " + func.paramListAsString() +
+		@SuppressWarnings("unchecked")
+		PsiElement localPart = TreeUtil.getDescendentElementAtPath (element, XqyQName.class, XqyLocalPart.class);
+
+		if (localPart == null) localPart = element;
+
+		holder.createInfoAnnotation (localPart, func.getSummary());
+		holder.createInfoAnnotation (localPart, func.getFullName() + " " + func.paramListAsString() +
 			((func.getReturnType() == null) ? "" : (" as " + func.getReturnType())));
-		holder.createInfoAnnotation (element, func.getSummary());
 
 		List<FunctionDefs.Parameter> params = func.getParameters();
 		XqyExprSingle[] callParams = PsiTreeUtil.getChildrenOfType (element.getParent(), XqyExprSingle.class);
 		int callParamCount = (callParams == null) ? 0 : callParams.length;
 		int minParamCount = func.getMinParamCount();
 
-		if ((callParamCount > params.size()) || (callParamCount < minParamCount)) {
-			holder.createErrorAnnotation (element, "Wrong # params: got " + callParamCount + ", expected " +
-				((params.size () == minParamCount) ? params.size () : minParamCount + " - " + params.size ()) +
-				": " + func.paramListAsString ());
+		if ( ! func.isVarargs()) {
+			if ((callParamCount > params.size()) || (callParamCount < minParamCount)) {
+				holder.createErrorAnnotation (localPart, "Wrong # params: got " + callParamCount + ", expected " +
+					((params.size() == minParamCount) ? params.size() : minParamCount + " - " + params.size()) +
+					": " + func.paramListAsString());
+			}
 		}
 
 		// FIXME: Check arg types: Chase each call param, if func or var ref, check type of ref'ed item against func param def.
@@ -142,15 +195,11 @@ public class XqyAnnotator implements Annotator, DumbAware
 	private FunctionDefs.Function functionDefForUserDefined (XqyFunctionDecl functionDecl)
 	{
 		XqyFunctionName functionName = (XqyFunctionName) TreeUtil.getDescendentElementAtPath (functionDecl, XqyFunctionName.class);
-		String prefix = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyPrefixedName.class, XqyPrefix.class);
-		String localName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyPrefixedName.class, XqyLocalPart.class);
+		String prefix = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyPrefix.class);
+		String localName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyLocalPart.class);
 		String fullName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class);
 		boolean priv = ! "private".equals (TreeUtil.getTextOfDescendentElementAtPath (functionDecl, XqyVisibility.class));
 		String returnType = TreeUtil.getTextOfDescendentElementAtPath (functionDecl, XqyTypeDeclaration.class, XqySequenceType.class);
-
-		if (localName == null) {
-			localName = TreeUtil.getTextOfDescendentElementAtPath (functionName, XqyQName.class, XqyUnprefixedName.class, XqyLocalPart.class);
-		}
 
 		FunctionDefs.Function func =  new FunctionDefs.Function (prefix, localName, fullName, priv, false, returnType);
 
@@ -170,6 +219,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 	// -----------------------------------------------------------
 
+	@SuppressWarnings("unchecked")
 	private void checkForDupeFunctions (@NotNull PsiElement funcDecl, @NotNull AnnotationHolder holder)
 	{
 		PsiElement funcNameElement = PsiTreeUtil.findChildOfType (funcDecl, XqyFunctionName.class);
@@ -184,15 +234,16 @@ public class XqyAnnotator implements Annotator, DumbAware
 			if ( ! (element instanceof XqyFunctionDecl)) continue;
 
 			PsiElement targetFunctionNameElement = PsiTreeUtil.findChildOfType (element, XqyFunctionName.class);
+			PsiElement targetLocalNameElement = TreeUtil.getDescendentElementAtPath (targetFunctionNameElement, XqyQName.class, XqyLocalPart.class);
 			String targetName = getTextOfElement (targetFunctionNameElement);
 
 			if (targetName == null) continue;
 
 			if (funcName.equals (targetName)) {
 				if (arrityOf (funcDecl) == arrityOf (element)) {
-					holder.createErrorAnnotation (targetFunctionNameElement, "Duplicate function declaration '" + targetName + "()'");
+					holder.createErrorAnnotation (targetLocalNameElement, "Duplicate function declaration '" + targetName + "()'");
 				} else {
-					holder.createWeakWarningAnnotation (targetFunctionNameElement, "Another function '" + targetName + "()' exists with different arity");
+					holder.createWeakWarningAnnotation (targetLocalNameElement, "Another function '" + targetName + "()' exists with different arity");
 				}
 			}
 		}
@@ -242,15 +293,22 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 	private boolean functionInScope (PsiElement refFunctionName)
 	{
-		String name = refFunctionName.getText();	// FIXME, should look at QName
+		String name = refFunctionName.getText();
 
 		if (FunctionDefs.instance().getFunction (name) != null) return true;
 
-		for (String prefix: typeConstructorPrefixes) {
+		XqyFileImpl fileImpl = (XqyFileImpl) refFunctionName.getContainingFile();
+
+		if (FunctionDefs.instance().getFunction (fileImpl.getDefaultFunctionNsPrefix() + ":" + name) != null) return true;
+
+		for (String prefix : typeConstructorPrefixes) {
 			if (name.startsWith (prefix)) return true;
 		}
 
-		// FIXME: need to check imports, etc.
+		// ToDo: Need to look at imported modules for functions in namespaces
+//		for (String prefix : fileImpl.getNamespaceMappings().keySet()) {
+//			if (name.startsWith (prefix)) return true;
+//		}
 
 		return false;
 	}

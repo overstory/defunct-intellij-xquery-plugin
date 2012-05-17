@@ -148,6 +148,7 @@ public class FunctionDefs
 		private final boolean priv;
 		private final boolean hidden;
 		private String returnType = null;
+		private boolean varargs = false;
 
 		private String summary = "";
 		private String example = "";
@@ -169,6 +170,8 @@ public class FunctionDefs
 			parameters.add (param);
 
 			if ( ! param.isOptional()) minParamCount++;
+
+			if (param.isVararg()) varargs = true;
 		}
 
 		public String getPrefix()
@@ -189,6 +192,11 @@ public class FunctionDefs
 		public String getReturnType()
 		{
 			return returnType;
+		}
+
+		public boolean isVarargs()
+		{
+			return varargs;
 		}
 
 		public boolean isPrivate()
@@ -257,6 +265,7 @@ public class FunctionDefs
 		private final String name;
 		private final String type;
 		private final boolean optional;
+		private final boolean vararg;
 		private String description = "";
 
 		public Parameter (String name, String type, boolean optional)
@@ -264,6 +273,8 @@ public class FunctionDefs
 			this.name = name;
 			this.type = type;
 			this.optional = optional;
+
+			this.vararg = (type != null) && type.endsWith (",...");
 		}
 
 		public String getName ()
@@ -281,7 +292,12 @@ public class FunctionDefs
 			return optional;
 		}
 
-		public String getDescription ()
+		public boolean isVararg ()
+		{
+			return vararg;
+		}
+
+		public String getDescription()
 		{
 			return description;
 		}
