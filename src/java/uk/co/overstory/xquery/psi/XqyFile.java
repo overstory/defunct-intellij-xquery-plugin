@@ -15,6 +15,8 @@ public interface XqyFile extends PsiFile
 {
 	String getXQueryVersion();
 
+	String getDefaultXQueryVersion();
+
 	List<XqyCompositeElement> getDeclarations();
 
 	Map<String,String> getNamespaceMappings();

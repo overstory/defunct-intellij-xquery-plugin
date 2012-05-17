@@ -128,10 +128,19 @@ public class XqyFileImpl extends PsiFileBase implements XqyFile
 	{
 		XqyModule module = this.findChildByClass (XqyModule.class);
 
+		if (module == null) return getDefaultXQueryVersion();
+
 		@SuppressWarnings("unchecked")
 		String version = TreeUtil.getTextOfDescendentElementAtPath (module, XqyVersionDecl.class, XqyXqueryVersionString.class);
 
-		return (version == null) ? "1.0-ml" : scrubString (version);
+		return (version == null) ? getDefaultXQueryVersion() : scrubString (version);
+	}
+
+	// ToDo: Get this from an options setting configurable by user
+	@Override
+	public String getDefaultXQueryVersion()
+	{
+		return "1.0-ml";
 	}
 
 	@Override
@@ -217,7 +226,7 @@ public class XqyFileImpl extends PsiFileBase implements XqyFile
 	{
 		final Map<String,String> result = new HashMap<String,String>();
 
-		result.putAll (builtinNamespacesMap ());
+		result.putAll (builtinNamespacesMap());
 
 		processChildrenDummyAware (this, new Processor<PsiElement>()
 		{
