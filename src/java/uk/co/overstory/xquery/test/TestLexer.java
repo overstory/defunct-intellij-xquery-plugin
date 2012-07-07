@@ -13,9 +13,33 @@ import uk.co.overstory.xquery.parser.XqyLexer;
 public class TestLexer
 {
 	private static final String TEST =
-		"<options xmlns=\"xdmp:eval\">\n" +
-		"    <database>{xdmp:database (\"CitationTracker\") }</database>\n" +
-		"</options>";
+		"declare function get-document-materials-for-user (\n" +
+			"\t$zz:empty as node(),\n" +
+			"\t$zz:empty as node(),\n" +
+			"\t$zz:node as node(),\n" +
+			"\t$doc as document-node(),\n" +
+			"\t$materials-json as xs:string\n" +
+			") as element(Id)*\n" +
+			"{\n" +
+			"\ttry {\n" +
+			"\t\tlet $foo := $doc/namespace::*\n" +
+			"\t\tlet $doc-date as xs:date := $doc//meta:Info/meta:Date\n" +
+			"\t\tlet $materials-maps as map:map* := map-materials($materials-json)\n" +
+			"\t\tlet $candidate-ids as xs:string* :=\n" +
+			"\t\t\tfor $map in $materials-maps\n" +
+			"\t\t\tlet $from := map:get ($map, \"from\")\n" +
+			"\t\t\tlet $from-date := if ($from castable as xs:date) then xs:date ($from) else xs:date (\"0001-01-01\")\n" +
+			"\t\t\tlet $to := map:get ($map, \"to\")\n" +
+			"\t\t\tlet $to-date := if ($to castable as xs:date) then xs:date ($to) else xs:date (\"9999-12-31\")\n" +
+			"\t\t\twhere (($doc-date ge $from-date) and ($doc-date le $to-date))\n" +
+			"\t\t\treturn map:get ($map, \"id\")\n" +
+			"\n" +
+			"\t\tfor $id in get-document-material-ids-for-doc ($doc, $candidate-ids)\n" +
+			"\t\treturn element { \"Id\" } { $id/node() }\n" +
+			"\t} catch ($e) {\n" +
+			"\t\t()   (: Probably here because doc doesn't have a meta:Date element :)\n" +
+			"\t}\n" +
+			"};\n";
 
 	private static final String XQUERY=
 		"xquery version '1.0-ml';\n" +

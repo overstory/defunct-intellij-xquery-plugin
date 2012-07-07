@@ -142,9 +142,9 @@ Expr     ::= ExprSingle ( ',' ExprSingle )*
 ExprSingle ::= FLWORExpr | QuantifiedExpr | TypeswitchExpr | IfExpr | OrExpr | TryCatchExpr
 
 TryCatchExpr ::= TryClause CatchClause
-TryClause ::= 'try' EnclosedExpr  {pin=1}
-CatchClause ::= 'catch' '(' DollarVarName ')' EnclosedExprExtended {pin=1}
-EnclosedExprExtended ::= '{' Expr? '}' {pin=1}
+TryClause ::= 'try' EnclosedExpr
+CatchClause ::= 'catch' '(' DollarVarName ')' EnclosedExprExtended
+EnclosedExprExtended ::= '{' Expr? '}'
 
 FLWORExpr ::= ( ForClause | LetClause )+ WhereClause? OrderByClause? 'return' ExprSingle
 ForClause ::= 'for' ForVar ( ',' ForVar )*  {pin=1 }//{recoverUntil='flwor_recover'}
@@ -324,6 +324,19 @@ Keyword ::= FunctionName | FunctionQname | OpNCName
 FunctionName ::= QName
 RefFunctionName ::= QName
 
+// Keyword ::= 'ancestor' | 'ancestor-or-self' | 'and' | 'ascending' | 'attribute' | 'binary' | 'catch' | 'try' | 'namespace' | 'case' | 'cast' | 'castable' | 'child' | 'collation' | 'comment' | 'declare' | 'default' | 'descendant' | 'descendant-or-self' | 'descending' | 'div' | 'document' | 'document-node' | 'element' | 'else' | 'empty' | 'empty-sequence' | 'eq' | 'every' | 'except' | 'following' | 'following-sibling' | 'for' | 'ge' | 'gt' | 'idiv' | 'if' | 'import' | 'instance' | 'intersect' | 'is' | 'item' | 'le' | 'let' | 'lt' | 'mod' | 'module' | 'ne' | 'node' | 'or' | 'order' | 'ordered' | 'parent' | 'preceding' | 'preceding-sibling' | 'processing-instruction' | 'property' | 'return' | 'satisfies' | 'schema-attribute' | 'schema-element' | 'self' | 'some' | 'stable' | 'text' | 'to' | 'treat' | 'typeswitch' | 'union' | 'unordered' | 'validate' | 'where' | 'xquery'
+
+/*
+NonNCNameChar
+          \\ IntegerLiteral DecimalLiteral DoubleLiteral QName^Token NCName^Token 'ancestor' 'ancestor-or-self' 'and' 'as' 'ascending' 'at' 'attribute' 'namespace' 'base-uri' 'binary' 'boundary-space' 'by' 'case' 'cast' 'castable' 'catch' 'child' 'collation' 'comment' 'construction' 'copy-namespaces' 'declare' 'default' 'descendant' 'descendant-or-self' 'descending' 'div' 'document' 'document-node' 'element' 'else' 'empty' 'empty-sequence' 'encoding' 'eq' 'every' 'except' 'external' 'following' 'following-sibling' 'for' 'function' 'private' 'ge' 'greatest' 'gt' 'full' 'idiv' 'if' 'import' 'in' 'inherit' 'instance' 'intersect' 'is' 'item' 'lax' 'le' 'least' 'let' 'lt' 'mod' 'module' 'namespace' 'ne' 'node' 'no-inherit' 'no-preserve' 'of' 'option' 'or' 'order' 'ordered' 'ordering' 'parent' 'preceding' 'preceding-sibling' 'preserve' 'processing-instruction' 'property' 'return' 'satisfies' 'schema' 'stylesheet' 'schema-attribute' 'schema-element' 'self' 'some' 'stable' 'strict' 'strip' 'text' 'then' 'to' 'treat' 'try' 'typeswitch' 'union' 'unordered' 'validate' 'variable' 'version' 'where' 'xquery'
+'+'       << '+'^OccurrenceIndicator
+'*'       << '*'^OccurrenceIndicator Wildcard
+QName^Token
+          << 'ancestor' 'ancestor-or-self' 'and' 'ascending' 'attribute' 'binary' 'catch' 'try' 'namespace' 'case' 'cast' 'castable' 'child' 'collation' 'comment' 'declare' 'default' 'descendant' 'descendant-or-self' 'descending' 'div' 'document' 'document-node' 'element' 'else' 'empty' 'empty-sequence' 'eq' 'every' 'except' 'following' 'following-sibling' 'for' 'ge' 'gt' 'idiv' 'if' 'import' 'instance' 'intersect' 'is' 'item' 'le' 'let' 'lt' 'mod' 'module' 'ne' 'node' 'or' 'order' 'ordered' 'parent' 'preceding' 'preceding-sibling' 'processing-instruction' 'property' 'return' 'satisfies' 'schema-attribute' 'schema-element' 'self' 'some' 'stable' 'text' 'to' 'treat' 'typeswitch' 'union' 'unordered' 'validate' 'where' 'xquery'
+NCName^Token
+          << 'and' 'ascending' 'case' 'cast' 'castable' 'collation' 'default' 'descending' 'div' 'else' 'empty' 'eq' 'except' 'for' 'ge' 'gt' 'idiv' 'instance' 'intersect' 'is' 'le' 'let' 'lt' 'mod' 'ne' 'or' 'order' 'return' 'satisfies' 'stable' 'to' 'treat' 'union' 'where'
+*/
+
 Whitespace ::= ( S | Comment )*
 
 
@@ -341,10 +354,6 @@ PredefinedEntityRef ::= '&' AsciiAlpha ';'
 CharRef  ::= '&#' Digits ';' | '&#x' (Digits | Hex)+ ';'
 
 NCName ::= id
-
-//QName    ::= PrefixedName | UnprefixedName
-//PrefixedName ::= Prefix ':' LocalPart
-//UnprefixedName ::= LocalPart
 
 QName    ::= ( Prefix ':' LocalPart ) | LocalPart
 Prefix   ::= NCName

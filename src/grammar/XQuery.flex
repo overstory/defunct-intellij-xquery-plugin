@@ -27,6 +27,7 @@ import uk.co.overstory.xquery.psi.XqyTypes;
 		stateNames.put (START_TAG, "START_TAG");
 		stateNames.put (END_TAG, "END_TAG");
 		stateNames.put (ELEM_CONTENT, "ELEM_CONTENT");
+		stateNames.put (QNAME, "QNAME");
 	}
 
   StringBuffer string = new StringBuffer();
@@ -122,12 +123,14 @@ AposAttrContentChar=\u0009 | \u000A | \u000D | [\u0020-\u0025] | [\u0028-\u003b]
 */
 
 /* FIXME: This probably belongs in the completion contributor class extension */
-XFunctionQname=( "attribute" | "namespace" | "binary" | "comment" | "document-node" | "element" | "empty-sequence" | "if" | "item" | "node" | "processing-instruction" | "schema-attribute" | "schema-element" | "text" | "typeswitch" )
-XFunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" | "cast" | "castable" | "catch" | "child" | "collation" | "declare" | "private" | "default" | "descendant" | "descendant-or-self" | "descending" | "div" | "document" | "else" | "empty" | "eq" | "every" | "except" | "following" | "following-sibling" | "for" | "ge" | "gt" | "idiv" | "import" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "module" | "ne" | "or" | "order" | "ordered" | "parent" | "preceding" | "preceding-sibling" | "property" | "return" | "satisfies" | "self" | "some" | "stable" | "to" | "treat" | "try" | "union" | "unordered" | "validate" | "where" | "xquery" )
-OpNCName=( "and" | "ascending" | "case" | "cast" | "castable" | "collation" | "default" | "descending" | "div" | "else" | "empty" | "eq" | "except" | "for" | "ge" | "gt" | "idiv" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "ne" | "or" | "order" | "return" | "satisfies" | "stable" | "to" | "treat" | "union" | "where" | "version" | "variable" | "function" | "as" )
+XFunctionQname=( "attribute" | "namespace" | "binary" | "comment" | "document-node" | "element" | "empty-sequence" | "if" | "then" | "in" | "at" | "item" | "node" | "processing-instruction" | "schema-attribute" | "schema-element" | "text" | "typeswitch" )
+XFunctionName=( "ancestor" | "ancestor-or-self" | "and" | "ascending" | "case" | "cast" | "castable" | "catch" | "child" | "collation" | "declare" | "private" | "default" | "descendant" | "descendant-or-self" | "descending" | "div" | "document" | "else" | "eq" | "every" | "except" | "following" | "following-sibling" | "for" | "ge" | "gt" | "idiv" | "import" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "module" | "ne" | "or" | "order" | "ordered" | "parent" | "preceding" | "preceding-sibling" | "property" | "return" | "satisfies" | "self" | "some" | "stable" | "to" | "treat" | "try" | "union" | "unordered" | "validate" | "where" | "xquery" )
+OpNCName=( "and" | "ascending" | "case" | "cast" | "castable" | "collation" | "default" | "descending" | "div" | "else" | "eq" | "except" | "for" | "ge" | "gt" | "idiv" | "instance" | "intersect" | "is" | "le" | "let" | "lt" | "mod" | "ne" | "or" | "order" | "return" | "satisfies" | "stable" | "to" | "treat" | "union" | "where" | "version" | "variable" | "function" | "as" )
 Keyword=( {XFunctionQname} | {XFunctionName} | {OpNCName} )
 
-id=([A-Za-z\_] [A-Za-z0-9\-\_]*)
+NMStart=[A-Za-z\_]
+NMChar=[A-Za-z0-9\-\_]
+id=({NMStart} ({NMChar})*)
 
 /*
 Nmstart               ({Letter}|_)
@@ -151,12 +154,20 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
 %state PRAGMA_QNAME
 %state PI
 %state PI_TARGET
+%state QNAME
 
 %state START_TAG
 %state END_TAG
 %state ELEM_CONTENT
 
 %%
+
+<QNAME> {
+  ( {id} ":" {NMStart} ) { yypushback(2); return XqyTypes.XQY_ID; }
+  {id} { yypopState(); return XqyTypes.XQY_ID; }
+  ":" { return XqyTypes.XQY_COLON; }
+  [^ \t\r\n] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
 
 <START_TAG> {
   "{" { yypushState(YYINITIAL); return XqyTypes.XQY_LEFT_BRACE; }
@@ -243,10 +254,9 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
   {S} { return XqyTypes.XQY_S; }
 }
 <PRAGMA_QNAME> {
-/* FIXME
-  ({id} ":" {id}) { yybegin(PRAGMA); return XqyTypes.XQY_ID; }
-*/
+  ( {id} ":" {NMStart} ) { yypushback(2); return XqyTypes.XQY_ID; }
   {id} { yybegin(PRAGMA); return XqyTypes.XQY_ID; }
+  ":" { return XqyTypes.XQY_COLON; }
   {S} { return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
 
@@ -263,10 +273,13 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
   "(#" { yypushState(PRAGMA_QNAME); return XqyTypes.XQY_PRAGMA_START; }
   "<![CDATA[" { yypushState(CDATA); return XqyTypes.XQY_CDATA_START; }
 
+  "$" { yypushState(QNAME); return XqyTypes.XQY_DOLLAR; }
+
   {Keyword} { return XqyTypes.XQY_KEYWORD; }
 
   ( {DecimalLiteral} | {Digits} ) { return XqyTypes.XQY_NUMBER; }  /* NumericLiteral */
 
+  ( {id} ":" {NMStart} ) { yypushback(2); yypushState(QNAME);  return XqyTypes.XQY_ID; }
   {id} { return XqyTypes.XQY_ID; }  /* non-keyword NCName */
 
   "//" { return XqyTypes.XQY_SLASH_SLASH; }
@@ -300,7 +313,6 @@ StringLiteral         (\"((\"\")|[^"])*\")|(\'((\'\')|[^'])*\')
   "," { return XqyTypes.XQY_COMMA; }
   "." { return XqyTypes.XQY_DOT; }
   ".." { return XqyTypes.XQY_DOTDOT; }
-  "$" { return XqyTypes.XQY_DOLLAR; }
   "=" { return XqyTypes.XQY_EQUAL; }
   "!=" { return XqyTypes.XQY_NOT_EQUAL; }
   "<=" { return XqyTypes.XQY_LESS_EQUAL; }

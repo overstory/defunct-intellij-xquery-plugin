@@ -79,7 +79,7 @@ public class XqySyntaxHighlighter extends SyntaxHighlighterBase
 		if ((type == XQY_STRING) || (type == XQY_STRINGLITERAL)) {
 			return pack (STRING);
 		}
-		if ((type == XQY_KEYWORD) || (type == XQY_FUNCTIONQNAME) || (type == XQY_FUNCTIONNAME) || (type == XQY_OPNCNAME)) {
+		if ((type == XQY_KEYWORD) || (type == XQY_FUNCTIONNAME)) {
 			return pack (KEYWORD);
 		}
 		if (type == XQY_COMMA) {
