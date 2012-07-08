@@ -22,6 +22,7 @@ import java.util.Map;
  * Date: 3/24/12
  * Time: 2:42 PM
  */
+@SuppressWarnings("OverlyCoupledClass")
 public class XqyAnnotator implements Annotator, DumbAware
 {
 	private static final String ALLOWED_XQUERY_VERSIONS = "'1.0-ml', '1.0', '3.0' or '0.9-ml'";
@@ -33,12 +34,6 @@ public class XqyAnnotator implements Annotator, DumbAware
 	private static final String [] typeConstructorPrefixes = {
 		"xs:", "cts:", "map:"
 	};
-
-	// FIXME: This should be obtained from known namespaces as per XQuery version decl
-	// Should not include namespaces like "search", those will be resolved by looking at imports
-//	private static final String [] definedFunctionPrefixes = {
-//		"fn:", "xdmp:", "cts:", "map:", "math:", "spell:", "admin:", "prof:", "dbg:", "sec:", "thsr:", "trgr", "err:", "error:"
-//	};
 
 //	private static final String DEFAULT_XQUERY_TYPE = "item()*";
 
@@ -105,7 +100,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 		Object resolve = reference == null ? null : reference.resolve();
 
 		// Annotate unknown variables
-		if ((element instanceof XqyRefVarName) && (resolve == null)) {
+		if ((element instanceof XqyRefVarName) && (resolve == null) && ( ! variableInScope (element))) {
 			PsiElement localPart = TreeUtil.getDescendentElementAtPath (element, XqyQName.class, XqyLocalPart.class);
 			holder.createErrorAnnotation (localPart, "Undefined variable '$" + element.getText() + "'");
 			return;
@@ -142,8 +137,7 @@ public class XqyAnnotator implements Annotator, DumbAware
 		annotateFunction (element, holder, func);
 	}
 
-	private void annotateForUserDefinedFunction (PsiElement element, AnnotationHolder holder,
-		Object resolved)
+	private void annotateForUserDefinedFunction (PsiElement element, AnnotationHolder holder, Object resolved)
 	{
 		if (resolved == null) return;
 
@@ -309,6 +303,16 @@ public class XqyAnnotator implements Annotator, DumbAware
 //		for (String prefix : fileImpl.getNamespaceMappings().keySet()) {
 //			if (name.startsWith (prefix)) return true;
 //		}
+
+		return false;
+	}
+
+	private boolean variableInScope (PsiElement refVarName)
+	{
+		String name = refVarName.getText();
+
+		// FIXME: get complete list, test namespace against imports and chase in imported module
+		if ("cts:text".equals (name)) return true;
 
 		return false;
 	}

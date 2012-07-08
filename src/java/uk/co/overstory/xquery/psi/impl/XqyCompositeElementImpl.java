@@ -12,8 +12,9 @@ import uk.co.overstory.xquery.psi.XqyCompositeElement;
 import uk.co.overstory.xquery.psi.XqyExpr;
 import uk.co.overstory.xquery.psi.XqyExprSingle;
 import uk.co.overstory.xquery.psi.XqyFLWORExpr;
+import uk.co.overstory.xquery.psi.XqyForVar;
 import uk.co.overstory.xquery.psi.XqyFunctionDecl;
-import uk.co.overstory.xquery.psi.XqyLetClause;
+import uk.co.overstory.xquery.psi.XqyLetVar;
 import uk.co.overstory.xquery.psi.XqyRefFunctionName;
 import uk.co.overstory.xquery.psi.XqyVarDecl;
 
@@ -73,7 +74,7 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 
 	// ---------------------------------------------------------------
 
-	// ToDo: handle quantified exprs
+	// ToDo: handle quantified exprs  - Still needed?
 
 	@SuppressWarnings("SimplifiableIfStatement")
 	private boolean shouldDescend (PsiElement reference)
@@ -87,7 +88,15 @@ public class XqyCompositeElementImpl extends ASTWrapperPsiElement implements Xqy
 			return false;
 		}
 
-		if (((this instanceof XqyVarDecl) || (this instanceof XqyLetClause)) && PsiTreeUtil.isAncestor (this, reference, false)) {
+		if ((this instanceof XqyVarDecl) && PsiTreeUtil.isAncestor (this, reference, false)) {
+			return false;
+		}
+
+		if ((this instanceof XqyLetVar) && PsiTreeUtil.isAncestor (this, reference, false)) {
+			return false;
+		}
+
+		if ((this instanceof XqyForVar) && PsiTreeUtil.isAncestor (this, reference, false)) {
 			return false;
 		}
 

@@ -26,6 +26,7 @@ import java.util.List;
  * Date: 1/14/12
  * Time: 4:15 PM
  */
+@SuppressWarnings("OverlyCoupledClass")
 public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPolyVariantReferenceBase<T> implements XqyReference
 {
 	static final ResolveState declResolveState = new ResolveState();
@@ -42,7 +43,11 @@ public class XqyReferenceImpl<T extends XqyCompositeElementImpl> extends PsiPoly
 	public PsiElement resolve()
 	{
 //System.out.println ("XqyReferenceImpl: resolve(): " + myElement.toString() + "/" + myElement.getText());
-		ResolveResult[] results = multiResolve (false);
+//		ResolveResult[] results = multiResolve (false);
+
+		final ResolveCache resolveCache = ResolveCache.getInstance (getProject());
+
+		ResolveResult[] results = resolveCache.resolveWithCaching (this, declResolver, true, false);
 
 		return results.length == 1 ? results[0].getElement() : null;
 	}
