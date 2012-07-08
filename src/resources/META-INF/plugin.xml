@@ -1,10 +1,36 @@
 <idea-plugin version="2">
-	<id>uk.co.overstory.xquery</id>
-	<version>1.0</version>
-	<vendor email="ron@overstory.co.uk" url="http://overstory.co.uk">Ron Hitchens, OverStory Ltd</vendor>
+	<version>0.1</version>
+	<vendor email="ron@overstory.co.uk" url="https://github.com/overstory/intellij-xquery-plugin">Ron Hitchens, OverStory Ltd</vendor>
 	<idea-version since-build="111.1" until-build=""/>
 	<name>XQuery Langage Plugin</name>
-	<description>An XQuery language plugin for IntelliJ</description>
+	<id>uk.co.overstory.xquery</id>
+	<description>An XQuery language plugin for IntelliJ supporting refactoring and builtin API info</description>
+	<category>Custom Languages</category>
+	<change-notes><![CDATA[
+	<p>
+		This plugin provides language support for XQuery in IntelliJ/IDEA.  It includes
+		language-aware navigation (jump to definition, find usages), refactoring
+		(function/variable rename, more refactorings to come), error/warning highlights,
+		online API information for known functions, various hover-over annotations.
+	</p>
+	<p>
+		This plugin is early in its development and is still missing many
+		planned features.  Use at your own risk.
+	</p>
+    <h3>0.1:</h3>
+    <ul>
+        <li>First release into the wild, please be kind</li>
+        <li>Basic syntax highlighting</li>
+        <li>Entity aware bracket matching</li>
+        <li>Go to definition, find usages, rename for variables and functions</li>
+        <li>Type-ahead support for functions and variables</li>
+        <ul><li>Function completion still requires () following cursor - will eventually fix</li></ul>
+        <li>Hover-over popup API annotations for builtin functions</li>
+        <li>Error and warning annotations for undefined, unused, duplicate functions and variables</li>
+        <li>Custom color settings for recognized token types</li>
+    </ul>
+]]>
+	</change-notes>
 
 	<depends optional="true" config-file="plugin-java.xml">com.intellij.modules.java</depends>
 
