@@ -39,6 +39,7 @@ import java.util.Map;
 public class XqyFileImpl extends PsiFileBase implements XqyFile
 {
 	private CachedValue<List<XqyCompositeElement>> declarationsValue;
+	private CachedValue<List<XqyModuleImport>> moduleImportsValue;
 	private CachedValue<Map<String,String>> namespacesValue;
 
 	private static final Map<String,String> builtinNSs_1_0_ml = new HashMap<String, String>();
@@ -160,6 +161,22 @@ public class XqyFileImpl extends PsiFileBase implements XqyFile
 	}
 
 	@Override
+	public List<XqyModuleImport> getModuleImports()
+	{
+		if (moduleImportsValue == null) {
+			moduleImportsValue = CachedValuesManager.getManager (getProject()).createCachedValue (new CachedValueProvider<List<XqyModuleImport>>()
+			{
+				@Override
+				public Result<List<XqyModuleImport>> compute()
+				{
+					return Result.create (findModuleImports(), XqyFileImpl.this);
+				}
+			}, false);
+		}
+		return moduleImportsValue.getValue();
+	}
+
+	@Override
 	public Map<String,String> getNamespaceMappings()
 	{
 		if (namespacesValue == null) {
@@ -213,6 +230,26 @@ public class XqyFileImpl extends PsiFileBase implements XqyFile
 				{
 					if ((psiElement instanceof XqyVarName) || (psiElement instanceof XqyFunctionName)) {
 						result.add ((XqyCompositeElement) psiElement);
+					}
+
+					return true;
+				}
+			});
+
+		return result;
+	}
+
+	private List<XqyModuleImport> findModuleImports()
+	{
+		final List<XqyModuleImport> result = new ArrayList<XqyModuleImport> ();
+
+		processChildrenDummyAware (this, new Processor<PsiElement>()
+			{
+				@Override
+				public boolean process (PsiElement psiElement)
+				{
+					if (psiElement instanceof XqyModuleImport) {
+						result.add ((XqyModuleImport) psiElement);
 					}
 
 					return true;

@@ -299,10 +299,10 @@ public class XqyAnnotator implements Annotator, DumbAware
 			if (name.startsWith (prefix)) return true;
 		}
 
-		// ToDo: Need to look at imported modules for functions in namespaces
-//		for (String prefix : fileImpl.getNamespaceMappings().keySet()) {
-//			if (name.startsWith (prefix)) return true;
-//		}
+		// FIXME: Temp hack to suppress error annotations of functions in namespaces of imported modules, need to chase into imported module and validate
+		for (XqyModuleImport module : fileImpl.getModuleImports()) {
+			if (name.startsWith (module.getNamespaceName().getText())) return true;
+		}
 
 		return false;
 	}

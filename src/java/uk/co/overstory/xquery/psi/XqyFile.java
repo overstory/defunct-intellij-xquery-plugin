@@ -19,6 +19,8 @@ public interface XqyFile extends PsiFile
 
 	List<XqyCompositeElement> getDeclarations();
 
+	List<XqyModuleImport> getModuleImports();
+
 	Map<String,String> getNamespaceMappings();
 
 	String getDefaultFunctionNsPrefix();
