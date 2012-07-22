@@ -49,6 +49,7 @@
 		<quoteHandler fileType="XQuery" className="uk.co.overstory.xquery.editor.XqyQuoteHandler"/>
 		<completion.contributor language="XQY" implementationClass="uk.co.overstory.xquery.completion.XqyCompletionContributor"/>
 		<renameInputValidator implementation="uk.co.overstory.xquery.refactor.XqyRenameInputValidator"/>
+		<lang.documentationProvider language="XQY" implementationClass="uk.co.overstory.xquery.documentation.XqyDocumentationProvider"/>
 	</extensions>
 	<!--
 		<fileTemplateGroup implementation="uk.co.overstory.xquery.actions.XqyTemplatesFactory"/>

@@ -258,6 +258,56 @@ public class FunctionDefs
 
 			return sb.toString();
 		}
+
+		public String docAsHtml()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.append ("<div>");
+			sb.append ("<p><b>").append (fullName).append ("</b> (</p>");
+
+			if (parameters.size () > 0) {
+				for (Parameter param : parameters) {
+					boolean isOptional = param.isOptional();
+					sb.append ("<p>&nbsp;&nbsp;&nbsp;&nbsp;");
+					if (isOptional) sb.append ("[");
+					sb.append ("<b>");
+					sb.append (param.getName()).append ("</b>");
+					sb.append (" as ").append (param.getType());
+					if (isOptional) sb.append ("]");
+					sb.append ("</p>");   // FIXME Check cardinality
+				}
+			}
+
+			sb.append ("<p>)");
+			if (returnType != null) {
+				sb.append (" as ").append (returnType);
+			}
+			sb.append ("</p>");
+
+			sb.append ("<h1>Summary</h1>");
+			sb.append ("<p>").append (summary).append ("</p>");
+
+			if (parameters.size () > 0) {
+				sb.append ("<h1>Parameter Detail</h1>");
+
+				for (Parameter param : parameters) {
+					sb.append ("<p>");
+					sb.append ("<b>").append (param.getName()).append ("</b> as ").append (param.getType());
+					if (param.getDescription() != null) {
+						sb.append ("<blockquote>");
+						if (param.isOptional()) sb.append ("[Optional] ");
+						sb.append (param.getDescription());
+						sb.append ("</blockquote>");
+					}
+					sb.append ("</p");
+				}
+			}
+
+			sb.append ("</div>");
+
+			return sb.toString();
+		}
 	}
 
 	public static class Parameter
@@ -349,7 +399,10 @@ public class FunctionDefs
 		public void endElement (String namespaceName, String name, String qname) throws SAXException
 		{
 			if (qname.equals ("function")) functions.add (func);
-			if (qname.equals ("param")) func.addParam (param);
+			if (qname.equals ("param")) {
+				param.description = text.toString();
+				func.addParam (param);
+			}
 
 			if (qname.equals ("return")) func.returnType = text.toString();
 			if (qname.equals ("summary")) func.summary = text.toString();

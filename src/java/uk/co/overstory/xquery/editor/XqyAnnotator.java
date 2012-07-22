@@ -165,9 +165,9 @@ public class XqyAnnotator implements Annotator, DumbAware
 
 		if (localPart == null) localPart = element;
 
-		holder.createInfoAnnotation (localPart, func.getSummary());
+//		holder.createInfoAnnotation (localPart, func.getSummary());
 		holder.createInfoAnnotation (localPart, func.getFullName() + " " + func.paramListAsString() +
-			((func.getReturnType() == null) ? "" : (" as " + func.getReturnType())));
+			((func.getReturnType() == null) ? "" : (" as " + func.getReturnType())) + "  [Ctl-J]");
 
 		List<FunctionDefs.Parameter> params = func.getParameters();
 		XqyExprSingle[] callParams = PsiTreeUtil.getChildrenOfType (element.getParent(), XqyExprSingle.class);
