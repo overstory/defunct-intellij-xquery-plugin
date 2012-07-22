@@ -1,5 +1,5 @@
 <idea-plugin version="2">
-	<version>0.1</version>
+	<version>0.1.1</version>
 	<vendor email="ron@overstory.co.uk" url="https://github.com/overstory/intellij-xquery-plugin">Ron Hitchens, OverStory Ltd</vendor>
 	<idea-version since-build="111.1" until-build=""/>
 	<name>XQuery Langage Plugin</name>
@@ -17,6 +17,12 @@
 		This plugin is early in its development and is still missing many
 		planned features.  Use at your own risk.
 	</p>
+    <h3>0.1.1:</h3>
+    <ul>
+        <li>Added Ctl-J popup documention for functions and variables</li>
+        <li>Suppressed undefined function annotations for imported namespaces as a hack until they can be resolved across modules</li>
+        <li>Suppressed unused warning for variables named $_</li>
+    </ul>
     <h3>0.1:</h3>
     <ul>
         <li>First release into the wild, please be kind</li>
