@@ -314,6 +314,13 @@ public class XqyAnnotator implements Annotator, DumbAware
 		// FIXME: get complete list, test namespace against imports and chase in imported module
 		if ("cts:text".equals (name)) return true;
 
+		XqyFileImpl fileImpl = (XqyFileImpl) refVarName.getContainingFile();
+
+		// FIXME: Temp hack to suppress error annotations of functions in namespaces of imported modules, need to chase into imported module and validate
+		for (XqyModuleImport module : fileImpl.getModuleImports()) {
+			if (name.startsWith (module.getNamespaceName().getText())) return true;
+		}
+
 		return false;
 	}
 

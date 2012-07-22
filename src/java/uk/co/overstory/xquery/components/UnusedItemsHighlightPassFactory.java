@@ -145,6 +145,8 @@ public class UnusedItemsHighlightPassFactory extends AbstractProjectComponent im
 
 					if (externallyVisible (element)) continue;	// ToDo: weak warning for non-private vars/funcs?
 
+					if ("_".equals (element.getText())) continue;	// special case for dummy variable name
+
 					myHighlights.add (new HighlightInfo (HighlightInfoType.WARNING,
 						textRange.getStartOffset (), textRange.getEndOffset (), message, message));
 				}
