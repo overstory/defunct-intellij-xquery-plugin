@@ -30,6 +30,9 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="GradleSettings">
+    <option name="gradleHome" value="$PROJECT_DIR$/../../rbi/rbi-iddn/build-tools/gradle-1.0" />
+  </component>
   <component name="IdProvider" IDEtalkID="D02D0B61D0FFF3EC864B78143A783353" />
   <component name="InspectionProjectProfileManager">
     <profiles>

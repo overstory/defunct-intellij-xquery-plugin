@@ -19,7 +19,7 @@
 	</p>
     <h3>0.1.1:</h3>
     <ul>
-        <li>Added Ctl-J popup documention for functions and variables</li>
+        <li>Added Ctl-Q popup documention for functions and variables</li>
         <li>Suppressed undefined function annotations for imported namespaces as a hack until they can be resolved across modules</li>
         <li>Suppressed unused warning for variables named $_</li>
     </ul>
